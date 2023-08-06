@@ -19,7 +19,7 @@ G = data_loader.get_graph()
 c_id, id_c = data_loader.get_communities() 
 
 print(G) # グラフのノード数、エッジ数出力
-print("community_num : " + str(len(c_id))) # コミュニティ数出力
+print(f"community_num : {len(c_id)}") # コミュニティ数出力
 print("-----------------------------------")
 # ---------------------------------------------------
 
@@ -39,4 +39,4 @@ for node, centrality in betweenness_centrality.items():
     
     if(c > 10):
         break
-    
+# ---------------------------------------------------
