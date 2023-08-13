@@ -1,6 +1,8 @@
 import networkx as nx
 import random
+import matplotlib.colors
 
+# データセット読み込みのクラス
 class DataLoader:
     def __init__(self, dataset_name):
         self.dataset_name = dataset_name
@@ -32,7 +34,8 @@ class DataLoader:
 
     def get_communities(self):
         return self.c_id, self.id_c
-    
+
+# コミュニティ単位で分析するためのクラス    
 class CommunityGraph:
     def __init__(self, G, c_id, id_c):
         self.G = G
@@ -40,7 +43,9 @@ class CommunityGraph:
         self.id_c = id_c
         self.c_edge = {}
         self.c_G = nx.Graph()
+        self.community_size = {}
 
+    # コミュニティ単位でのクラス
     def generate_community_graph(self):
         for c_num in range(len(self.c_id)):
             c_num_size = len(self.c_id[c_num])
@@ -69,8 +74,16 @@ class CommunityGraph:
             self.c_G.add_edge(e[0], e[1])
 
         return self.c_G
+    
+    # コミュニティ内に含まれる頂点数を取得
+    def get_community_size(self):
+        for c_num in range(len(self.c_id)):
+            self.community_size[c_num] = len(self.c_id[c_num])
+            
+        return self.community_size
 
 
+# ランダムウォークのクラス
 class RandomWalk:
     
     # ひたすら隣接頂点にランダムに遷移
@@ -136,3 +149,11 @@ class RandomWalk:
             betweenness_centrality[node] /= total_walks
 
         return betweenness_centrality
+
+# 色取得(プロット用)    
+class ColorUtil:
+    def choose_colors(self, num_colors):
+        tmp = list(matplotlib.colors.CSS4_COLORS.values())
+        #random.shuffle(tmp)
+        label2color = tmp[:num_colors]
+        return label2color
