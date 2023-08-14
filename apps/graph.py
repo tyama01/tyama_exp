@@ -152,10 +152,10 @@ class RandomWalk:
 
 # コミュニティ情報を用いたランダムウォーク
 class CommunityRandomWalk:
-     def __init__(self, G, c_id, id_c):
+     def __init__(self, G, id_c):
         self.G = G
-        self.c_id = c_id
         self.id_c = id_c
+        self.rwer_info = []
         
      def get_last_node_RW(self, v, walk_num):
          
@@ -169,7 +169,18 @@ class CommunityRandomWalk:
         c_id_of_last_v = self.id_c[v]
             
         # (RWerが最後に到達した頂点, RWerが最初にいたコミュニティ, RWerが最後にいたコミュニティ)
-        return (v, c_id_of_v, c_id_of_last_v) 
+        return (v, c_id_of_v, c_id_of_last_v)
+    
+     def get_last_node_RW_n(self, walk_num):
+         
+         # 全グラフのノードリスト
+         node_list = list(self.G.nodes())
+        
+         for v in node_list:
+             self.rwer_info.append(self.get_last_node_RW(v, walk_num))
+            
+         return self.rwer_info
+             
 
 # 色取得(プロット用)    
 class ColorUtil:
