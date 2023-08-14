@@ -53,10 +53,74 @@ plt.show()
 # ---------------------------------------------------
 
 # ----------------- RWer 遷移を分析 -------------------
+
+
 community_rw_obj = CommunityRandomWalk(G, id_c)
+# (RWerが最後に到達した頂点, 元の所属コミュニティ, 最後にいたコミュニティ)
 rwer_info = community_rw_obj.get_last_node_RW_n(10000)
 print(rwer_info[0])
+
+last_community = {}
+for k in range(len(rwer_info)):
+    if rwer_info[k][2] in last_community:
+        last_community[rwer_info[k][2]] += 1
+    else:
+        last_community[rwer_info[k][2]] = 1
+    
+
 print("-----------------------------------")
+
 # ---------------------------------------------------
 
+# ----------------- データプロット ----------------------
 
+# Figureを作成する。
+fig = plt.figure()
+# Axesを作成する。
+ax = fig.add_subplot(111)
+
+# Figureの解像度と色を設定する。
+fig.set_dpi(150)
+fig.set_facecolor("white")
+
+# Axesのタ色を設定する。
+ax.set_facecolor("white")
+
+# x軸とy軸のラベルを設定する。
+ax.set_xlabel("community labels", fontsize=14)
+ax.set_ylabel("RWer nums", fontsize=14)
+
+y = []
+for i in range(len(c_id)):
+    y.append(len(c_id[i]))
+    
+g = []
+for i in range(len(c_id)):
+    g.append(last_community[i])
+    
+z = np.sort(y)[::-1]
+labels_data = np.argsort(y)[::-1]
+#print(labels_data)
+x = np.arange(len(labels_data))
+
+# x軸の目盛の位置を設定する。
+ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
+# x軸の目盛のラベルを設定する。
+ax.xaxis.set_major_formatter(mpl.ticker.FixedFormatter(labels_data))
+
+"""
+color_map = []
+
+for X in list(labels_data):
+    color_map.append(node_color[X])
+    
+print(node_color)
+print(color_map)
+    
+bar = ax.bar(x, z, color=node_color, hatch = 'x')
+    
+plt.show()
+"""
+
+bar = ax.bar(x, g)
+plt.show()
