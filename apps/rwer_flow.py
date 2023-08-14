@@ -31,6 +31,7 @@ print(c_G)
 #print(community_size)
 print("-----------------------------------")
 
+"""
 # プロット
 node_size = []
 node_color = []
@@ -48,4 +49,14 @@ for i in range(len(community_size)):
 pos = nx.circular_layout(c_G)
 nx.draw(c_G, pos, node_color=node_color, node_size=node_size, with_labels=True)
 plt.show()
+"""
 # ---------------------------------------------------
+
+# ----------------- RWer 遷移を分析 -------------------
+community_rw_obj = CommunityRandomWalk(G, id_c)
+rwer_info = community_rw_obj.get_last_node_RW_n(10000)
+print(rwer_info[0])
+print("-----------------------------------")
+# ---------------------------------------------------
+
+
