@@ -88,7 +88,7 @@ class RandomWalk:
     
     # ひたすら隣接頂点にランダムに遷移
     def simple_random_walk(self, G, v, walk_num, v_walk_num_cnt):
-        for i in range(walk_num + 1):
+        for _ in range(walk_num + 1):
             if v in v_walk_num_cnt:
                 v_walk_num_cnt[v] += 1
             else:
@@ -105,7 +105,7 @@ class RandomWalk:
     def pr_random_walk(self, G, v, walk_num, v_walk_num_cnt, d):
         node_list = list(G.nodes)
 
-        for i in range(walk_num + 1):
+        for _ in range(walk_num + 1):
             if v in v_walk_num_cnt:
                 v_walk_num_cnt[v] += 1
             else:
@@ -149,6 +149,27 @@ class RandomWalk:
             betweenness_centrality[node] /= total_walks
 
         return betweenness_centrality
+
+# コミュニティ情報を用いたランダムウォーク
+class CommunityRandomWalk:
+     def __init__(self, G, c_id, id_c):
+        self.G = G
+        self.c_id = c_id
+        self.id_c = id_c
+        
+     def get_last_node_RW(self, v, walk_num):
+         
+        c_id_of_v = self.id_c[v]
+         
+        for _ in range(walk_num + 1):
+            neighbors = list(self.G.neighbors(v))
+            random_index = random.randrange(len(neighbors))
+            v = neighbors[random_index]
+        
+        c_id_of_last_v = self.id_c[v]
+            
+        # (RWerが最後に到達した頂点, RWerが最初にいたコミュニティ, RWerが最後にいたコミュニティ)
+        return (v, c_id_of_v, c_id_of_last_v) 
 
 # 色取得(プロット用)    
 class ColorUtil:
