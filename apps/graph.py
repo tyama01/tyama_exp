@@ -85,9 +85,26 @@ class CommunityGraph:
     
     # 境界ノードをリストで取得
     def get_bridge_node(self):
-        for bridge_node in self.c_edge.keys():
-            self.bridge_node_list.append(bridge_node)
-            
+        bridge_node_set = set()
+        for c_num in range(len(self.c_id)):
+            c_num_size = len(self.c_id[c_num])
+            for i in range(c_num_size):
+                
+                # 全頂点を1ホップ進める
+                neighbors = list(self.G.neighbors(self.c_id[c_num][i]))
+                
+                # 頂点 i の隣接頂点を１つずつ調べる             
+                for neigh in neighbors: 
+                    
+                    # 隣接頂点が同じコミュニティなら for ループを抜ける
+                    if self.id_c[neigh] == c_num:
+                        continue
+                    else:
+                        bridge_node_set.add(self.c_id[c_num][i])
+        
+        self.bridge_node_list = list(bridge_node_set)
+                        
+        
         return self.bridge_node_list
 
 
@@ -134,7 +151,8 @@ class RandomWalk:
     
     # 媒介中心性ベースの RW
     def random_walk_betweenness_centrality(self, G, num_walks=10000, walk_length=1000):
-        betweenness_centrality = {node: 0.0 for node in G.nodes()}
+        
+        betweenness_centrality = {node: 0.0 for node in list(G.nodes())}
 
         for _ in range(num_walks):
             start_node = random.choice(list(G.nodes()))

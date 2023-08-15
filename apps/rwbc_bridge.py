@@ -35,6 +35,15 @@ print("-----------------------------------")
 # ------------------ RW_bc を計算 ---------------------
 random_walk_obj = RandomWalk()
 rw_bc = random_walk_obj.random_walk_betweenness_centrality(G)
+c = 0
+
+for id in bridge_node_list:
+    print(rw_bc[id])
+    c += 1
+    
+    if(c > 20):
+        break
+
 rw_bc_sort = sorted(rw_bc.items(), key=lambda x:x[1], reverse=True)
 
 labels_data = []
