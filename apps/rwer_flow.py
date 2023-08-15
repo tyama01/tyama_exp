@@ -47,7 +47,7 @@ for i in range(len(community_size)):
     node_color.append(label2color[i+ int((i+5)/2)])
 
 pos = nx.circular_layout(c_G)
-nx.draw(c_G, pos, node_color=node_color, node_size=node_size, with_labels=True)
+nx.draw(c_G, pos, node_size=node_size, with_labels=True)
 plt.show()
 """
 # ---------------------------------------------------
@@ -122,5 +122,17 @@ bar = ax.bar(x, z, color=node_color, hatch = 'x')
 plt.show()
 """
 
-bar = ax.bar(x, g)
+height = []
+
+height.append(z)
+height.append(g)
+
+left = np.arange(len(height[0]))  # numpyで横軸を設定
+width = -0.3
+
+for i in range(len(height)):
+    ax.bar(x, height[i], width=width, align='edge')
+    width += 0.6
+
+#bar = ax.bar(x, g)
 plt.show()
