@@ -44,6 +44,7 @@ class CommunityGraph:
         self.c_edge = {}
         self.c_G = nx.Graph()
         self.community_size = {}
+        self.bridge_node_list = []
 
     # コミュニティ単位でのクラス
     def generate_community_graph(self):
@@ -81,6 +82,13 @@ class CommunityGraph:
             self.community_size[c_num] = len(self.c_id[c_num])
             
         return self.community_size
+    
+    # 境界ノードをリストで取得
+    def get_bridge_node(self):
+        for bridge_node in self.c_edge.keys():
+            self.bridge_node_list.append(bridge_node)
+            
+        return self.bridge_node_list
 
 
 # ランダムウォークのクラス
