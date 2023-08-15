@@ -35,15 +35,6 @@ print("-----------------------------------")
 # ------------------ RW_bc を計算 ---------------------
 random_walk_obj = RandomWalk()
 rw_bc = random_walk_obj.random_walk_betweenness_centrality(G)
-c = 0
-
-for id in bridge_node_list:
-    print(rw_bc[id])
-    c += 1
-    
-    if(c > 20):
-        break
-
 rw_bc_sort = sorted(rw_bc.items(), key=lambda x:x[1], reverse=True)
 
 labels_data = []
@@ -78,7 +69,14 @@ x = np.arange(len(labels_data))
 ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
 ax.axes.xaxis.set_ticks([]) # x軸ラベル非表示
 
-ax.scatter(x, values_data)
+colors = []
+for id in labels_data:
+    if id in bridge_node_list:
+        colors.append('r')
+    else:
+        colors.append('b')
+        
+ax.scatter(x, values_data, c=colors, s=15)
 
 plt.show()
 # ---------------------------------------------------
