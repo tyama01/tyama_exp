@@ -9,6 +9,7 @@ from graph import*
 # /usr/bin/python3 /Users/tyama/tyama_exp/apps/rwer_flow.py
 
 # ---------------- データ読み込み ------------------
+print("-----------------------------------")
 dataset_name = input("Enter the dataset name: ")
 data_loader = DataLoader(dataset_name)
 data_loader.load_graph()
@@ -136,3 +137,4 @@ for i in range(len(height)):
 
 #bar = ax.bar(x, g)
 plt.show()
+# ---------------------------------------------------
