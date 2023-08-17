@@ -51,25 +51,26 @@ pos = nx.circular_layout(c_G)
 nx.draw(c_G, pos, node_size=node_size, with_labels=True)
 plt.show()
 """
+
+node_size = []
+for i in range(len(community_size)):
+    node_size.append(community_size[i])
+   
+pos = nx.circular_layout(c_G)
+nx.draw(c_G, pos, node_size=node_size, with_labels=True)
+plt.show()
+
 # ---------------------------------------------------
 
 # ----------------- RWer 遷移を分析 -------------------
 
+last_community_list = []
+hop_num_list = [10, 50, 100, 500]
 
-community_rw_obj = CommunityRandomWalk(G, id_c)
-# (RWerが最後に到達した頂点, 元の所属コミュニティ, 最後にいたコミュニティ)
-rwer_info = community_rw_obj.get_last_node_RW_n(10000)
-print(rwer_info[0])
-
-last_community = {}
-for k in range(len(rwer_info)):
-    if rwer_info[k][2] in last_community:
-        last_community[rwer_info[k][2]] += 1
-    else:
-        last_community[rwer_info[k][2]] = 1
-    
-
-print("-----------------------------------")
+for hop_num in hop_num_list:
+    community_rw_obj = CommunityRandomWalk(G, c_id, id_c)
+    last_community = community_rw_obj.get_last_node_belong_community(hop_num)
+    last_community_list.append(last_community)
 
 # ---------------------------------------------------
 
@@ -94,47 +95,52 @@ ax.set_ylabel("RWer nums", fontsize=14)
 y = []
 for i in range(len(c_id)):
     y.append(len(c_id[i]))
+
     
-g = []
-for i in range(len(c_id)):
-    g.append(last_community[i])
     
 z = np.sort(y)[::-1]
 labels_data = np.argsort(y)[::-1]
 #print(labels_data)
 x = np.arange(len(labels_data))
 
+
+
 # x軸の目盛の位置を設定する。
 ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
 # x軸の目盛のラベルを設定する。
 ax.xaxis.set_major_formatter(mpl.ticker.FixedFormatter(labels_data))
 
-"""
-color_map = []
+data = []
 
-for X in list(labels_data):
-    color_map.append(node_color[X])
-    
-print(node_color)
-print(color_map)
-    
-bar = ax.bar(x, z, color=node_color, hatch = 'x')
-    
-plt.show()
-"""
+data.append(z)
+g = []
 
-height = []
+for i in range(len(hop_num_list)):
+    for j in labels_data:
+        g.append(last_community_list[i][j])
+    data.append(g)
+    g = []
 
-height.append(z)
-height.append(g)
+# 棒の幅を変数widthで保持する。
+width = (1 - .2) / len(data)
+# 棒グラフのオブジェクトのリストを変数barsで保持する。
+bars = []
 
-left = np.arange(len(height[0]))  # numpyで横軸を設定
-width = -0.3
+labels_series = ['hop=0', 'hop=10', 'hop=50', 'hop=100', 'hop=500']
 
-for i in range(len(height)):
-    ax.bar(x, height[i], width=width, align='edge')
-    width += 0.6
+# データを描画する。
+for i in range(len(data)):
+    bars.append(ax.bar(x + (i - .5 * (len(data) - 1)) * width, data[i], width, label = labels_series[i]))
 
-#bar = ax.bar(x, g)
+
+
+# グリッドを表示する。
+ax.set_axisbelow(True)
+ax.grid(True, "major", "y", linestyle="--")
+
+# 凡例を表示する。
+ax.legend(loc="upper right")
+
+# グラフを表示する。
 plt.show()
 # ---------------------------------------------------
