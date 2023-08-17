@@ -55,9 +55,12 @@ plt.show()
 node_size = []
 for i in range(len(community_size)):
     node_size.append(community_size[i])
+
+for e in c_G.edges:
+    print(e)
    
 pos = nx.circular_layout(c_G)
-nx.draw(c_G, pos, node_size=node_size, with_labels=True)
+nx.draw(c_G, pos, with_labels=True)
 plt.show()
 
 # ---------------------------------------------------
@@ -65,7 +68,7 @@ plt.show()
 # ----------------- RWer 遷移を分析 -------------------
 
 last_community_list = []
-hop_num_list = [10, 50, 100, 500]
+hop_num_list = [10, 50, 100, 500, 10000]
 
 for hop_num in hop_num_list:
     community_rw_obj = CommunityRandomWalk(G, c_id, id_c)
@@ -126,7 +129,7 @@ width = (1 - .2) / len(data)
 # 棒グラフのオブジェクトのリストを変数barsで保持する。
 bars = []
 
-labels_series = ['hop=0', 'hop=10', 'hop=50', 'hop=100', 'hop=500']
+labels_series = ['hop=0', 'hop=10', 'hop=50', 'hop=100', 'hop=500', 'hop=10000']
 
 # データを描画する。
 for i in range(len(data)):
