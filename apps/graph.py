@@ -45,6 +45,7 @@ class CommunityGraph:
         self.c_G = nx.Graph()
         self.community_size = {}
         self.bridge_node_list = []
+        self.boundary_edge_hash_list = []
 
     # コミュニティ単位でのクラス
     def generate_community_graph(self):
@@ -106,6 +107,33 @@ class CommunityGraph:
                         
         
         return self.bridge_node_list
+    
+    # 境界エッジをハッシュ値にしてリストで取得
+    def get_boundary_edge_hash(self):
+        boundary_edge_hash_set = set()
+        for c_num in range(len(self.c_id)):
+            c_num_size = len(self.c_id[c_num])
+            for i in range(c_num_size):
+                
+                # 全頂点を1ホップ進める
+                neighbors = list(self.G.neighbors(self.c_id[c_num][i]))
+                
+                # 頂点 i の隣接頂点を１つずつ調べる             
+                for neigh in neighbors: 
+                    
+                    # 隣接頂点が同じコミュニティなら for ループを抜ける
+                    if self.id_c[neigh] == c_num:
+                        continue
+                    else:
+                        boundary_edge = (self.c_id[c_num][i], neigh)
+                        boundary_edge_hash = hash(tuple(sorted(boundary_edge)))
+                        boundary_edge_hash_set.add(boundary_edge_hash)
+        
+        self.boundary_edge_hash_list = list(boundary_edge_hash_set)
+                        
+        
+        return self.boundary_edge_hash_list
+
 
 
 # ランダムウォークのクラス
@@ -175,6 +203,27 @@ class RandomWalk:
             betweenness_centrality[node] /= total_walks
 
         return betweenness_centrality
+    
+    
+    # RW で通ったエッジ回数を記録
+    def get_edge_through_cnt(self, G, num_walks=2000, walk_length=100):
+        
+        unique_represemtation_dict = {hash(tuple(sorted(e))) : 0 for e in G.edges}
+        
+        for _ in range(num_walks):
+            start_node = random.choice(list(G.nodes()))
+            
+            for _ in range(num_walks):
+                neighbors = list(G.neighbors(start_node))
+                if not neighbors:
+                    break
+                next_node = random.choice(neighbors)
+                
+                through_e = (start_node, next_node)
+                unique_represemtation_dict[hash(tuple(sorted(through_e)))] += 1
+                
+        return unique_represemtation_dict
+                    
 
 # コミュニティ情報を用いたランダムウォーク
 class CommunityRandomWalk:
