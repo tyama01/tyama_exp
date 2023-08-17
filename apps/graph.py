@@ -150,7 +150,7 @@ class RandomWalk:
     
     
     # 媒介中心性ベースの RW
-    def random_walk_betweenness_centrality(self, G, num_walks=500, walk_length=500):
+    def random_walk_betweenness_centrality(self, G, num_walks=10, walk_length=3000):
         
         betweenness_centrality = {node: 0.0 for node in list(G.nodes())}
 
