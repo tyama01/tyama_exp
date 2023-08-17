@@ -178,10 +178,12 @@ class RandomWalk:
 
 # コミュニティ情報を用いたランダムウォーク
 class CommunityRandomWalk:
-     def __init__(self, G, id_c):
+     def __init__(self, G, c_id, id_c):
         self.G = G
+        self.c_id = c_id
         self.id_c = id_c
         self.rwer_info = []
+        self.last_community = {k : 0 for k in range(len(c_id))}
         
      def get_last_node_RW(self, v, walk_num):
          
@@ -206,7 +208,18 @@ class CommunityRandomWalk:
              self.rwer_info.append(self.get_last_node_RW(v, walk_num))
             
          return self.rwer_info
+     
+     
+     # 全頂点からRWし、最終的にRWer が どこに止まったかをチェック
+     def get_last_node_belong_community(self, walk_num):
+         rwer_info = self.get_last_node_RW_n(walk_num)
+         for k in range(len(rwer_info)):
+            if rwer_info[k][2] in self.last_community:
+                self.last_community[rwer_info[k][2]] += 1
              
+         return self.last_community
+            
+           
 
 # 色取得(プロット用)    
 class ColorUtil:
