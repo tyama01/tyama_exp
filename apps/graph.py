@@ -276,7 +276,7 @@ class CommunityRandomWalk:
          starting_v = v
          distance_sum = {}
          cnt_step = 0
-        
+         
          for _ in range(step_num):
              
              r_value = random.random()
@@ -284,7 +284,7 @@ class CommunityRandomWalk:
              
              # 隣接頂点へ移動
              if (jump_raito <= r_value):
-                neighbors = list(self.G.neigbors(v))
+                neighbors = list(self.G.neighbors(v))
                 random_index = random.randrange(len(neighbors))
                 v = neighbors[random_index]
                 cnt_step += 1
@@ -292,10 +292,9 @@ class CommunityRandomWalk:
                 
                 if v in distance_sum:
                     if v in rw_pass_node:
-                        self.pass_time += 1
-                        distance_sum[v] += cnt_step
+                        self.pass_time[v] += 1
                 else:
-                    self.pass_time = 0
+                    self.pass_time[v] = 1
                     distance_sum[v] = cnt_step
             
              # 一定確率で始点に戻る
@@ -308,7 +307,7 @@ class CommunityRandomWalk:
              self.average_distance[key] = distance_sum[key] / self.pass_time[key] 
             
         
-         return self.avarage_distance
+         return self.average_distance
     
      # ある頂点 i から開始したRWが各頂点を通過した回数   
      def get_pass_time(self):
