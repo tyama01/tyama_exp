@@ -235,6 +235,7 @@ class CommunityRandomWalk:
         self.last_community = {k : 0 for k in range(len(c_id))}
         self.pass_time = {}
         self.average_distance = {}
+        self.original_average_distance = {}
         
      def get_last_node_RW(self, v, walk_num):
          
@@ -276,6 +277,7 @@ class CommunityRandomWalk:
          starting_v = v
          distance_sum = {}
          cnt_step = 0
+         pass_time_2 = {}
          
          for _ in range(step_num):
              
@@ -283,7 +285,7 @@ class CommunityRandomWalk:
              rw_pass_node = set()
              
              # 隣接頂点へ移動
-             if (jump_raito <= r_value):
+             if (r_value <= jump_raito):
                 neighbors = list(self.G.neighbors(v))
                 random_index = random.randrange(len(neighbors))
                 v = neighbors[random_index]
@@ -293,8 +295,10 @@ class CommunityRandomWalk:
                 if v in distance_sum:
                     if v in rw_pass_node:
                         self.pass_time[v] += 1
+                        
                 else:
                     self.pass_time[v] = 1
+                    pass_time_2[v] = 1
                     distance_sum[v] = cnt_step
             
              # 一定確率で始点に戻る
@@ -304,10 +308,15 @@ class CommunityRandomWalk:
                  
         
          for key in self.pass_time.keys():
-             self.average_distance[key] = distance_sum[key] / self.pass_time[key] 
+             self.original_average_distance[key] = distance_sum[key] / self.pass_time[key]
+             self.average_distance[key] = distance_sum[key] / pass_time_2[key] 
+              
             
         
          return self.average_distance
+     
+     def get_oritinal_average_distance(self):
+         return self.original_average_distance
     
      # ある頂点 i から開始したRWが各頂点を通過した回数   
      def get_pass_time(self):
