@@ -27,9 +27,10 @@ print("-----------------------------------")
 
 # コミュニティを１つとってくる
 # 取ってくるのはコミュニティ id 9 一番大きいコミュニティ
-Gs_9 = G.subgraph(c_id[9])
-#print(Gs_9) # diameter : 9
-print(nx.diameter(Gs_9))
+com_num = 9
+Gs_9 = G.subgraph(c_id[com_num])
+print(Gs_9) # diameter : 9
+#print(nx.diameter(Gs_9))
 
 pr = nx.pagerank(Gs_9, alpha=0.85)
 pr_sort = sorted(pr.items(), key=lambda x:x[1], reverse=True)
@@ -50,22 +51,35 @@ print(f"{start_v} belong to community : {id_c[start_v]}")
 community_rw_obj = CommunityRandomWalk(G, c_id, id_c)
 
 # simple_random walk
-average_distance = community_rw_obj.average_distance_RW(step_num=100000, jump_raito=0.8, v=start_v)
+average_distance = community_rw_obj.average_distance_RW(step_num=10000, jump_raito=0.85, v=start_v)
+
+
 pass_time = community_rw_obj.get_pass_time()
 #print(len(pass_time))
 
+"""
 pass_time_sort = sorted(pass_time.items(), key=lambda x:x[1], reverse=True)
 
 labels_data2 = []
 for item in pass_time_sort:
     labels_data2.append(item[0])
+"""
+
+rw_pr_result = community_rw_obj.rw_pr()
+rw_pr_result_sort = sorted(rw_pr_result.items(), key=lambda x:x[1], reverse=True)
+
+labels_data2 = []
+for item in rw_pr_result_sort:
+    labels_data2.append(item[0])
+    
     
 for i in range(1, 11):
-    print(f"pr ranking {i} : {labels_data[i]}    pass ranking {i} : {labels_data2[i]}")
+    print(f"pr ranking {i} : {labels_data[i]}    rw_pr ranking {i} : {labels_data2[i]}")
     #print(f"pass ranking {i} : {labels_data2[i]}")
     
 
 original_average_distance = community_rw_obj.get_oritinal_average_distance()
+
 
 average_distance_list = []
 pass_time_list = []
@@ -78,10 +92,13 @@ for key in pass_time:
     pass_nodes.append(key)
     original_average_distance_list.append(original_average_distance[key])
     
+
+    
 #average_distance_sort = sorted(average_distance.items(), key=lambda x:x[1], reverse=True)
 #print(average_distance_sort)
 
 # ---------------------------------------------------
+
 
 # --------------------- プロット 1-----------------------
 
@@ -107,7 +124,7 @@ same_com_y = np.array([])
 dif_com_y = np.array([])
 
 for node in pass_nodes:
-    if id_c[node] == 9:
+    if id_c[node] == com_num:
         same_com_y = np.append(same_com_y, average_distance[node])
         dif_com_y = np.append(dif_com_y, np.nan)
     else:
@@ -145,7 +162,7 @@ same_com_y = np.array([])
 dif_com_y = np.array([])
 
 for node in pass_nodes:
-    if id_c[node] == 9:
+    if id_c[node] == com_num:
         same_com_y = np.append(same_com_y, original_average_distance[node])
         dif_com_y = np.append(dif_com_y, np.nan)
     else:

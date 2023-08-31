@@ -236,6 +236,8 @@ class CommunityRandomWalk:
         self.pass_time = {}
         self.average_distance = {}
         self.original_average_distance = {}
+        self.rw_path = []
+        self.rw_pr_result = {}
         
      def get_last_node_RW(self, v, walk_num):
          
@@ -278,6 +280,8 @@ class CommunityRandomWalk:
          distance_sum = {}
          cnt_step = 0
          pass_time_2 = {}
+         rw_one_path = []
+         rw_one_path.append(v)
          
          for _ in range(step_num):
              
@@ -291,6 +295,7 @@ class CommunityRandomWalk:
                 v = neighbors[random_index]
                 cnt_step += 1
                 rw_pass_node.add(v)
+                rw_one_path.append(v)
                 
                 if v in distance_sum:
                     if v in rw_pass_node:
@@ -305,6 +310,8 @@ class CommunityRandomWalk:
              else:
                  v = starting_v
                  cnt_step = 0
+                 self.rw_path.append(rw_one_path)
+                 rw_one_path = []
                  
         
          for key in self.pass_time.keys():
@@ -322,6 +329,49 @@ class CommunityRandomWalk:
      def get_pass_time(self):
          
          return self.pass_time
+     
+     # RW の経路を取得
+     def get_rw_path(self):
+         
+         return self.rw_path
+     
+     def rw_pr(self, jump_ratio=0.85):
+         
+         rw_path = self.get_rw_path()
+         #pass_time = self.get_pass_time()
+         original_average_distance = self.get_oritinal_average_distance()
+         
+         for _ in range(100000):
+             random_index = random.randint(0, len(rw_path) - 1)
+             
+             if len(rw_path[random_index]) < 1:
+                 continue
+             
+             v_index = random.randint(0, len(rw_path[random_index]) - 1)
+             
+             r_value = random.random()
+             
+             if(r_value <= jump_ratio):
+                 v_index += 1
+                 
+                 if(v_index >= len(rw_path[random_index])):
+                     continue 
+                 
+                 
+                 if rw_path[random_index][v_index] in self.rw_pr_result:
+                     if(original_average_distance[rw_path[random_index][v_index]] > 5):
+                         self.rw_pr_result[rw_path[random_index][v_index]] = 0
+                         
+                     self.rw_pr_result[rw_path[random_index][v_index]] += 1
+                 else:
+                     if(original_average_distance[rw_path[random_index][v_index]] > 5):
+                         self.rw_pr_result[rw_path[random_index][v_index]] = 0
+                         
+                     self.rw_pr_result[rw_path[random_index][v_index]] = 1
+                 
+                 
+         
+         return self.rw_pr_result
                     
      
             
