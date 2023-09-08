@@ -3,10 +3,12 @@ import networkx as nx
 import networkx.algorithms.community as nx_comm
 from collections import Counter
 
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps/louvain.py
+
 FILE_PARH = "../datasets"
 #FILE_NAME = "karate"
 # FILE_NAME = "web-Google"
-FILE_NAME = "facebook"
+FILE_NAME = "dumbbell"
 
 
 def main():
