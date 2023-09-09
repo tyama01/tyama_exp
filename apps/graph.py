@@ -376,11 +376,3 @@ class CommunityRandomWalk:
      
             
            
-
-# 色取得(プロット用)    
-class ColorUtil:
-    def choose_colors(self, num_colors):
-        tmp = list(matplotlib.colors.CSS4_COLORS.values())
-        #random.shuffle(tmp)
-        label2color = tmp[:num_colors]
-        return label2color
