@@ -12,14 +12,14 @@ from graph import*
 dataset_name = input("Enter the dataset name: ")
 data_loader = DataLoader(dataset_name)
 data_loader.load_graph()
-data_loader.load_community()
+#data_loader.load_community()
 G = data_loader.get_graph()
 
 # {所属するコミュニティ：頂点idのリスト}, {頂点id:所属するコミュニティ}
-c_id, id_c = data_loader.get_communities() 
+#c_id, id_c = data_loader.get_communities() 
 
 print(G) # グラフのノード数、エッジ数出力
-print(f"community_num : {len(c_id)}") # コミュニティ数出力
+#print(f"community_num : {len(c_id)}") # コミュニティ数出力
 print("-----------------------------------")
 # ---------------------------------------------------
 

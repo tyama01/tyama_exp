@@ -34,6 +34,38 @@ class DataLoader:
 
     def get_communities(self):
         return self.c_id, self.id_c
+    
+class RandomWalkers:
+    def __init__(self, G):
+        self.G = G
+     
+    # Random Walker を動かし続け、最終的に到達したノードを返す    
+    def move_a_walker(self, v, walk_num):
+        for _ in range(walk_num):
+            
+            neighbors = list(self.G.neighbors(v))
+            random_index = random.randrange(len(neighbors))
+            v = neighbors[random_index]
+            
+        return v 
+    
+    def move_walkers_from_n_hop(self, v, walk_num, walkers_num, hop):
+        
+        group_nodes_set = set() # ノードグループ (ここから RWer がどれだけ抜け出すかをみる)
+        group_nodes_set.add(v)
+        group_nodes_list_sub = []
+        group_nodes_list_sub.append(v)
+        
+        
+        # ある始点頂点から n hop までをグループと見る
+        for _ in range(hop):
+            for v_1 in group_nodes_list_sub:
+                neighbors = list(self.G.neighbors(v_1))
+                group_nodes_list_sub = neighbors
+                
+                for v_2 in neighbors:
+                    group_nodes_set.add(v_2)
+            
 
 # コミュニティ単位で分析するためのクラス    
 class CommunityGraph:
@@ -139,7 +171,7 @@ class CommunityGraph:
 # ランダムウォークのクラス
 class RandomWalk:
     
-    # ひたすら隣接頂点にランダムに遷移
+    # ひたすら隣接頂点にランダムに遷移, どのノードを何回通ったかを記録　
     def simple_random_walk(self, G, v, walk_num, v_walk_num_cnt):
         for _ in range(walk_num + 1):
             if v in v_walk_num_cnt:
