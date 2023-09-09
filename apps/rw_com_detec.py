@@ -7,6 +7,7 @@ import random
 from graph import*
 
 # /usr/bin/python3 /Users/tyama/tyama_exp/apps/rw_com_detec.py
+# RW ベースでのコミュニティ検出　始点の依存性が強い,,,
 
 # ---------------- データ読み込み ------------------
 dataset_name = input("Enter the dataset name: ")
