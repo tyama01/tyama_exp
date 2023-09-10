@@ -73,6 +73,9 @@ class RandomWalkers:
         # 1 イテレーションごとにそのグループが保持している RWer 数
         group_rwers_num_per_interation = []
         
+        initial_rwers_num = walkers_num * len(self.walkers_num_per_node)
+        group_rwers_num_per_interation.append(1)
+        
         
         # グループ内の各ノードから RWer を走らせ, どのノードに留まったか
         
@@ -94,8 +97,8 @@ class RandomWalkers:
             for v_in_group in self.group_nodes_set:
                 group_walkers_num += self.walkers_num_per_node[v_in_group]
             
-            group_rwers_num_per_interation.append(group_walkers_num)
-            
+            group_rwers_num_per_interation.append(group_walkers_num / initial_rwers_num)
+        
         
         return group_rwers_num_per_interation
     
