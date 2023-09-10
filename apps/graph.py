@@ -38,6 +38,8 @@ class DataLoader:
 class RandomWalkers:
     def __init__(self, G):
         self.G = G
+        self.group_nodes_set = set() # ノードグループ (ここから RWer がどれだけ抜け出すかをみる)
+        self.walkers_num_per_node = {} # 各ノードが RWer をどれだけ持っているか
      
     # Random Walker を動かし続け、最終的に到達したノードを返す    
     def move_a_walker(self, v, walk_num):
@@ -51,21 +53,62 @@ class RandomWalkers:
     
     def move_walkers_from_n_hop(self, v, walk_num, walkers_num, hop):
         
-        group_nodes_set = set() # ノードグループ (ここから RWer がどれだけ抜け出すかをみる)
-        group_nodes_set.add(v)
+        self.group_nodes_set.add(v)
         group_nodes_list_sub = []
         group_nodes_list_sub.append(v)
         
         
-        # ある始点頂点から n hop までをグループと見る
+        # ある始点頂点から n hop までをグループと見る -> ノードグループを生成
         for _ in range(hop):
             for v_1 in group_nodes_list_sub:
                 neighbors = list(self.G.neighbors(v_1))
                 group_nodes_list_sub = neighbors
                 
                 for v_2 in neighbors:
-                    group_nodes_set.add(v_2)
+                    self.group_nodes_set.add(v_2)
+        
+        # 初期化 グループ毎に最初は同じ数の RWer 数をもつ walkers_num = 20 くらいにする予定
+        self.walkers_num_per_node = {group_v : walkers_num for group_v in group_nodes_set}
+        
+        # 1 イテレーションごとにそのグループが保持している RWer 数
+        group_rwers_num_per_interation = []
+        
+        
+        # グループ内の各ノードから RWer を走らせ, どのノードに留まったか
+        
+        for _ in range(len(walkers_num)): # このイテレーション毎の Walker の流出を記録
             
+            for v_in_group in self.group_nodes_set:
+                
+                stay_v = self.move_a_walker(v_in_group, walk_num)
+                
+                # RWer 出走
+                self.walkers_num_per_node[v_in_group] -= 1
+                
+                if stay_v in self.group_nodes_set :
+                    self.walkers_num_per_node[stay_v] += 1
+            
+            # グループ内にどれだけ RWer が残ったかを記録    
+            group_walkers_num = 0
+            
+            for v_in_group in self.group_nodes_set:
+                group_walkers_num += self.walkers_num_per_node[v_in_group]
+            
+            group_rwers_num_per_interation.append(group_walkers_num)
+            
+        
+        return group_rwers_num_per_interation
+    
+    # グループノード取得
+    def get_group_nodes(self):
+        
+        return self.group_nodes_set 
+    
+    # グループノード内のノード毎の最終的な RWer 保持数
+    def get_walkers_per_node(self):
+        
+        return self.walkers_num_per_node            
+        
 
 # コミュニティ単位で分析するためのクラス    
 class CommunityGraph:
