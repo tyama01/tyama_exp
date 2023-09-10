@@ -76,7 +76,7 @@ class RandomWalkers:
         
         # グループ内の各ノードから RWer を走らせ, どのノードに留まったか
         
-        for _ in range(len(walkers_num)): # このイテレーション毎の Walker の流出を記録
+        for _ in range(walkers_num): # このイテレーション毎の Walker の流出を記録
             
             for v_in_group in self.group_nodes_set:
                 

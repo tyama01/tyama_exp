@@ -24,7 +24,14 @@ print("-----------------------------------")
 # ---------------------------------------------------
 
 # --------------------- RW --------------------------
+rwers_obj = RandomWalkers(G)
 
+v = 0
+walk_num = 3
+walkers_num = 20
+hop = 1
+
+group_rwers_num_per_iteration = rwers_obj.move_walkers_from_n_hop(v, walk_num, walkers_num, hop)
 
 
 # ---------------------------------------------------
