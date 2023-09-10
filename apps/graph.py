@@ -68,7 +68,7 @@ class RandomWalkers:
                     self.group_nodes_set.add(v_2)
         
         # 初期化 グループ毎に最初は同じ数の RWer 数をもつ walkers_num = 20 くらいにする予定
-        self.walkers_num_per_node = {group_v : walkers_num for group_v in group_nodes_set}
+        self.walkers_num_per_node = {group_v : walkers_num for group_v in self.group_nodes_set}
         
         # 1 イテレーションごとにそのグループが保持している RWer 数
         group_rwers_num_per_interation = []
