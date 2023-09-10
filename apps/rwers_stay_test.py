@@ -39,5 +39,32 @@ group_rwers_num_per_iteration = rwers_obj.move_walkers_from_n_hop(v, walk_num, w
 
 # --------------------- プロット -----------------------
 
+# Figureを作成する。
+fig = plt.figure()
+# Axesを作成する。
+ax = fig.add_subplot(111)
+
+# Figureの解像度と色を設定する。
+fig.set_dpi(150)
+fig.set_facecolor("white")
+
+# Axesのタイトルと色を設定する。
+#ax.set_title("物品の所有率")
+ax.set_facecolor("white")
+
+# x軸とy軸のラベルを設定する。
+ax.set_xlabel("Iterations", fontsize=14)
+ax.set_ylabel("RWers num in group", fontsize=14)
+
+x = np.arange(len(group_rwers_num_per_iteration))
+
+# x軸の目盛の位置を設定する。
+ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
+#ax.axes.xaxis.set_ticks([]) # x軸ラベル非表示
+
+ax.scatter(x, group_rwers_num_per_iteration)
+ax.plot(x, group_rwers_num_per_iteration)
+
+plt.show()
 
 # ---------------------------------------------------
