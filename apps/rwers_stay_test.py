@@ -27,13 +27,14 @@ print("-----------------------------------")
 rwers_obj = RandomWalkers(G)
 
 v = 0
-walk_num = 3
+walk_num = 2
 walkers_num = 20
 hop = 1
 
 group_rwers_num_per_iteration = rwers_obj.move_walkers_from_n_hop(v, walk_num, walkers_num, hop)
 
-
+v2 = 4
+group_rwers_num_per_iteration2 = rwers_obj.move_walkers_from_n_hop(v, walk_num, walkers_num, hop)
 # ---------------------------------------------------
 
 
@@ -54,7 +55,7 @@ ax.set_facecolor("white")
 
 # x軸とy軸のラベルを設定する。
 ax.set_xlabel("Iterations", fontsize=14)
-ax.set_ylabel("RWers num in group", fontsize=14)
+ax.set_ylabel("RWers num in group (normalized)", fontsize=14)
 
 x = np.arange(len(group_rwers_num_per_iteration))
 
@@ -62,8 +63,11 @@ x = np.arange(len(group_rwers_num_per_iteration))
 ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
 #ax.axes.xaxis.set_ticks([]) # x軸ラベル非表示
 
-ax.scatter(x, group_rwers_num_per_iteration)
+#ax.scatter(x, group_rwers_num_per_iteration)
 ax.plot(x, group_rwers_num_per_iteration)
+
+#ax.scatter(x, group_rwers_num_per_iteration2)
+ax.plot(x, group_rwers_num_per_iteration2)
 
 plt.show()
 
