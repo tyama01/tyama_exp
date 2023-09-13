@@ -27,23 +27,37 @@ print("-----------------------------------")
 # --------------------- RW --------------------------
 rwers_obj = RandomWalkers(G)
 
-v = 0
-walk_num = 2
+v1 = 0
+v2 = 4
 walkers_num = 20
+walk_num_list = [1, 2, 3, 4, 5, 6, 7, 8]
 hop = 1
 
-#group_rwers_num_per_iteration = rwers_obj.move_walkers_from_n_hop(v, walk_num, walkers_num, hop)
+# iteration ごとの RWer 数を list でもつ
+v1_iteration_list = []
+v2_iteration_list = []
 
-group_rwers_num_per_iteration  = rwers_obj.move_walkers_from_n_hop_exclude_come_back(v, walk_num, walkers_num, hop)
+for walk_num in walk_num_list:
+    v1_iteration = rwers_obj.move_walkers_from_n_hop_exclude_come_back(v1, walk_num, walkers_num, hop)
+    v1_iteration_list.append(v1_iteration)
+    
+    v2_iteration = rwers_obj.move_walkers_from_n_hop_exclude_come_back(v2, walk_num, walkers_num, hop)
+    v2_iteration_list.append(v2_iteration)
 
-v2 = 4
-#group_rwers_num_per_iteration2 = rwers_obj.move_walkers_from_n_hop(v, walk_num, walkers_num, hop)
-group_rwers_num_per_iteration2 = rwers_obj.move_walkers_from_n_hop_exclude_come_back(v2, walk_num, walkers_num, hop)
+# walk_num に応じて最終的に滞在した RWer 数
+v1_last_rwers_num_list = []
+v2_last_rwers_num_list = []
+
+for i in range(len(walk_num_list)):
+    v1_last_rwers_num_list.append(v1_iteration_list[i][-1])
+    v2_last_rwers_num_list.append(v2_iteration_list[i][-1])
+    
+    
 
 # ---------------------------------------------------
 
 
-# --------------------- プロット -----------------------
+# --------------------- プロット 1 ----------------------
 
 # Figureを作成する。
 fig = plt.figure()
@@ -62,18 +76,53 @@ ax.set_facecolor("white")
 ax.set_xlabel("Iterations", fontsize=14)
 ax.set_ylabel("RWers num in group (normalized)", fontsize=14)
 
-x = np.arange(len(group_rwers_num_per_iteration))
+x = np.arange(len(v1_iteration_list[0]))
 
 # x軸の目盛の位置を設定する。
 ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
 #ax.axes.xaxis.set_ticks([]) # x軸ラベル非表示
 
-#ax.scatter(x, group_rwers_num_per_iteration)
-ax.plot(x, group_rwers_num_per_iteration)
+ax.scatter(x, v1_iteration_list[2]) # walker_num = 3
+ax.plot(x, v1_iteration_list[2])
 
 
-#ax.scatter(x, group_rwers_num_per_iteration2)
-ax.plot(x, group_rwers_num_per_iteration2)
+ax.scatter(x, v2_iteration_list[2]) # walker_num = 3
+ax.plot(x, v2_iteration_list[2])
+
+plt.show()
+
+# ---------------------------------------------------
+# --------------------- プロット 2 ----------------------
+
+# Figureを作成する。
+fig = plt.figure()
+# Axesを作成する。
+ax = fig.add_subplot(111)
+
+# Figureの解像度と色を設定する。
+fig.set_dpi(150)
+fig.set_facecolor("white")
+
+# Axesのタイトルと色を設定する。
+#ax.set_title("物品の所有率")
+ax.set_facecolor("white")
+
+# x軸とy軸のラベルを設定する。
+ax.set_xlabel("Walk Num", fontsize=14)
+ax.set_ylabel("RWers num in group (normalized)", fontsize=14)
+
+x = np.array(walk_num_list)
+
+# x軸の目盛の位置を設定する。
+ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
+#ax.axes.xaxis.set_ticks([]) # x軸ラベル非表示
+
+ax.scatter(x, v1_last_rwers_num_list) 
+ax.plot(x, v1_last_rwers_num_list)
+
+
+ax.scatter(x, v2_last_rwers_num_list) 
+ax.plot(x, v2_last_rwers_num_list)
 
 plt.show()
 
