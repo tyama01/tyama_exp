@@ -39,12 +39,15 @@ class RandomWalkers:
     def __init__(self, G):
         self.G = G
         self.group_nodes_set = set() # ノードグループ (ここから RWer がどれだけ抜け出すかをみる)
+        self.next_hop_group_nodes_set = set() # 1 hop 先のノード集合
         self.walkers_num_per_node = {} # 各ノードが RWer をどれだけ持っているか
         
         # こことは別に初期化が必要な場合があることに注意 (ノード集合が変わるとき)
         self.walker_path_time = {} # 1 回の RW で通ったRWer がそのノード通った回数
         self.remaining_pr = {} # 残存 PR 的なやつ ： 通過回数 / (RWer * hop 数 ) 
-     
+        self.next_hop_remaining_pr = {}
+    
+    """ 
     # Random Walker を動かし続け、最終的に到達したノードを返す    
     def move_a_walker(self, v, walk_num):
         for _ in range(walk_num):
@@ -53,19 +56,21 @@ class RandomWalkers:
             random_index = random.randrange(len(neighbors))
             v = neighbors[random_index]
             
-            if v in self.a_walker_path_time:
+            if v in self.walker_path_time:
                 self.walker_path_time[v] += 1
             
             else:
                 self.walker_path_time[v] = 1
             
         return v 
+    """
     
     # RWer のノードの通過回数
     def get_walker_path_time(self):
         
         return self.walker_path_time
     
+    """
     def move_walkers_from_n_hop(self, v, walk_num, walkers_num, hop):
         
         self.group_nodes_set.add(v)
@@ -116,11 +121,28 @@ class RandomWalkers:
         
         
         return group_rwers_num_per_interation
-    
+"""
+
     # グループノード取得
     def get_group_nodes(self):
         
-        return self.group_nodes_set 
+        return self.group_nodes_set
+    
+    # ある集合の 1hop 先のノード集合を取得
+    def get_next_hop_group_nodes(self):
+        
+        for v in self.group_nodes_set:
+            neighbors = list(self.G.neighbors(v))
+            
+            for n_v in neighbors:
+                if n_v not in self.group_nodes_set:
+                    self.next_hop_group_nodes_set.add(n_v)
+                    
+        
+        return self.next_hop_group_nodes_set
+                    
+        
+         
     
     # グループノード内のノード毎の最終的な RWer 保持数
     def get_walkers_per_node(self):
@@ -130,6 +152,7 @@ class RandomWalkers:
     # walker が通ったノード set と 最後に stay した ノードを取得
     def move_a_walker_get_pass_node_set(self, v, walk_num):
         
+         # ---- walker が通ったノード set と 最後に stay した ノードを取得 ----
         walker_pass_node_set = set()
         walker_pass_node_set.add(v)
         
@@ -139,8 +162,19 @@ class RandomWalkers:
             random_index = random.randrange(len(neighbors))
             v = neighbors[random_index]
             walker_pass_node_set.add(v)
+        
+        # -----------------------------------------------------------
+        
+        # ノードの通過回数を記録
             
+        if v in self.walker_path_time:
+            self.walker_path_time[v] += 1
             
+        else:
+            self.walker_path_time[v] = 1
+            
+        # -----------------------------------------------------------
+    
         return walker_pass_node_set, v
     
     def move_walkers_from_n_hop_exclude_come_back(self, v, walk_num, walkers_num, hop):
@@ -199,13 +233,23 @@ class RandomWalkers:
                 self.remaining_pr[v_in_group] = self.walker_path_time[v_in_group] / (walkers_num * hop)
                 
         
+        # one_hop 先の　残留 PR 値
+        self.get_next_hop_group_nodes()
+        for v_in_next_group in  self.next_hop_group_nodes_set:
+            if v_in_next_group in self.walker_path_time:
+                
+                self.next_hop_remaining_pr[v_in_next_group] = self.walker_path_time[v_in_next_group] / (walk_num * hop)
         
         return group_rwers_num_per_interation
     
     # 残存 PR 取得 {ノード id : 残存 PR 値}
     def get_remaining_pr(self):
         
-        return self.remaining_pr           
+        return self.remaining_pr
+    
+    def get_next_hop_remaining_pr(self):
+        
+        return self.next_hop_remaining_pr           
         
 
 # コミュニティ単位で分析するためのクラス    
