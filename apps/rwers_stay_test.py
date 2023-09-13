@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt 
+import pandas as pd
 import matplotlib as mpl
 from scipy.stats import linregress
 from matplotlib import rcParams as rcp
@@ -32,6 +33,7 @@ walkers_num = 20
 hop = 1
 
 #group_rwers_num_per_iteration = rwers_obj.move_walkers_from_n_hop(v, walk_num, walkers_num, hop)
+
 group_rwers_num_per_iteration  = rwers_obj.move_walkers_from_n_hop_exclude_come_back(v, walk_num, walkers_num, hop)
 
 v2 = 4
@@ -68,6 +70,7 @@ ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
 
 #ax.scatter(x, group_rwers_num_per_iteration)
 ax.plot(x, group_rwers_num_per_iteration)
+
 
 #ax.scatter(x, group_rwers_num_per_iteration2)
 ax.plot(x, group_rwers_num_per_iteration2)
