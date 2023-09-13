@@ -32,7 +32,7 @@ walkers_num = 20
 hop = 1
 
 #group_rwers_num_per_iteration = rwers_obj.move_walkers_from_n_hop(v, walk_num, walkers_num, hop)
-group_rwers_num_per_iteration = rwers_obj.move_walkers_from_n_hop_exclude_come_back(v, walk_num, walkers_num, hop)
+group_rwers_num_per_iteration  = rwers_obj.move_walkers_from_n_hop_exclude_come_back(v, walk_num, walkers_num, hop)
 
 v2 = 4
 #group_rwers_num_per_iteration2 = rwers_obj.move_walkers_from_n_hop(v, walk_num, walkers_num, hop)
