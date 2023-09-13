@@ -66,9 +66,9 @@ for walk_num in walk_num_list:
     v2_remaining_pr_out = rwers_obj.get_next_hop_remaining_pr()
     v2_remaining_pr_out_group_list.append(v2_remaining_pr_out)
     
-print(rwers_obj.get_group_nodes())
-print(v1_remaining_pr_in_group_list[3])
-print(v1_remaining_pr_out_group_list[3])
+
+print(v2_remaining_pr_in_group_list[2])
+print(v2_remaining_pr_out_group_list[2])
 
 # walk_num に応じて最終的に滞在した RWer 数
 v1_last_rwers_num_list = []
@@ -126,12 +126,15 @@ ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
 
 # RWer の歩数
 plot_walk_num = 3
-ax.scatter(x, v1_iteration_list[plot_walk_num - 1]) # walker_num = 3
+ax.scatter(x, v1_iteration_list[plot_walk_num - 1], label = "group1") # walker_num = 3
 ax.plot(x, v1_iteration_list[plot_walk_num - 1])
 
 
-ax.scatter(x, v2_iteration_list[plot_walk_num - 1]) # walker_num = 3
+ax.scatter(x, v2_iteration_list[plot_walk_num - 1], label = "group2") # walker_num = 3
 ax.plot(x, v2_iteration_list[plot_walk_num - 1])
+
+# 凡例を表示する。
+ax.legend(loc="upper right")
 
 plt.show()
 
@@ -162,12 +165,15 @@ x = np.array(walk_num_list)
 ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
 #ax.axes.xaxis.set_ticks([]) # x軸ラベル非表示
 
-ax.scatter(x, v1_last_rwers_num_list) 
+ax.scatter(x, v1_last_rwers_num_list, label = "group1") 
 ax.plot(x, v1_last_rwers_num_list)
 
 
-ax.scatter(x, v2_last_rwers_num_list) 
+ax.scatter(x, v2_last_rwers_num_list, label="group2") 
 ax.plot(x, v2_last_rwers_num_list)
+
+# 凡例を表示する。
+ax.legend(loc="upper right")
 
 plt.show()
 
@@ -199,12 +205,15 @@ x = np.array(walk_num_list)
 ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
 #ax.axes.xaxis.set_ticks([]) # x軸ラベル非表示
 
-ax.scatter(x, v1_total_remaining_pr_list) 
+ax.scatter(x, v1_total_remaining_pr_list, label = "group1") 
 ax.plot(x, v1_total_remaining_pr_list)
 
 
-ax.scatter(x, v2_total_remaining_pr_list) 
+ax.scatter(x, v2_total_remaining_pr_list, label = "group2") 
 ax.plot(x, v2_total_remaining_pr_list)
+
+# 凡例を表示する。
+ax.legend(loc="upper right")
 
 plt.show()
 
