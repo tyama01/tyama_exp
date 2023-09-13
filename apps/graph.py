@@ -209,10 +209,11 @@ class RandomWalkers:
             
             for v_in_group in self.group_nodes_set:
                 
-                pass_node_set, stay_v = self.move_a_walker_get_pass_node_set(v, walk_num)
+                pass_node_set, stay_v = self.move_a_walker_get_pass_node_set(v_in_group, walk_num)
                 
                 # RWer 出走
                 self.walkers_num_per_node[v_in_group] -= 1
+                
                 
                 if pass_node_set <= self.group_nodes_set:
                     self.walkers_num_per_node[stay_v] += 1
@@ -230,7 +231,7 @@ class RandomWalkers:
         for v_in_group in self.group_nodes_set:
             if v_in_group in self.walker_path_time:
                 
-                self.remaining_pr[v_in_group] = self.walker_path_time[v_in_group] / (walkers_num * hop)
+                self.remaining_pr[v_in_group] = self.walker_path_time[v_in_group] / (walkers_num * walk_num * len(self.group_nodes_set))
                 
         
         # one_hop 先の　残留 PR 値
@@ -238,7 +239,7 @@ class RandomWalkers:
         for v_in_next_group in  self.next_hop_group_nodes_set:
             if v_in_next_group in self.walker_path_time:
                 
-                self.next_hop_remaining_pr[v_in_next_group] = self.walker_path_time[v_in_next_group] / (walk_num * hop)
+                self.next_hop_remaining_pr[v_in_next_group] = self.walker_path_time[v_in_next_group] / (walkers_num * walk_num * len(self.group_nodes_set))
         
         return group_rwers_num_per_interation
     
