@@ -165,13 +165,13 @@ class RandomWalkers:
         
         # -----------------------------------------------------------
         
-        # ノードの通過回数を記録
+            # ノードの通過回数を記録
             
-        if v in self.walker_path_time:
-            self.walker_path_time[v] += 1
+            if v in self.walker_path_time:
+                self.walker_path_time[v] += 1
             
-        else:
-            self.walker_path_time[v] = 1
+            else:
+                self.walker_path_time[v] = 1
             
         # -----------------------------------------------------------
     

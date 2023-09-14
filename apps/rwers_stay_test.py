@@ -67,8 +67,8 @@ for walk_num in walk_num_list:
     v2_remaining_pr_out_group_list.append(v2_remaining_pr_out)
     
 
-print(v2_remaining_pr_in_group_list[2])
-print(v2_remaining_pr_out_group_list[2])
+print(v1_remaining_pr_in_group_list[2])
+print(v1_remaining_pr_out_group_list[2])
 
 # walk_num に応じて最終的に滞在した RWer 数
 v1_last_rwers_num_list = []
