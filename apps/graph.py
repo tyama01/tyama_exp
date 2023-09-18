@@ -289,27 +289,47 @@ class RandomWalkers:
             # 初期化 グループ毎に最初は同じ数の RWer 数をもつ walkers_num = 20 くらいにする予定
             self.walkers_num_per_node = {group_v : walkers_num for group_v in self.group_nodes_set}
             
+            group_rwers_num_per_node[node].append(1)
+                
+            #for walk_num in range(max_walk_num + 1):
+            walk_num = 1
+            node_list = []
             
+            for _ in range(walkers_num):
+                node_list.append(node)
                 
-            for walk_num in range(max_walk_num + 1):
+            while (walk_num < max_walk_num + 1):
                 
-                for _ in range(walkers_num):
+                stay_v_list = []
+                
+                for v_walker in node_list:
                     
-                    pass_node_set, stay_v = self.move_a_walker(node, walk_num)
+                    pass_node_set, stay_v = self.move_a_walker(v_walker, 1)
                     
-                    self.walkers_num_per_node[node] -= 1
+                    # RWer 出走
+                    self.walkers_num_per_node[v_walker] -= 1
                     
                     if pass_node_set <= self.group_nodes_set:
                         self.walkers_num_per_node[stay_v] += 1
+                        stay_v_list.append(stay_v)
+                
             
                 # グループに残った rwer 数をカウント
                 remaining_rwers_num = 0
             
                 for stay_v in self.walkers_num_per_node:
                     remaining_rwers_num += self.walkers_num_per_node[stay_v]
-            
-                remaining_rwers_num = remaining_rwers_num / initial_rwers_num    
+
+                remaining_rwers_num = remaining_rwers_num / initial_rwers_num
+                
+                if len(stay_v_list) == 0:
+                    remaining_rwers_num = 0
+                        
                 group_rwers_num_per_node[node].append(remaining_rwers_num)
+                
+                walk_num += 1
+                node_list = stay_v_list
+                
             
         return group_rwers_num_per_node
         
