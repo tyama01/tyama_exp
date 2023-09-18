@@ -102,8 +102,8 @@ max_walk_num = 8
 hop = 1        
 
 rwers_obj = RandomWalkers(G)
-group_rwers_num_per_node = rwers_obj.move_walkers_from_n_hop_exclude_come_back_per_node(v1, max_walk_num, walkers_num, hop)
-
+group_rwers_num_per_node = rwers_obj.move_walkers_from_n_hop_exclude_come_back_per_node(v2, max_walk_num, walkers_num, hop)
+print(len(group_rwers_num_per_node[0]))
     
 # ---------------------------------------------------
 
@@ -252,11 +252,14 @@ ax.set_xlabel("Walk Num", fontsize=14)
 ax.set_ylabel("RWers num in group (normalized)", fontsize=14)
 
 x = np.arange(max_walk_num + 1)
+print(len(x))
 
 
 # x軸の目盛の位置を設定する。
 ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
 #ax.axes.xaxis.set_ticks([]) # x軸ラベル非表示
+
+ax.set_ylim(0.8, 1.01)
 
 #ax.scatter(x, v1_last_rwers_num_list, label = "group1") 
 #ax.plot(x, v1_last_rwers_num_list)
