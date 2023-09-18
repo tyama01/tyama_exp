@@ -317,13 +317,13 @@ class RandomWalkers:
                 # グループに残った rwer 数をカウント
                 remaining_rwers_num = 0
             
-                for stay_v in self.walkers_num_per_node:
-                    remaining_rwers_num += self.walkers_num_per_node[stay_v]
+                for v_in_group in self.walkers_num_per_node:
+                    remaining_rwers_num += self.walkers_num_per_node[v_in_group]
 
                 remaining_rwers_num = remaining_rwers_num / initial_rwers_num
                 
-                if len(stay_v_list) == 0:
-                    remaining_rwers_num = 0
+                #if len(stay_v_list) == 0:
+                    #remaining_rwers_num = initial_rwers_num - (walkers_num / initial_rwers_num)
                         
                 group_rwers_num_per_node[node].append(remaining_rwers_num)
                 
