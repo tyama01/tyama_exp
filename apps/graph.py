@@ -332,6 +332,34 @@ class RandomWalkers:
                 
             
         return group_rwers_num_per_node
+    
+
+# シードノードを取得するためのクラス
+class GetSeed:
+    
+    # Spread Hub 2 hop 以上離れた高次数ノードを取得 kはシードノードの数
+    def spread_hub(self, G, k):
+        
+        S = []
+        
+        # ノード集合
+        unmarked = set(G.nodes())
+        
+        # 次数の降順の dic {頂点ID : 次数}
+        deg_rank = sorted(G.degree(), key=lambda x: x[1], reverse=True)
+        
+        for (candidate, deg) in deg_rank: # 次数の大きい順に候補を見ていく
+            
+            if candidate not in unmarked: 
+                continue # candidateに既に印がついていたら飛ばす
+            
+            S.append(candidate) # seed集合にcandidateを追加
+            unmarked.remove(candidate) # candidateをマーク
+            unmarked = unmarked.difference(set(G.neighbors(candidate))) # candidateの近傍にも印
+            
+            if len(S) >= k: break # seed集合の数がk個以上になったら終了
+            
+        return S
         
         
         
