@@ -375,8 +375,21 @@ class CommunityGraph:
         self.community_size = {}
         self.bridge_node_list = []
         self.boundary_edge_hash_list = []
+    
+    # コミュニティを単位のグラフを辞書型で取得    
+    def get_community_graph(self):
+        
+        # {コミュニティラベル : コミュニティグラフ}
+        com_graph_dic = {}
+        
+        for com_label in range(len(self.c_id)):
+            c_nodes = self.c_id[com_label]
+            H = self.G.subgraph(c_nodes)
+            com_graph_dic[com_label] = H
+            
+        return com_graph_dic
 
-    # コミュニティ単位でのクラス
+    # 1つのコミュニティを大きなノードとしてコミュニティ間のつながりを把握するためのグラフを生成
     def generate_community_graph(self):
         for c_num in range(len(self.c_id)):
             c_num_size = len(self.c_id[c_num])
