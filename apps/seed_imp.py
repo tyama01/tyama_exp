@@ -38,6 +38,7 @@ print("-----------------------------------")
 
 # ---------------------------------------------------
 
+"""
 # ------------------ 中心性指標計算 -------------------
 
 
@@ -49,13 +50,18 @@ pr_labels_data = []
 for item in pr_sort:
     pr_labels_data.append(item[0])
 
-"""
+
 # 媒介中心性 計算
 bc = nx.betweenness_centrality(G)
 bc_sort = sorted(bc.items(), key=lambda x:x[1], reverse=True)
-"""
+
+bc_labels_data = []
+for item in bc_sort:
+    bc_labels_data.append(item[0])
+
 
 # ---------------------------------------------------
+"""
 
 # ------------------ コミュニティ内でのシードノード -------------------
 
@@ -138,6 +144,55 @@ print(len(common_node_pr))
 
 ax.scatter(x, common_node_pr, label="common")
 ax.scatter(x, seed_node_pr, label="seed")
+
+ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
+ax.axes.xaxis.set_ticks([]) # x軸ラベル非表示
+
+plt.legend()
+plt.show()    
+
+# ---------------------------------------------------
+
+
+# --------------------- プロット bc ----------------------
+# 横軸 頂点ID, 縦軸 PR 値
+
+# Figureを作成する。
+fig = plt.figure()
+# Axesを作成する。
+ax = fig.add_subplot(111)
+
+# Figureの解像度と色を設定する。
+fig.set_dpi(150)
+fig.set_facecolor("white")
+
+# Axesのタイトルと色を設定する。
+#ax.set_title("物品の所有率")
+ax.set_facecolor("white")
+
+# x軸とy軸のラベルを設定する。
+ax.set_xlabel("Node ID", fontsize=14)
+ax.set_ylabel("Betweenness Centrality Value", fontsize=14)
+
+x = np.arange(len(bc_labels_data))
+
+common_node_bc = np.array([])
+seed_node_bc = np.array([])
+
+for id in bc_labels_data:
+    if id in S:
+        seed_node_bc = np.append(seed_node_bc, bc[id])
+        common_node_bc = np.append(common_node_bc, np.nan)
+    else:
+        seed_node_bc = np.append(seed_node_bc, np.nan)
+        common_node_bc = np.append(common_node_bc, bc[id])
+
+print(len(x))
+print(len(common_node_bc))
+
+
+ax.scatter(x, common_node_bc, label="common")
+ax.scatter(x, seed_node_bc, label="seed")
 
 ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
 ax.axes.xaxis.set_ticks([]) # x軸ラベル非表示
