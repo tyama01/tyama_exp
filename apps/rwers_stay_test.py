@@ -102,7 +102,7 @@ max_walk_num = 8
 hop = 1        
 
 rwers_obj = RandomWalkers(G)
-group_rwers_num_per_node = rwers_obj.move_walkers_from_n_hop_exclude_come_back_per_node(v1, max_walk_num, walkers_num, hop)
+group_rwers_num_per_node = rwers_obj.move_walkers_from_n_hop_exclude_come_back_per_node(v2, max_walk_num, walkers_num, hop)
 print(len(group_rwers_num_per_node[0]))
     
 # ---------------------------------------------------

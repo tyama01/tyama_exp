@@ -25,7 +25,7 @@ print("-----------------------------------")
 
 # ------------------ seed ノード取得 -------------------
 get_seed_obj = GetSeed()
-S = get_seed_obj.spread_hub(G, 1000)
+S = get_seed_obj.spread_hub(G, 2000)
 
 """
 #print(S)
