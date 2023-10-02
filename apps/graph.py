@@ -309,10 +309,14 @@ class RandomWalkers:
                     # RWer 出走
                     self.walkers_num_per_node[v_walker] -= 1
                     
+                    
+                    
                     if pass_node_set <= self.group_nodes_set:
                         self.walkers_num_per_node[stay_v] += 1
                         stay_v_list.append(stay_v)
-                
+                    
+                    
+                    
             
                 # グループに残った rwer 数をカウント
                 remaining_rwers_num = 0
