@@ -336,6 +336,96 @@ class RandomWalkers:
                 
             
         return group_rwers_num_per_node
+          
+    
+     # 流出速度 一度グループから抜けたやつはカウントしない
+    def move_walkers_to_get_leak_speed(self, v, max_walk_num, walkers_num, hop):           
+        
+        self.group_nodes_set.add(v)
+        group_nodes_list_sub = []
+        group_nodes_list_sub.append(v)
+        
+        
+        
+        
+        # ある始点頂点から n hop までをグループと見る -> ノードグループを生成
+        for _ in range(hop):
+            for v_1 in group_nodes_list_sub:
+                neighbors = list(self.G.neighbors(v_1))
+                group_nodes_list_sub = neighbors
+                
+                for v_2 in neighbors:
+                    self.group_nodes_set.add(v_2)
+        
+        # {初期ノード : [RWerが滞在しているノード (適宜初期化)]} 
+        initial_node_spread_node_dic = {node : [] for node in self.group_nodes_set}
+        
+        # 初期化
+        for key in initial_node_spread_node_dic:
+            for _ in range(walkers_num):
+                initial_node_spread_node_dic[key].append(key)
+        
+        initial_rwers_num = walkers_num * len(self.group_nodes_set)
+        
+        # 初期化 グループ毎に最初は同じ数の RWer 数をもつ walkers_num = 20 くらいにする予定
+        self.walkers_num_per_node = {group_v : walkers_num for group_v in self.group_nodes_set}
+        
+        walk_num = 1
+        
+        # 残存 RWer 数  1歩, 2歩, ....
+        rest_rwers_list = []
+        rest_rwers_list.append(1)
+            
+        while (walk_num < max_walk_num + 1):
+            
+            for node in self.group_nodes_set:
+                
+                stay_v_list = []
+                
+                for v_walker in initial_node_spread_node_dic[node]:
+                    
+                    pass_node_set, stay_v = self.move_a_walker(v_walker, 1)
+                    
+                    # RWer 出走
+                    self.walkers_num_per_node[v_walker] -= 1
+                    
+                    
+                    #if v_walker not in self.group_nodes_set:
+                        #continue
+                    
+                    #if pass_node_set <= self.group_nodes_set:
+                    if stay_v in self.group_nodes_set:
+                        self.walkers_num_per_node[stay_v] += 1
+                        stay_v_list.append(stay_v)
+                    
+                # 散らばった RWer の滞在しているノードリストを更新
+                initial_node_spread_node_dic[node] = stay_v_list
+                
+                    
+            
+            # グループに残った rwer 数をカウント
+            remaining_rwers_num = 0
+            
+            for v_in_group in self.walkers_num_per_node:
+                remaining_rwers_num += self.walkers_num_per_node[v_in_group]
+
+            remaining_rwers_num = remaining_rwers_num / initial_rwers_num
+            
+            
+            rest_rwers_list.append(remaining_rwers_num)  
+            walk_num += 1
+            
+        # 流出速度    
+        leak_speed_list = []
+        
+        
+        for i in range(len(rest_rwers_list)):
+            leak_speed_list.append(rest_rwers_list[i] - rest_rwers_list[i + 1])
+            if i + 2 >= len(rest_rwers_list):
+                break
+                
+            
+        return rest_rwers_list, leak_speed_list
     
 
 # シードノードを取得するためのクラス
