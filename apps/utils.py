@@ -33,3 +33,67 @@ class DataLoader:
 
     def get_communities(self):
         return self.c_id, self.id_c
+
+# 周辺類似性指数 PSI エッジの重みづけ
+class PSI:
+    def __init__(self, G):
+        self.G = G
+        
+        # エッジの重み {id : {id : 重み}}
+        self.edge_weight = {id : {} for id in list(self.G.nodes)}
+    
+    # PSI 計算
+    def calc_psi(self):
+        
+        # 全ノードに対して行う
+        for id in list(self.G.nodes):
+            
+            # id の隣接に対して
+            neighbors = list(self.G.neighbors(id))
+            
+            for neigh_id in neighbors:
+                self.edge_weight[id][neigh_id] = 1
+            
+            for neigh_id in neighbors:
+                for neigh_neigh_id in neighbors:
+                    
+                    if (neigh_id == neigh_neigh_id): 
+                        continue
+                    
+                    else:
+                        neigh_id_neighbors = list(self.G.neighbors(neigh_id))
+                        neigh_id_neighbors.append(neigh_id)
+                        
+                        neigh_neigh_id_neighbors = list(self.G.neighbors(neigh_neigh_id))
+                        neigh_neigh_id_neighbors.append(neigh_neigh_id)
+                        
+                        d = len(set(neigh_id_neighbors) & set(neigh_neigh_id_neighbors))
+                        n = max(len(neigh_id_neighbors), len(neigh_neigh_id_neighbors))
+                        
+                        self.edge_weight[id][neigh_id] += round(d/n, 1)
+        
+        return self.edge_weight
+    
+    # PSI の重みつきグラフを txt ファイルで出力
+    def out_put_psi_graph(self, dataset_name):
+        
+        self.calc_psi()
+        
+        output_file = dataset_name + "_psi.txt"
+        out_path = "../datasets/" + output_file
+        
+        f = open(out_path, 'w')
+        
+        for v in self.edge_weight:
+            for neigh_v in self.edge_weight[v]:
+                f.write(str(v) + " ")
+                f.write(str(neigh_v) + " ")
+                f.write(str(self.edge_weight[v][neigh_v]))
+                f.write('\n')
+                
+        f.close()
+        
+        
+        
+        
+            
