@@ -1,7 +1,7 @@
 import networkx as nx
 import random
 
-# データセット読み込みのクラス
+# データセット読み込みのクラス (重みなし)
 class DataLoader:
     def __init__(self, dataset_name):
         self.dataset_name = dataset_name
@@ -33,6 +33,29 @@ class DataLoader:
 
     def get_communities(self):
         return self.c_id, self.id_c
+
+# ----------------------------------------------------------------------------
+
+# データセット読み込みのクラス (重みあり)
+class DataLoader_W:
+    def __init__(self, dataset_name):
+        self.dataset_name = dataset_name
+        self.G = nx.Graph()
+        
+
+    def load_graph(self):
+        dataset_path = "../datasets/" + self.dataset_name + ".txt"
+        with open(dataset_path, 'r') as f:
+            lines = f.readlines()
+        for line in lines:
+            data = line.split()
+            self.G.add_edge(int(data[0]), int(data[1]), weight=float(data[2]))
+
+    def get_graph(self):
+        return self.G
+
+# ----------------------------------------------------------------------------
+
 
 # 周辺類似性指数 PSI エッジの重みづけ
 class PSI:
@@ -91,9 +114,21 @@ class PSI:
                 f.write(str(self.edge_weight[v][neigh_v]))
                 f.write('\n')
                 
-        f.close()
-        
-        
-        
+        f.close()        
         
             
+# ----------------------------------------------------------------------------
+
+class WeightRandomWalk:
+    
+    def weighted_random_walk(self, wG, start_node, walk_length):
+        current_node = start_node
+        walk = [current_node]
+        for _ in range(walk_length - 1):
+            neighbors = list(wG.neighbors(current_node))
+            weights = [wG[current_node][neighbor]['weight'] for neighbor in neighbors]
+            # 重みに基づいて次のノードを選択
+            next_node = random.choices(neighbors, weights=weights)[0]
+            walk.append(next_node)
+            current_node = next_node
+        return walk
