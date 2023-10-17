@@ -6,13 +6,13 @@ from matplotlib import rcParams as rcp
 import random
 from utils import*
 
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps/test2.py
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps/test.py
 
 # ---------------- データ読み込み ------------------
 dataset_name = input("Enter the dataset name: ")
 data_loader = DataLoader(dataset_name)
 data_loader.load_graph()
-data_loader.load_community()
+#data_loader.load_community()
 G = data_loader.get_graph()
 
 # {所属するコミュニティ：頂点idのリスト}, {頂点id:所属するコミュニティ}
