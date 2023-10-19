@@ -42,7 +42,7 @@ Gw2 = data_loader.get_graph()
 
 rwer_num = 100
 walk_length = 19 
-com_id = 15
+com_id = 0
 
 cwalk_obj = ComWalk(G, c_id, id_c)
 
