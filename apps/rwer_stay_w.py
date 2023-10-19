@@ -41,8 +41,8 @@ Gw2 = data_loader.get_graph()
 # 滞在RWer を計算
 
 rwer_num = 100
-walk_length = 19 # 5 hop
-com_id = 0
+walk_length = 19 
+com_id = 15
 
 cwalk_obj = ComWalk(G, c_id, id_c)
 
