@@ -220,6 +220,7 @@ class ComWalk:
             for v in node_visits:
                 
                 for _ in range(walk_length):
+                    prev_v = v
                     r_value = random.random()
                     
                     if(r_value <= d):
@@ -231,6 +232,7 @@ class ComWalk:
                         v = node_list[random_index]
                         
                     if (self.id_c[v] != com_id):
+                        v = prev_v
                         continue
                     
                     node_visits[v] += 1    
@@ -312,6 +314,7 @@ class ComWalkWeighted:
                 
                 for _ in range(walk_length):
                     r_value = random.random()
+                    prev_v = v
                     
                     if(r_value <= d):
                         neighbors = list(self.wG.neighbors(v))
@@ -323,6 +326,7 @@ class ComWalkWeighted:
                         v = node_list[random_index]
                         
                     if (self.id_c[v] != com_id):
+                        v = prev_v
                         continue
                     
                     node_visits[v] += 1    
