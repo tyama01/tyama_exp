@@ -24,14 +24,18 @@ print("-----------------------------------")
 # ---------------------------------------------------
 
 # RandomWalkクラスのインスタンスを作成
-#random_walk_obj = RandomWalk()
-#prwk = random_walk_obj.pagerank(G, rwer_num=100, walk_length=100, d=0.85)
+random_walk_obj = RandomWalk()
+prwk = random_walk_obj.pagerank(G, rwer_num=100, walk_length=100, d=0.85)
 
-#prwk_sort = sorted(prwk.items(), key=lambda x:x[1], reverse=True)
+prwk_sort = sorted(prwk.items(), key=lambda x:x[1], reverse=True)
 
+labels_data = []
+for item in prwk_sort:
+    labels_data.append(item[0])
+    
 
-
-# ------------- PageRank 演算 ------------------------
+# ------------- PageRank 演算 networkx ------------------------
+"""
 pr = nx.pagerank(G, alpha=0.85)
 pr_sort = sorted(pr.items(), key=lambda x:x[1], reverse=True)
 
@@ -41,6 +45,7 @@ for item in pr_sort:
     
 #for i in range(5):
     #print(pr[labels_data[i]])
+"""
 
 # ---------------------------------------------------
 
@@ -170,7 +175,7 @@ ax.set_facecolor("white")
 
 # x軸とy軸のラベルを設定する。
 ax.set_xlabel("community labels", fontsize=14)
-ax.set_ylabel("community size (num of nodes)", fontsize=14)
+ax.set_ylabel("Num of PR top nodes", fontsize=14)
 
 # x軸の目盛のラベルの位置を変数xで保持する。
 
@@ -204,7 +209,7 @@ z2 = pr_top_node_belong_c_list[10:]
 #z1 = z[:11]
 #z2 = z[10:]
 
-bar1 = ax.bar(x, pr_top_node_belong_c_list, label="common community")
+bar1 = ax.bar(x1, z1, label="common community")
 bar2 = ax.bar(x2, z2, label="small community")
         
 plt.legend()
@@ -213,4 +218,65 @@ plt.show()
 # ---------------------------------------------------
 
 
+# フォントを設定する。
+rcp['font.family'] = 'sans-serif'
+rcp['font.sans-serif'] = ['Hiragino Maru Gothic Pro', 'Yu Gothic', 'Meirio', 'Takao', 'IPAexGothic', 'IPAPGothic', 'VL PGothic', 'Noto Sans CJK JP']
+
+# カラーマップを用意する。
+cmap = plt.get_cmap("tab10")
+
+# Figureを作成する。
+fig = plt.figure()
+# Axesを作成する。
+ax = fig.add_subplot(111)
+
+# Figureの解像度と色を設定する。
+fig.set_dpi(150)
+fig.set_facecolor("white")
+
+# Axesのタイトルと色を設定する。
+#ax.set_title("物品の所有率")
+ax.set_facecolor("white")
+
+# x軸とy軸のラベルを設定する。
+ax.set_xlabel("community labels", fontsize=14)
+ax.set_ylabel("community size (num of nodes)", fontsize=14)
+
+# x軸の目盛のラベルの位置を変数xで保持する。
+
+#ax.set_ylim(0, 25)
+
+    
+y = []
+for i in range(len(c_id)):
+    y.append(len(c_id[i]))
+
+z = np.sort(y)[::-1]
+labels_data = np.argsort(y)[::-1]
+x = np.arange(len(labels_data))
+
+pr_top_node_belong_c_list = []
+for i in labels_data:
+    pr_top_node_belong_c_list.append(c_id_pr_top_dic[i])
+
+
+# x軸の目盛の位置を設定する。
+ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
+# x軸の目盛のラベルを設定する。
+ax.xaxis.set_major_formatter(mpl.ticker.FixedFormatter(labels_data))
+
+x1 = x[:11]
+x2 = x[10:]
+
+#z1 = pr_top_node_belong_c_list[:11]
+#z2 = pr_top_node_belong_c_list[10:]
+        
+z1 = z[:11]
+z2 = z[10:]
+
+bar1 = ax.bar(x1, z1, label="common community")
+bar2 = ax.bar(x2, z2, label="small community")
+        
+plt.legend()
+plt.show()
 
