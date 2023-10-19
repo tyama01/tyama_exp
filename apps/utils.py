@@ -150,6 +150,40 @@ class PSI:
                 f.write('\n')
                 
         f.close()
+        
+# ----------------------------------------------------------------------------
+class RandomWalk:
+    
+    # pagerank 計算
+    def pagerank(self, G, rwer_num, walk_length, d):
+        
+        node_list = list(G.nodes)
+        node_visits = {node: 0 for node in G.nodes()}
+        
+        for _ in range(rwer_num):
+            for v in node_visits:
+                
+                for _ in range(walk_length):
+                    r_value = random.random()
+                    
+                    
+                    if(r_value <= d):
+                        neighbors = list(G.neighbors(v))
+                        random_index = random.randrange(len(neighbors))
+                        v = neighbors[random_index]
+                        
+                    else:
+                        random_index = random.randrange(len(node_list))
+                        v = node_list[random_index]
+                    
+                    node_visits[v] += 1    
+                    
+        # PageRankスコアを計算
+        total_visits = sum(node_visits.values())
+        pagerank = {node: (visits / total_visits) * d + (1 - d)/len(G) for node, visits in node_visits.items()}
+        
+        return pagerank
+
                     
 # ----------------------------------------------------------------------------
 
@@ -166,3 +200,162 @@ class WeightRandomWalk:
             walk.append(next_node)
             current_node = next_node
         return walk
+    
+# ----------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------
+class ComWalk:
+    def __init__(self, G, c_id, id_c):
+        self.G = G
+        self.c_id = c_id
+        self.id_c = id_c
+        
+    # コミュニティ単位の pagerank    
+    def com_pagerank(self, rwer_num, walk_length, d, com_id):
+        
+        node_list = self.c_id[com_id]
+        node_visits = {node: 0 for node in node_list}
+        
+        for _ in range(rwer_num):
+            for v in node_visits:
+                
+                for _ in range(walk_length):
+                    r_value = random.random()
+                    
+                    if(r_value <= d):
+                        neighbors = list(self.G.neighbors(v))
+                        random_index = random.randrange(len(neighbors))
+                        v = neighbors[random_index]
+                    else:
+                        random_index = random.randrange(len(node_list))
+                        v = node_list[random_index]
+                        
+                    if (self.id_c[v] != com_id):
+                        continue
+                    
+                    node_visits[v] += 1    
+                    
+        # PageRankスコアを計算
+        total_visits = sum(node_visits.values())
+        pagerank = {node: (visits / total_visits) * d + (1 - d)/len(self.c_id[com_id]) for node, visits in node_visits.items()}
+        
+        return pagerank
+    
+    def walker_stay_com_ratio(self, rwer_num, walk_length, com_id):
+        
+        node_list = self.c_id[com_id]
+        stay_rwer_num = {node: rwer_num for node in node_list}
+        initial_rwer_num = rwer_num * len(node_list)
+        
+        for v in stay_rwer_num:
+            for _ in range(rwer_num):
+                
+                for _ in range(walk_length):
+                
+                    stay_rwer_num[v] -= 1
+                    
+                    neighbors = list(self.G.neighbors(v))
+                    random_index = random.randrange(len(neighbors))
+                    v = neighbors[random_index]
+                    
+                    if(self.id_c[v] != com_id):
+                        continue
+                    
+                    stay_rwer_num[v] += 1
+                
+        
+        stay_walker_num = 0
+        for id in stay_rwer_num:
+            stay_walker_num += stay_rwer_num[id]
+            
+        stay_ratio = stay_walker_num / initial_rwer_num
+        
+        return stay_ratio
+                
+                
+                
+        
+# ----------------------------------------------------------------------------
+
+class ComWalkWeighted:
+    def __init__(self, wG, c_id, id_c):
+        self.wG = wG
+        self.c_id = c_id
+        self.id_c = id_c
+        
+    # コミュニティ単位の pagerank    
+    def com_pagerank_weighted(self, rwer_num, walk_length, d, com_id):
+        
+        node_list = self.c_id[com_id]
+        node_visits = {node: 0 for node in node_list}
+        
+        for _ in range(rwer_num):
+            for v in node_visits:
+                
+                for _ in range(walk_length):
+                    r_value = random.random()
+                    
+                    if(r_value <= d):
+                        neighbors = list(self.wG.neighbors(v))
+                        weights = [self.wG[v][neighbor]['weight'] for neighbor in neighbors]
+                        v = random.choices(neighbors, weights=weights)[0]
+                        
+                    else:
+                        random_index = random.randrange(len(node_list))
+                        v = node_list[random_index]
+                        
+                    if (self.id_c[v] != com_id):
+                        continue
+                    
+                    node_visits[v] += 1    
+                    
+        # PageRankスコアを計算
+        total_visits = sum(node_visits.values())
+        pagerank = {node: (visits / total_visits) * d + (1 - d)/len(self.c_id[com_id]) for node, visits in node_visits.items()}
+        
+        return pagerank
+    
+    
+    def walker_stay_com_ratio(self, rwer_num, walk_length, com_id):
+        
+        node_list = self.c_id[com_id]
+        stay_rwer_num = {node: rwer_num for node in node_list}
+        initial_rwer_num = rwer_num * len(node_list)
+        
+        for v in stay_rwer_num:
+            for _ in range(rwer_num):
+                
+                for _ in range(walk_length):
+                
+                    stay_rwer_num[v] -= 1
+                    
+                    neighbors = list(self.wG.neighbors(v))
+                    weights = [self.wG[v][neighbor]['weight'] for neighbor in neighbors]
+                    v = random.choices(neighbors, weights=weights)[0]
+                    
+                    if(self.id_c[v] != com_id):
+                        continue
+                    
+                    stay_rwer_num[v] += 1
+                
+        
+        stay_walker_num = 0
+        for id in stay_rwer_num:
+            stay_walker_num += stay_rwer_num[id]
+            
+        stay_ratio = stay_walker_num / initial_rwer_num
+        
+        return stay_ratio
+                
+# ----------------------------------------------------------------------------
+
+
+                    
+                    
+    
+
+
+                    
+                    
+    
+
