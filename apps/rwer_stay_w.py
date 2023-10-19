@@ -41,30 +41,30 @@ Gw2 = data_loader.get_graph()
 # 滞在RWer を計算
 
 rwer_num = 100
-walk_length = 5 # 5 hop
+walk_length = 19 # 5 hop
 com_id = 0
 
 cwalk_obj = ComWalk(G, c_id, id_c)
-hop_stay_ratio_list = cwalk_obj.walker_stay_com_ratio(rwer_num, walk_length, com_id)
 
+hop_stay_ratio_list = cwalk_obj.stay_ratio(rwer_num, walk_length, com_id)
 hop_stay_ratio_list.insert(0, 1)
-print(len(hop_stay_ratio_list))
+
 #print("-----------------------------------")
 
 
-cwalk_obj = ComWalkWeighted(Gw1, c_id, id_c)
-hop_stay_ratio_list_w1 = cwalk_obj.walker_stay_com_ratio_w(rwer_num, walk_length, com_id)
-
+cwalk_obj_w = ComWalkWeighted(Gw1, c_id, id_c)
+hop_stay_ratio_list_w1 = cwalk_obj_w.stay_ratio_w(rwer_num, walk_length, com_id)
 hop_stay_ratio_list_w1.insert(0, 1)
 #print(hop_stay_ratio_list_w1)
 #print("-----------------------------------")
 
-cwalk_obj = ComWalkWeighted(Gw2, c_id, id_c)
-hop_stay_ratio_list_w2 = cwalk_obj.walker_stay_com_ratio_w(rwer_num, walk_length, com_id)
+cwalk_obj_w2 = ComWalkWeighted(Gw2, c_id, id_c)
 
+hop_stay_ratio_list_w2 = cwalk_obj_w2.stay_ratio_w(rwer_num, walk_length, com_id)
 hop_stay_ratio_list_w2.insert(0, 1)
 #print(hop_stay_ratio_list_w2)
 #print("-----------------------------------")
+
 # ---------------------------------------------------
 # プロット
 # Figureを作成する。

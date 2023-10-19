@@ -241,33 +241,47 @@ class ComWalk:
         
         return pagerank
     
-    def walker_stay_com_ratio(self, rwer_num, walk_length, com_id):
+    # 1 hop 先の ノードを返す
+    def one_hop_rw(self, v):
+        neighbors = list(self.G.neighbors(v))
+        random_index = random.randrange(len(neighbors))
+        v = neighbors[random_index]
+        
+        return v
+                
+    def stay_ratio(self, rwer_num, walklength, com_id):
         
         hop_stay_ratio_list = []
+        node_list = self.c_id[com_id]   
+        next_hop_dic = {node: [] for node in node_list}
         
-        node_list = self.c_id[com_id]
+        for v in next_hop_dic:
+            for _ in range(rwer_num):
+                next_hop_dic[v].append(v)
+            
         stay_rwer_num = {node: rwer_num for node in node_list}
         initial_rwer_num = rwer_num * len(node_list)
         
-        for _ in range(walk_length):
-        
-            for v in stay_rwer_num:
-                for _ in range(rwer_num):
-                
+        for _ in range(walklength):
+            for node in next_hop_dic:
+                new_node_list = []
+                for v in next_hop_dic[node]:
+                    
                     prev_v = v
                     stay_rwer_num[v] -= 1
                     
-                    neighbors = list(self.G.neighbors(v))
-                    random_index = random.randrange(len(neighbors))
-                    v = neighbors[random_index]
+                    v = self.one_hop_rw(v)
                     
                     if(self.id_c[v] != com_id):
                         v = prev_v
                         continue
                     
                     stay_rwer_num[v] += 1
+                    
+                    new_node_list.append(v)
+                    
+                next_hop_dic[node] = new_node_list
                 
-        
             stay_walker_num = 0
             for id in stay_rwer_num:
                 stay_walker_num += stay_rwer_num[id]
@@ -276,9 +290,7 @@ class ComWalk:
             
             hop_stay_ratio_list.append(stay_ratio)
         
-        return hop_stay_ratio_list
-                
-                
+        return hop_stay_ratio_list                
                 
         
 # ----------------------------------------------------------------------------
@@ -322,32 +334,48 @@ class ComWalkWeighted:
         return pagerank
     
     
-    def walker_stay_com_ratio_w(self, rwer_num, walk_length, com_id):
+    
+    # 1 hop 先の ノードを返す
+    def one_hop_rw(self, v):
+        neighbors = list(self.wG.neighbors(v))
+        weights = [self.wG[v][neighbor]['weight'] for neighbor in neighbors]
+        v = random.choices(neighbors, weights=weights)[0]
+        
+        return v
+    
+    def stay_ratio_w(self, rwer_num, walklength, com_id):
         
         hop_stay_ratio_list = []
+        node_list = self.c_id[com_id]   
+        next_hop_dic = {node: [] for node in node_list}
         
-        node_list = self.c_id[com_id]
+        for v in next_hop_dic:
+            for _ in range(rwer_num):
+                next_hop_dic[v].append(v)
+            
         stay_rwer_num = {node: rwer_num for node in node_list}
         initial_rwer_num = rwer_num * len(node_list)
         
-        for _ in range(walk_length):
-            for v in stay_rwer_num:
-                for _ in range(rwer_num):
-                
+        for _ in range(walklength):
+            for node in next_hop_dic:
+                new_node_list = []
+                for v in next_hop_dic[node]:
+                    
                     prev_v = v
                     stay_rwer_num[v] -= 1
                     
-                    neighbors = list(self.wG.neighbors(v))
-                    weights = [self.wG[v][neighbor]['weight'] for neighbor in neighbors]
-                    v = random.choices(neighbors, weights=weights)[0]
+                    v = self.one_hop_rw(v)
                     
                     if(self.id_c[v] != com_id):
                         v = prev_v
                         continue
                     
                     stay_rwer_num[v] += 1
+                    
+                    new_node_list.append(v)
+                    
+                next_hop_dic[node] = new_node_list
                 
-        
             stay_walker_num = 0
             for id in stay_rwer_num:
                 stay_walker_num += stay_rwer_num[id]
@@ -356,8 +384,8 @@ class ComWalkWeighted:
             
             hop_stay_ratio_list.append(stay_ratio)
         
-        return hop_stay_ratio_list
-                
+        return hop_stay_ratio_list    
+            
 # ----------------------------------------------------------------------------
 
 
