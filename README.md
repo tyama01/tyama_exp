@@ -1,1 +1,0 @@
-# tyama_exp
