@@ -42,11 +42,7 @@ Gw2 = data_loader.get_graph()
 
 rwer_num = 100
 walk_length = 19 
-<<<<<<< HEAD
-com_id = 13
-=======
 com_id = 0
->>>>>>> origin/main
 
 cwalk_obj = ComWalk(G, c_id, id_c)
 
@@ -94,11 +90,9 @@ x = [i for i in range(len(hop_stay_ratio_list))]
 ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
 #ax.axes.xaxis.set_ticks([]) # x軸ラベル非表示
 
-<<<<<<< HEAD
+
 ax.set_ylim(0, 1)
 
-=======
->>>>>>> origin/main
 ax.scatter(x, hop_stay_ratio_list, label = "original") 
 ax.plot(x, hop_stay_ratio_list)
 
@@ -109,13 +103,9 @@ ax.scatter(x, hop_stay_ratio_list_w2, label = "PSI_reverse")
 ax.plot(x, hop_stay_ratio_list_w2)
 
 # 凡例を表示する。
-<<<<<<< HEAD
+
 #ax.legend(loc="upper right")
 ax.legend(loc="lower right")
-
-=======
-ax.legend(loc="upper right")
->>>>>>> origin/main
 
 plt.show()
 
