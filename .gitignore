@@ -4,4 +4,7 @@
 .*.swp
 .*.swo
 .*.P
+<<<<<<< HEAD
 *.pkl
+=======
+>>>>>>> origin/main

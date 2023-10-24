@@ -41,7 +41,11 @@ Gw2 = data_loader.get_graph()
 rwer_num = 100
 walk_length = 100
 d = 0.85
+<<<<<<< HEAD
 com_id = 13
+=======
+com_id = 0
+>>>>>>> origin/main
 
 # コミュニティ単位で PageRank を計算
 com_walk_obj = ComWalk(G, c_id, id_c)
