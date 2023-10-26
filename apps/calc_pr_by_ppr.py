@@ -18,14 +18,14 @@ for item in pr_sort:
     x_data.append(item[0])
 
 for i in range(5):
-    print(x_data[i])
+    print(pr[x_data[i]])
 print("----------------------------")
 
 nodes_list = list(G.nodes())
 n = len(nodes_list)
 #print(nodes_list)
 
-with open('alpha_15.pkl', 'rb') as f:
+with open('../alpha_dir/facebook/alpha_15.pkl', 'rb') as f:
     ppr_dic = pickle.load(f)
     
 ppr_sum_dic = {node : 0 for node in ppr_dic}
@@ -42,5 +42,5 @@ for item in ppr_sum_dic_sort:
     y_data.append(item[0])
 
 for i in range(5):
-    print(y_data[i])
+    print(ppr_sum_dic[y_data[i]])
 print("----------------------------")
