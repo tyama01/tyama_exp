@@ -77,7 +77,7 @@ for alpha in alpha_list:
 """    
 
 #focus_id_list = [id for id in labels_data[0:5]]
-focus_id_list = [id for id in labels_data[1800:1805]]
+focus_id_list = [id for id in labels_data[4029:4034]]
 
 
 # {focus_id : alphaごとのPR値}
