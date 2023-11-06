@@ -67,11 +67,11 @@ for com_id in small_com_list:
         
 #--------------------- txt ファイル出力 ---------------------------
 
-with open('common_com_top3_nodes', 'w') as f:
+with open('common_com_top3_nodes.txt', 'w') as f:
     for id in common_com_top3_nodes_list:
         f.write("%s\n" %id)
         
-with open('small_com_top3_nodes', 'w') as f:
+with open('small_com_top3_nodes.txt', 'w') as f:
     for id in small_com_top3_nodes_list:
         f.write("%s\n" %id)
         
