@@ -150,7 +150,8 @@ bar1 = ax.bar(x1, z1, label="common community")
 bar2 = ax.bar(x2, z2, label="small community")
         
 plt.legend()
-plt.show()
+#plt.show()
+plt.savefig("top_PR_100.pdf")
 
 # ---------------------------------------------------
 
@@ -221,5 +222,6 @@ bar2 = ax.bar(x2, z2, label="small community")
         
 plt.legend()
 plt.show()
+
 
 # ---------------------------------------------------

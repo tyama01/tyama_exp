@@ -115,7 +115,7 @@ rcp['font.sans-serif'] = ['Hiragino Maru Gothic Pro', 'Yu Gothic', 'Meirio', 'Ta
 cmap = plt.get_cmap("tab10")
 
 # Figureを作成する。
-fig = plt.figure()
+fig = plt.figure(figsize=(14,8))
 # Axesを作成する。
 ax = fig.add_subplot(111)
 
@@ -159,8 +159,8 @@ for id in labels_data:
         small_bnode_list = np.append(small_bnode_list, np.nan)
 
 ax.scatter(x, general_bnode_list, label="normal nodes", s=10)
-ax.scatter(x, common_bnode_list, label="common community top3 nodes", s=10)
-ax.scatter(x, small_bnode_list, label="small community top3 nodes", s=10)
+ax.scatter(x, common_bnode_list, label="common community top3 nodes", s=15, color=cmap(6))
+ax.scatter(x, small_bnode_list, label="small community top3 nodes", s=15, color=cmap(1))
 
 
 ax.minorticks_on()
@@ -169,6 +169,8 @@ ax.grid(which="major", color="gray", linestyle="solid")
 #ax.grid(which="minor", color="lightgray", linestyle="dotted")
 
 
-plt.legend()
-plt.show()
-    
+plt.legend(loc="lower right")
+plt.rc("legend", fontsize=5)
+#plt.show()
+
+plt.savefig("plot_best_a_15.pdf")

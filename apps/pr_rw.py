@@ -23,6 +23,7 @@ print(f"community_num : {len(c_id)}") # コミュニティ数出力
 print("-----------------------------------")
 # ---------------------------------------------------
 
+"""
 # RandomWalkクラスのインスタンスを作成
 random_walk_obj = RandomWalk()
 prwk = random_walk_obj.pagerank(G, rwer_num=100, walk_length=100, d=0.85)
@@ -32,10 +33,10 @@ prwk_sort = sorted(prwk.items(), key=lambda x:x[1], reverse=True)
 labels_data = []
 for item in prwk_sort:
     labels_data.append(item[0])
-    
+"""
 
 # ------------- PageRank 演算 networkx ------------------------
-"""
+
 pr = nx.pagerank(G, alpha=0.85)
 pr_sort = sorted(pr.items(), key=lambda x:x[1], reverse=True)
 
@@ -45,7 +46,7 @@ for item in pr_sort:
     
 #for i in range(5):
     #print(pr[labels_data[i]])
-"""
+
 
 # ---------------------------------------------------
 
@@ -150,6 +151,7 @@ plt.legend()
 plt.show()
 """
 
+"""
 # ---------------------------------------------------
 # pagerank 上位にあるノードが所属しているコミュニティ
 
@@ -216,7 +218,7 @@ plt.legend()
 plt.show()
 
 # ---------------------------------------------------
-
+"""
 
 # フォントを設定する。
 rcp['font.family'] = 'sans-serif'
@@ -278,5 +280,5 @@ bar1 = ax.bar(x1, z1, label="common community")
 bar2 = ax.bar(x2, z2, label="small community")
         
 plt.legend()
-plt.show()
-
+#plt.show()
+plt.savefig("com_size.pdf")

@@ -28,7 +28,7 @@ nodes_list = list(G.nodes())
 n = len(nodes_list)
 #print(nodes_list)
 
-with open('../alpha_dir/facebook/alpha_5.pkl', 'rb') as f:
+with open('../alpha_dir/facebook/alpha_15.pkl', 'rb') as f:
     ppr_dic = pickle.load(f)
 
     
@@ -274,11 +274,13 @@ for id in labels_data:
 #ax.scatter(x, bnode_list, label="(alpha=5%)/(alpha=50%)", s=10)
 
 ax.scatter(x, general_bnode_list, label="normal nodes", s=10)
-ax.scatter(x, common_bnode_list, label="common community top3 nodes", s=10)
-ax.scatter(x, small_bnode_list, label="small community top3 nodes", s=10)
+ax.scatter(x, common_bnode_list, label="common community top3 nodes", s=15, color=cmap(6))
+ax.scatter(x, small_bnode_list, label="small community top3 nodes", s=15, color=cmap(1))
 
 p = plt.plot([0, len(x)],[1.0, 1.0], "red", linestyle='dashed') # normal way
 
 
 plt.legend()
-plt.show()
+#plt.show()
+
+plt.savefig("find_bnode.pdf")
