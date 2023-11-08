@@ -90,9 +90,88 @@ for focus_id in focus_id_list:
     focus_id_pr_dic[focus_id] = pr_value_list
     
         
+# 各コミュニティ内で重要なノード top3 を取得
+common_com_top3_nodes_list = []
+small_com_top3_nodes_list = []
+
+with open('../com_top_nodes/facebook/common_com_top3_nodes.txt', 'r', encoding='utf-8') as fin:
+    for line in fin.readlines():
+        try:
+            num = int(line)
+        except ValueError as e:
+            print(e, file=sys.stderr)
+            continue
+        common_com_top3_nodes_list.append(num)
         
+
+with open('../com_top_nodes/facebook/small_com_top3_nodes.txt', 'r', encoding='utf-8') as fin:
+    for line in fin.readlines():
+        try:
+            num = int(line)
+        except ValueError as e:
+            print(e, file=sys.stderr)
+            continue
+        small_com_top3_nodes_list.append(num)
+        
+
+
+com_top3_nodes_list = common_com_top3_nodes_list + small_com_top3_nodes_list
+
+# {com_id : [top 3 nodes]}
+com_top3_nodes_dic = {com_id : [] for com_id in c_id}
+
+for id in com_top3_nodes_list:
+    com_top3_nodes_dic[id_c[id]].append(id)
         
     
+# ------------------------- Plot ------------------------
+"""
+# フォントを設定する。
+rcp['font.family'] = 'sans-serif'
+rcp['font.sans-serif'] = ['Hiragino Maru Gothic Pro', 'Yu Gothic', 'Meirio', 'Takao', 'IPAexGothic', 'IPAPGothic', 'VL PGothic', 'Noto Sans CJK JP']
+
+# カラーマップを用意する。
+cmap = plt.get_cmap("tab10")
+
+# Figureを作成する。
+fig = plt.figure()
+# Axesを作成する。
+ax = fig.add_subplot(111)
+
+# Figureの解像度と色を設定する。
+fig.set_dpi(150)
+fig.set_facecolor("white")
+
+# Axesのタイトルと色を設定する。
+#ax.set_title("物品の所有率")
+ax.set_facecolor("white")
+
+# x軸とy軸のラベルを設定する。
+ax.set_xlabel("alpha [%]", fontsize=14)
+ax.set_ylabel("alpha_PR_value", fontsize=14)
+
+x = np.arange(5, 100, 5)
+
+#ax.scatter(x, pr_value_list, s=10)
+#ax.plot(x, pr_value_list)
+
+for focus_id in focus_id_list:
+    pr_value = focus_id_pr_dic[focus_id]
+    top_num = labels_data.index(focus_id) + 1
+    ranking = "top " + str(top_num) + "th"
+    ax.scatter(x, pr_value, label=ranking, s=10)
+    ax.plot(x, pr_value)
+
+ax.minorticks_on()
+ax.set_xticks([x for x in range(5, 100, 5)])
+ax.grid(which="major", color="gray", linestyle="solid")
+ax.grid(which="minor", color="lightgray", linestyle="dotted")
+
+
+plt.legend()
+plt.show()
+"""
+
 # ------------------------- Plot ------------------------
 
 # フォントを設定する。
@@ -124,7 +203,21 @@ x = np.arange(5, 100, 5)
 #ax.scatter(x, pr_value_list, s=10)
 #ax.plot(x, pr_value_list)
 
+com_id = 6
+
+focus_id_list = [id for id in com_top3_nodes_dic[com_id]]
+
+
+# {focus_id : alphaごとのPR値}
+focus_id_pr_dic = {}
+
 for focus_id in focus_id_list:
+    pr_value_list = []
+    for alpha in alpha_list:
+        pr_value_list.append(pr_alpha_dic[alpha][focus_id])
+    focus_id_pr_dic[focus_id] = pr_value_list
+
+for focus_id in com_top3_nodes_dic[com_id]:
     pr_value = focus_id_pr_dic[focus_id]
     top_num = labels_data.index(focus_id) + 1
     ranking = "top " + str(top_num) + "th"

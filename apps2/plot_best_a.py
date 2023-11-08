@@ -103,7 +103,11 @@ with open('../com_top_nodes/facebook/small_com_top3_nodes.txt', 'r', encoding='u
 
 com_top3_nodes_list = common_com_top3_nodes_list + small_com_top3_nodes_list
 
+# {com_id : [top 3 nodes]}
+com_top3_nodes_dic = {com_id : [] for com_id in c_id}
 
+for id in com_top3_nodes_list:
+    com_top3_nodes_dic[id_c[id]].append(id)
     
 # ------------------------- Plot ------------------------
 
@@ -170,7 +174,78 @@ ax.grid(which="major", color="gray", linestyle="solid")
 
 
 plt.legend(loc="lower right")
-plt.rc("legend", fontsize=5)
-#plt.show()
+plt.rc("legend", fontsize=15)
+plt.show()
 
-plt.savefig("plot_best_a_15.pdf")
+#plt.savefig("plot_best_a_15.pdf")
+
+# ------------------------- Plot ------------------------
+
+# フォントを設定する。
+rcp['font.family'] = 'sans-serif'
+rcp['font.sans-serif'] = ['Hiragino Maru Gothic Pro', 'Yu Gothic', 'Meirio', 'Takao', 'IPAexGothic', 'IPAPGothic', 'VL PGothic', 'Noto Sans CJK JP']
+
+# カラーマップを用意する。
+cmap = plt.get_cmap("tab10")
+
+# Figureを作成する。
+fig = plt.figure(figsize=(14,8))
+# Axesを作成する。
+ax = fig.add_subplot(111)
+
+# Figureの解像度と色を設定する。
+fig.set_dpi(150)
+fig.set_facecolor("white")
+
+# Axesのタイトルと色を設定する。
+#ax.set_title("物品の所有率")
+ax.set_facecolor("white")
+
+# x軸とy軸のラベルを設定する。
+ax.set_xlabel("Node ID (PR sort)", fontsize=14)
+ax.set_ylabel("alpha_value", fontsize=14)
+
+x = np.arange(len(labels_data))
+
+#ax.scatter(x, best_alpha_list, s=10)
+#ax.plot(x, best_alpha_list)
+
+general_bnode_list = np.array([])
+common_bnode_list = np.array([])
+small_bnode_list = np.array([])
+
+com_id = 6
+for id in labels_data:
+    if(id not in c_id[com_id]):
+        general_bnode_list = np.append(general_bnode_list, best_alpha_dic[id])
+    else:
+        general_bnode_list = np.append(general_bnode_list, np.nan)
+        
+for id in labels_data:
+    if(id in c_id[com_id]):
+        common_bnode_list = np.append(common_bnode_list, best_alpha_dic[id])
+    else:
+        common_bnode_list = np.append(common_bnode_list, np.nan)
+
+for id in labels_data:
+    if(id in com_top3_nodes_dic[com_id]):
+        small_bnode_list = np.append(small_bnode_list, best_alpha_dic[id])
+    else:
+        small_bnode_list = np.append(small_bnode_list, np.nan)
+
+ax.scatter(x, general_bnode_list, label="normal nodes", s=10)
+ax.scatter(x, common_bnode_list, label="community id " + str(com_id), s=25, color=cmap(6))
+ax.scatter(x, small_bnode_list, label="community id " + str(com_id) + " top3 nodes", s=25, color=cmap(1))
+
+
+ax.minorticks_on()
+ax.set_yticks([y for y in range(5, 100, 5)])
+ax.grid(which="major", color="gray", linestyle="solid")
+#ax.grid(which="minor", color="lightgray", linestyle="dotted")
+
+
+plt.legend(loc="lower right")
+plt.rc("legend", fontsize=15)
+plt.show()
+
+#plt.savefig("plot_best_a_15.pdf")
