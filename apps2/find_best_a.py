@@ -122,6 +122,8 @@ com_top3_nodes_dic = {com_id : [] for com_id in c_id}
 
 for id in com_top3_nodes_list:
     com_top3_nodes_dic[id_c[id]].append(id)
+    
+del com_top3_nodes_dic[7][:3]
         
     
 # ------------------------- Plot ------------------------

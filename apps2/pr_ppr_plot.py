@@ -23,7 +23,7 @@ nodes_list = list(G.nodes())
 n = len(nodes_list)
 #print(nodes_list)
 
-with open('../alpha_dir/facebook/alpha_05.pkl', 'rb') as f:
+with open('../alpha_dir/facebook/alpha_15.pkl', 'rb') as f:
     ppr_dic = pickle.load(f)
 
     
@@ -106,10 +106,10 @@ ax.set_ylabel("PR value", fontsize=14)
 
 x = np.arange(len(labels_data))
 
-ax.set_xscale('log')
+#ax.set_xscale('log')
 ax.set_yscale('log')
 
-ax.scatter(x, pr_value_a, label="alpha=5%", s=10)
+ax.scatter(x, pr_value_a, label="alpha=15%", s=10)
 ax.scatter(x, pr_value_b, label="alpha=95%", s=10)
 
 

@@ -36,7 +36,7 @@ nodes_list = list(G.nodes())
 n = len(nodes_list)
 #print(nodes_list)
 
-with open('../alpha_dir/facebook/alpha_05.pkl', 'rb') as f:
+with open('../alpha_dir/facebook/alpha_15.pkl', 'rb') as f:
     ppr_dic = pickle.load(f)
     
 ppr_sum_dic = {node : 0 for node in ppr_dic}

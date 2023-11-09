@@ -108,7 +108,8 @@ com_top3_nodes_dic = {com_id : [] for com_id in c_id}
 
 for id in com_top3_nodes_list:
     com_top3_nodes_dic[id_c[id]].append(id)
-    
+
+"""    
 # ------------------------- Plot ------------------------
 
 # フォントを設定する。
@@ -178,7 +179,7 @@ plt.rc("legend", fontsize=15)
 plt.show()
 
 #plt.savefig("plot_best_a_15.pdf")
-
+"""
 # ------------------------- Plot ------------------------
 
 # フォントを設定する。
@@ -214,7 +215,7 @@ general_bnode_list = np.array([])
 common_bnode_list = np.array([])
 small_bnode_list = np.array([])
 
-com_id = 6
+com_id = 14
 for id in labels_data:
     if(id not in c_id[com_id]):
         general_bnode_list = np.append(general_bnode_list, best_alpha_dic[id])
@@ -234,8 +235,8 @@ for id in labels_data:
         small_bnode_list = np.append(small_bnode_list, np.nan)
 
 ax.scatter(x, general_bnode_list, label="normal nodes", s=10)
-ax.scatter(x, common_bnode_list, label="community id " + str(com_id), s=25, color=cmap(6))
-ax.scatter(x, small_bnode_list, label="community id " + str(com_id) + " top3 nodes", s=25, color=cmap(1))
+ax.scatter(x, common_bnode_list, label="community id " + str(com_id), s=35, color=cmap(6))
+ax.scatter(x, small_bnode_list, label="community id " + str(com_id) + " top3 nodes", s=35, color=cmap(1))
 
 
 ax.minorticks_on()
@@ -245,7 +246,7 @@ ax.grid(which="major", color="gray", linestyle="solid")
 
 
 plt.legend(loc="lower right")
-plt.rc("legend", fontsize=15)
+plt.rc("legend", fontsize=30)
 plt.show()
 
 #plt.savefig("plot_best_a_15.pdf")
