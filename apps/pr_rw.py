@@ -276,7 +276,7 @@ x2 = x[10:]
 z1 = z[:11]
 z2 = z[10:]
 
-bar1 = ax.bar(x1, z1, label="common community")
+bar1 = ax.bar(x1, z1, label="large community")
 bar2 = ax.bar(x2, z2, label="small community")
         
 plt.legend()

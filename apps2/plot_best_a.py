@@ -109,7 +109,7 @@ com_top3_nodes_dic = {com_id : [] for com_id in c_id}
 for id in com_top3_nodes_list:
     com_top3_nodes_dic[id_c[id]].append(id)
 
-"""    
+
 # ------------------------- Plot ------------------------
 
 # フォントを設定する。
@@ -133,8 +133,8 @@ fig.set_facecolor("white")
 ax.set_facecolor("white")
 
 # x軸とy軸のラベルを設定する。
-ax.set_xlabel("Node ID (PR sort)", fontsize=14)
-ax.set_ylabel("alpha_value", fontsize=14)
+ax.set_xlabel("Node ID (PR sort alpha=15%)", fontsize=14)
+ax.set_ylabel("Best alpha [%]", fontsize=14)
 
 x = np.arange(len(labels_data))
 
@@ -164,8 +164,8 @@ for id in labels_data:
         small_bnode_list = np.append(small_bnode_list, np.nan)
 
 ax.scatter(x, general_bnode_list, label="normal nodes", s=10)
-ax.scatter(x, common_bnode_list, label="common community top3 nodes", s=15, color=cmap(6))
-ax.scatter(x, small_bnode_list, label="small community top3 nodes", s=15, color=cmap(1))
+ax.scatter(x, common_bnode_list, label="large community top 3 nodes", s=20, color=cmap(6))
+ax.scatter(x, small_bnode_list, label="small community top 3 nodes", s=20, color=cmap(1))
 
 
 ax.minorticks_on()
@@ -174,11 +174,11 @@ ax.grid(which="major", color="gray", linestyle="solid")
 #ax.grid(which="minor", color="lightgray", linestyle="dotted")
 
 
-plt.legend(loc="lower right")
-plt.rc("legend", fontsize=15)
-plt.show()
+plt.legend(loc="lower right", fontsize=15)
+#plt.show()
 
-#plt.savefig("plot_best_a_15.pdf")
+plt.savefig("plot_best_a_15.pdf")
+
 """
 # ------------------------- Plot ------------------------
 
@@ -203,8 +203,8 @@ fig.set_facecolor("white")
 ax.set_facecolor("white")
 
 # x軸とy軸のラベルを設定する。
-ax.set_xlabel("Node ID (PR sort)", fontsize=14)
-ax.set_ylabel("alpha_value", fontsize=14)
+ax.set_xlabel("Node ID (PR sort alpha=15%)", fontsize=14)
+ax.set_ylabel("Best alpha [%]", fontsize=14)
 
 x = np.arange(len(labels_data))
 
@@ -250,3 +250,4 @@ plt.rc("legend", fontsize=30)
 plt.show()
 
 #plt.savefig("plot_best_a_15.pdf")
+"""

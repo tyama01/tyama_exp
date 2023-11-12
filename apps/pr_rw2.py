@@ -112,7 +112,7 @@ ax.set_facecolor("white")
 
 # x軸とy軸のラベルを設定する。
 ax.set_xlabel("community labels", fontsize=14)
-ax.set_ylabel("Num of PR top nodes", fontsize=14)
+ax.set_ylabel("Num of PR top 100 nodes", fontsize=14)
 
 # x軸の目盛のラベルの位置を変数xで保持する。
 
@@ -146,7 +146,7 @@ z2 = pr_top_node_belong_c_list[10:]
 #z1 = z[:11]
 #z2 = z[10:]
 
-bar1 = ax.bar(x1, z1, label="common community")
+bar1 = ax.bar(x1, z1, label="large community")
 bar2 = ax.bar(x2, z2, label="small community")
         
 plt.legend()
@@ -183,7 +183,7 @@ ax.set_facecolor("white")
 
 # x軸とy軸のラベルを設定する。
 ax.set_xlabel("community labels", fontsize=14)
-ax.set_ylabel("Num of PR top nodes", fontsize=14)
+ax.set_ylabel("Num of PR top 100 nodes", fontsize=14)
 
 # x軸の目盛のラベルの位置を変数xで保持する。
 
@@ -217,7 +217,7 @@ z2 = pr_top_node_belong_c_list[10:]
 #z1 = z[:11]
 #z2 = z[10:]
 
-bar1 = ax.bar(x1, z1, label="common community")
+bar1 = ax.bar(x1, z1, label="large community")
 bar2 = ax.bar(x2, z2, label="small community")
         
 plt.legend()

@@ -198,14 +198,14 @@ ax.set_facecolor("white")
 
 # x軸とy軸のラベルを設定する。
 ax.set_xlabel("alpha [%]", fontsize=14)
-ax.set_ylabel("alpha_PR_value", fontsize=14)
+ax.set_ylabel("PR value", fontsize=14)
 
 x = np.arange(5, 100, 5)
 
 #ax.scatter(x, pr_value_list, s=10)
 #ax.plot(x, pr_value_list)
 
-com_id = 6
+com_id = 15
 
 focus_id_list = [id for id in com_top3_nodes_dic[com_id]]
 
@@ -233,4 +233,6 @@ ax.grid(which="minor", color="lightgray", linestyle="dotted")
 
 
 plt.legend()
-plt.show()
+plt.tight_layout()
+#plt.show()
+plt.savefig("15.pdf")

@@ -75,7 +75,7 @@ for id in labels_data:
     
 # rwbc 読み込み
 rwbc = {}
-with open("../bc_result/ic.txt") as f:
+with open("../bc_result/rwbc.txt") as f:
     for line in f:
         (id, val) = line.split()
         rwbc[int(id)] = float(val)
@@ -113,15 +113,25 @@ ax.set_facecolor("white")
 
 # x軸とy軸のラベルを設定する。
 ax.set_xlabel("Node ID (PR sort alpha=15%)", fontsize=14)
-ax.set_ylabel("BC_value", fontsize=14)
+ax.set_ylabel("RWBC_value", fontsize=14)
 
 x = np.arange(len(labels_data))
 
-alpha_5_list = np.array([])
+alpha_5_30_nodes_list = best_alpha_dic[5] + best_alpha_dic[10] + best_alpha_dic[15] + best_alpha_dic[20] + best_alpha_dic[25] + best_alpha_dic[30]
+
 other_list = np.array([])
+alpha_5_list = np.array([])
+alpha_10_list = np.array([])
+alpha_15_list = np.array([])
+alpha_20_list = np.array([])
+alpha_25_list = np.array([])
+alpha_30_list = np.array([])
+
+
+
 
 for id in labels_data:
-    if(id not in best_alpha_dic[5]):
+    if(id not in alpha_5_30_nodes_list):
         other_list = np.append(other_list, rwbc[id])
     else:
         other_list = np.append(other_list, np.nan)
@@ -132,10 +142,49 @@ for id in labels_data:
     else:
         alpha_5_list = np.append(alpha_5_list, np.nan)
         
+for id in labels_data:
+    if(id in best_alpha_dic[10]):
+        alpha_10_list = np.append(alpha_10_list, rwbc[id])
+    else:
+        alpha_10_list = np.append(alpha_10_list, np.nan)
+
+for id in labels_data:
+    if(id in best_alpha_dic[15]):
+        alpha_15_list = np.append(alpha_15_list, rwbc[id])
+    else:
+        alpha_15_list = np.append(alpha_15_list, np.nan)
+
+for id in labels_data:
+    if(id in best_alpha_dic[20]):
+        alpha_20_list = np.append(alpha_20_list, rwbc[id])
+    else:
+        alpha_20_list = np.append(alpha_20_list, np.nan)
+        
+for id in labels_data:
+    if(id in best_alpha_dic[25]):
+        alpha_25_list = np.append(alpha_25_list, rwbc[id])
+    else:
+        alpha_25_list = np.append(alpha_25_list, np.nan)
+        
+for id in labels_data:
+    if(id in best_alpha_dic[30]):
+        alpha_30_list = np.append(alpha_30_list, rwbc[id])
+    else:
+        alpha_30_list = np.append(alpha_30_list, np.nan)
+        
 #ax.set_ylim(0, 0.05)
 
-ax.scatter(x, other_list, label="max alpha not 5%", s=5)
-ax.scatter(x, alpha_5_list, label="max alpha 5%", s=5)
+ax.set_yscale('log')
+
+ax.scatter(x[:3000], other_list[:3000], label="max alpha 30%~95%", s=10)
+ax.scatter(x[:3000], alpha_5_list[:3000], label="max alpha 5%", s=10)
+ax.scatter(x[:3000], alpha_10_list[:3000], label="max alpha 10%", s=10)
+ax.scatter(x[:3000], alpha_15_list[:3000], label="max alpha 15%", s=10)
+ax.scatter(x[:3000], alpha_20_list[:3000], label="max alpha 20%", s=10)
+ax.scatter(x[:3000], alpha_25_list[:3000], label="max alpha 25%", s=10)
+ax.scatter(x[:3000], alpha_30_list[:3000], label="max alpha 30%", s=10)
+
+
 #ax.scatter(x, other_list, label="max alpha not 5%", s=10)
 
 plt.legend()
