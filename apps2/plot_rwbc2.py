@@ -9,10 +9,7 @@ from scipy.stats import linregress
 from matplotlib import rcParams as rcp
 
 
-
-
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps2/plot_rwbc_a5.py
-
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps2/plot_rwbc2.py
 
 dataset_name = input("Enter the dataset name: ")
 data_loader = DataLoader(dataset_name)
@@ -116,84 +113,63 @@ ax.set_facecolor("white")
 
 # x軸とy軸のラベルを設定する。
 ax.set_xlabel("Node ID (PR sort alpha=15%)", fontsize=14)
-ax.set_ylabel("RWBC value", fontsize=14)
+ax.set_ylabel("RWBC_value", fontsize=14)
 
 x = np.arange(len(labels_data))
 
-alpha_5_30_nodes_list = best_alpha_dic[5] + best_alpha_dic[10] + best_alpha_dic[15] + best_alpha_dic[20] + best_alpha_dic[25] + best_alpha_dic[30]
+
+line_nodes_list = []
+nline_nodes_list = []
+
+for id in best_alpha_dic[5]:
+    if all(pr_alpha_dic[alpha_list[idx]][id] >= pr_alpha_dic[alpha_list[idx+1]][id] for idx in range(len(alpha_list) - 1)):
+        line_nodes_list.append(id)
+    else:
+        nline_nodes_list.append(id)
+        
 
 other_list = np.array([])
-alpha_5_list = np.array([])
-alpha_10_list = np.array([])
-alpha_15_list = np.array([])
-alpha_20_list = np.array([])
-alpha_25_list = np.array([])
-alpha_30_list = np.array([])
+alpha_5_list_l = np.array([])
+alpha_5_list_n = np.array([])
+
 
 
 
 
 for id in labels_data:
-    if(id not in alpha_5_30_nodes_list):
+    if(id not in best_alpha_dic[5]):
         other_list = np.append(other_list, rwbc[id])
     else:
         other_list = np.append(other_list, np.nan)
         
 for id in labels_data:
-    if(id in best_alpha_dic[5]):
-        alpha_5_list = np.append(alpha_5_list, rwbc[id])
+    if(id in line_nodes_list):
+        alpha_5_list_l = np.append(alpha_5_list_l, rwbc[id])
     else:
-        alpha_5_list = np.append(alpha_5_list, np.nan)
+        alpha_5_list_l = np.append(alpha_5_list_l, np.nan)
         
-for id in labels_data:
-    if(id in best_alpha_dic[10]):
-        alpha_10_list = np.append(alpha_10_list, rwbc[id])
-    else:
-        alpha_10_list = np.append(alpha_10_list, np.nan)
+
 
 for id in labels_data:
-    if(id in best_alpha_dic[15]):
-        alpha_15_list = np.append(alpha_15_list, rwbc[id])
+    if(id in nline_nodes_list):
+        alpha_5_list_n = np.append(alpha_5_list_n, rwbc[id])
     else:
-        alpha_15_list = np.append(alpha_15_list, np.nan)
+        alpha_5_list_n = np.append(alpha_5_list_n, np.nan)
+        
 
-for id in labels_data:
-    if(id in best_alpha_dic[20]):
-        alpha_20_list = np.append(alpha_20_list, rwbc[id])
-    else:
-        alpha_20_list = np.append(alpha_20_list, np.nan)
-        
-for id in labels_data:
-    if(id in best_alpha_dic[25]):
-        alpha_25_list = np.append(alpha_25_list, rwbc[id])
-    else:
-        alpha_25_list = np.append(alpha_25_list, np.nan)
-        
-for id in labels_data:
-    if(id in best_alpha_dic[30]):
-        alpha_30_list = np.append(alpha_30_list, rwbc[id])
-    else:
-        alpha_30_list = np.append(alpha_30_list, np.nan)
         
 #ax.set_ylim(0, 0.05)
 
 ax.set_yscale('log')
 
-ax.scatter(x[:3000], other_list[:3000], label="max alpha 35%~95%", s=10)
-ax.scatter(x[:3000], alpha_5_list[:3000], label="max alpha 5%", s=10)
-ax.scatter(x[:3000], alpha_10_list[:3000], label="max alpha 10%", s=10)
-ax.scatter(x[:3000], alpha_15_list[:3000], label="max alpha 15%", s=10)
-ax.scatter(x[:3000], alpha_20_list[:3000], label="max alpha 20%", s=10)
-ax.scatter(x[:3000], alpha_25_list[:3000], label="max alpha 25%", s=10)
-ax.scatter(x[:3000], alpha_30_list[:3000], label="max alpha 30%", s=10)
+ax.scatter(x[:3000], other_list[:3000], label="max alpha 10%~95%", s=10)
+ax.scatter(x[:3000], alpha_5_list_l[:3000], label="max alpha 5% l", s=10)
+ax.scatter(x[:3000], alpha_5_list_n[:3000], label="max alpha 5% n", s=10)
 
 
 #ax.scatter(x, other_list, label="max alpha not 5%", s=10)
 
 plt.legend()
 plt.show()
-
-#plt.savefig("rwbc_1.pdf")
-
 
 # ---------------------------------------------------------------
