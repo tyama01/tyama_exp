@@ -209,9 +209,9 @@ for id in labels_data:
 
 ax.set_yscale('log')
 
-ax.scatter(x[:3000], other_list[:3000], label="max alpha 35%~95%", s=10)
-ax.scatter(x[:3000], alpha_5_list[:3000], label="max alpha 5%", s=10)
-ax.scatter(x[:3000], alpha_10_30_list[:3000], label="max alpha 10% ~ 30%", s=10)
+ax.scatter(x[:3000], other_list[:3000], label="Best alpha 35%~95%", s=10)
+ax.scatter(x[:3000], alpha_5_list[:3000], label="Best alpha 5%", s=10)
+ax.scatter(x[:3000], alpha_10_30_list[:3000], label="Best alpha 10% ~ 30%", s=10)
 ax.scatter(x[:3000], com_7_list[:3000], label="community : 7 top 3 nodes", s=20)
 ax.scatter(x[:3000], com_10_list[:3000], label="community : 10 top 3 nodes", s=20)
 ax.scatter(x[:3000], com_12_list[:3000], label="community : 12 top 3 nodes", s=20)
