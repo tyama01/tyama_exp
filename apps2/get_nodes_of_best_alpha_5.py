@@ -73,11 +73,11 @@ for id in labels_data:
         alpha_dic[a2] = pr_alpha_dic[a2][id]
     best_alpha_dic[max(alpha_dic, key=alpha_dic.get)].append(id)
     
-print(len(best_alpha_dic[5]))
+print(len(best_alpha_dic[15]))
     
 #--------------------- txt ファイル出力 ---------------------------
 
-with open('facebook_nodes_of_best_alpha_5.txt', 'w') as f:
-    for id in best_alpha_dic[5]:
+with open('facebook_nodes_of_best_alpha_15.txt', 'w') as f:
+    for id in best_alpha_dic[15]:
         f.write("%s\n" %id)
         
