@@ -163,4 +163,6 @@ ax.boxplot(box_list)
 
 plt.xticks(rotation=90)
 plt.tight_layout()
-plt.show()
+#plt.show()
+
+plt.savefig("../fig/alpha_deg.pdf")
