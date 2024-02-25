@@ -23,7 +23,7 @@ print("-----------------------------------")
 
 # ------------------ seed ノード取得 -------------------
 get_seed_obj = GetSeed()
-S = get_seed_obj.spread_hub(G, 100)
+S = get_seed_obj.spread_hub(G, 20)
 
 
 # ---------------------------------------------------
@@ -120,8 +120,8 @@ ax.bar(x, num_nodes_alpha_list, tick_label=[x/100 for x in range(5, 100, 5)])
 plt.xticks(rotation=90)
 plt.tight_layout()
 
-plt.show()
-#plt.savefig("../fig/alpha_nodes_num.pdf")
+#plt.show()
+plt.savefig("../fig/alpha_SHnodes_num_20.pdf")
 
 
 

@@ -8,7 +8,7 @@ import pickle
 
 # ---------------- データ読み込み ------------------
 dataset_name = input("Enter the dataset name: ")
-data_loader = DataLoader(dataset_name, is_directed=False)
+data_loader = DataLoader(dataset_name, is_directed=True)
 G = data_loader.get_graph()
 print(G) # グラフのノード数、エッジ数出力
 print("-----------------------------------")
@@ -27,5 +27,5 @@ for v in node_list:
     ppr = ppr_obj.calc_ppr_by_random_walk(source_id=v, count=10000, alpha=0.95)
     ppr_dic[v] = ppr
     
-with open('../alpha_dir/facebook_re/alpha_95.pkl', 'wb') as f:
+with open('../alpha_dir/wiki/alpha_95.pkl', 'wb') as f:
     pickle.dump(ppr_dic, f)

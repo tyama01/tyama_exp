@@ -192,7 +192,7 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
-#plt.savefig("rwbc_1.pdf")
+#plt.savefig("../fig/rwbc_re.pdf")
 
 
 # ---------------------------------------------------------------
