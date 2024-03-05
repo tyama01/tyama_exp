@@ -32,9 +32,9 @@ a, b = np.polyfit(logx, logy, 1)
 
 plt.figure(figsize=(10,10))
 #plt.xlim(min(logx), max(logx))
-plt.xlabel('log10 (In Degree)')
+plt.xlabel('log10 (Degree)')
 plt.ylabel('log10 (Number of nodes)')
-plt.title('In Degree Distribution of network')
+plt.title('Degree Distribution of network')
 scatter_plot = plt.plot(logx, logy, 'o')
 scatter_plot_regression = plt.plot(logx, a*logx + b)
 

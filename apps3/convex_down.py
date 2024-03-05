@@ -98,7 +98,7 @@ def is_up_unkown_ver(array):
      
 
 
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps3/classfication.py
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps3/convex_down.py
 
 dataset_name = input("Enter the dataset name: ")
 data_loader = DataLoader(dataset_name, is_directed=False)
@@ -193,40 +193,83 @@ for key in classfication_dic:
 print("-------------------------")    
 print(n_2)
 
+print("-------------------------")    
 
-# ------------------------- Plot ------------------------
 
-# フォントを設定する。
-rcp['font.family'] = 'sans-serif'
-rcp['font.sans-serif'] = ['Hiragino Maru Gothic Pro', 'Yu Gothic', 'Meirio', 'Takao', 'IPAexGothic', 'IPAPGothic', 'VL PGothic', 'Noto Sans CJK JP']
 
-# カラーマップを用意する。
-cmap = plt.get_cmap("tab10")
+# 下に凸は pattern3
 
-# Figureを作成する。
-fig = plt.figure(figsize=(14,8))
-# Axesを作成する。
-ax = fig.add_subplot(111)
+"""
+print(classfication_dic['pattern3'][0])
+print(focus_id_pr_dic[classfication_dic['pattern3'][0]])
 
-# Figureの解像度と色を設定する。
-fig.set_dpi(150)
-fig.set_facecolor("white")
+print("-------------------------")    
 
-# Axesのタイトルと色を設定する。
-#ax.set_title("物品の所有率")
-ax.set_facecolor("white")
+print(classfication_dic['pattern3'][1])
+print(focus_id_pr_dic[classfication_dic['pattern3'][1]])
 
-# x軸とy軸のラベルを設定する。
-ax.set_xlabel("pattern", fontsize=14)
-ax.set_ylabel("num of nodes", fontsize=14)     
+print("-------------------------")    
+"""
 
-x_list = []
-nodes_num_list = []
+# 下に凸ノード集合を取得
+convex_down_nodes_list = []
 
-for key in classfication_dic:
-    x_list.append(key)
-    nodes_num_list.append(len(classfication_dic[key]))
+for id in classfication_dic['pattern3']:
+    convex_down_nodes_list.append(id)
+
+# 下に凸ノードの次数を格納
+convex_down_nodes_deg_list = []
+
+for id in convex_down_nodes_list:
+    convex_down_nodes_deg_list.append(G.degree[id])
     
-ax.bar(x_list, nodes_num_list)
+#print(len(convex_down_nodes_deg_list))
 
+# ノード ID : 13, 次数 : 31
+# ノード ID : 30, 次数 : 17
+s0_node = convex_down_nodes_list[100]
+
+print(s0_node)
+print(G.degree(s0_node))
+print(id_c[s0_node])
+print("------------------------")
+
+# 隣接ノード
+neighbors = list(G.neighbors(s0_node))
+
+neighbors_deg_list = []
+
+for id in neighbors:
+    neighbors_deg_list.append(id)
+    
+for id in neighbors:
+    print(id_c[id])
+
+"""
+# ----------------- 箱ひげ図 プロット --------------------
+
+x = np.array(convex_down_nodes_deg_list)
+plt.title('degree')
+plt.grid()
+
+plt.boxplot(x)    
+    
 plt.show()
+
+# ----------------------------------------------------
+
+
+# ----------------- 箱ひげ図 プロット --------------------
+
+x = np.array(neighbors_deg_list)
+plt.title('degree')
+plt.grid()
+
+plt.boxplot(x)    
+    
+plt.show()
+
+# ----------------------------------------------------
+"""
+
+# --------------- 所属コミュニティ プロット ------------------
