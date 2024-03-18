@@ -216,8 +216,9 @@ for focus_id in com_best_node_list:
         
 #------------------------------------------------------------------
 
+"""
 #------------------------------------------------------------------
-# コミュニティ ID と　6パターンのどれに該当するかを出力
+# コミュニティ ID と 6パターンのどれに該当するかを出力
 
 print(classfication_dic)
 
@@ -231,3 +232,80 @@ for key in classfication_dic:
             print(f'{key} : com_id = {id_c[v]}')
 
 #------------------------------------------------------------------
+"""
+
+#------------------------------------------------------------------
+# 着目しているノードについての詳細な分析
+
+# 着目しているノード
+focus_id = com_best_node_list[0]
+
+# 着目しているノードの所属コミュニティ
+com_id = id_c[focus_id]
+
+# 着目してるノードの次数
+focus_id_degree = G.degree(focus_id)
+
+print(f'focus_id = {focus_id}, com_id = {com_id}, degree = {focus_id_degree}')
+
+# PR の貢献度
+
+# alpha の値を設定
+alpha = 15
+print(f'alpha = {alpha}')
+path = '../alpha_dir/facebook/alpha_' + str(alpha) + '.pkl'
+with open(path, 'rb') as f:
+    ppr_dic = pickle.load(f)
+
+# {ノードID : ppr 値 を正規化した値}　自身は除く
+pr_of_ppr_dic = {}
+
+for node in node_list:
+    
+    if node == focus_id: # 自身は除く
+        continue
+    
+    else:
+        if focus_id in ppr_dic[node]:
+            pr_of_ppr_dic[node] = ppr_dic[node][focus_id] / n
+
+print(f'contribute nodes num : {len(pr_of_ppr_dic)}')
+
+# 着目ノードとの最短距離を分類
+# {最短距離 : [node id]}
+shortest_path_dic = {}        
+
+for src_node in pr_of_ppr_dic:
+    
+    shortest_path_length = nx.shortest_path_length(G, source=src_node, target=focus_id)
+    
+    if shortest_path_length not in shortest_path_dic:
+        shortest_path_dic[shortest_path_length] = [src_node]
+        
+    else:
+        shortest_path_dic[shortest_path_length].append(src_node)
+        
+print(len(shortest_path_dic))
+
+# 着目しているノードのPRに貢献しているノードの次数を最短距離で分類
+#{最短距離： [次数]}
+contribute_nodes_degree_dic = {path_length : [] for path_length in shortest_path_dic}
+
+for path_length in shortest_path_dic:
+    
+    for src_node in shortest_path_dic[path_length]:
+        contribute_nodes_degree_dic[path_length].append(G.degree(src_node))
+        
+# 所属コミュニティの関係
+# {所属コミュニティ : ノード数}
+belong_com_dic = {com_id : 0 for com_id in c_id}
+
+for node in pr_of_ppr_dic:
+    belong_com_dic[id_c[node]] += 1
+    
+print(belong_com_dic)
+
+#------------------------------------------------------------------
+
+
+
