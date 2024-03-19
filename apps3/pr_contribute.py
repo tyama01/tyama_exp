@@ -4,6 +4,8 @@ from utils import *
 import networkx as nx
 import sys
 import pickle
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 # /usr/bin/python3 /Users/tyama/tyama_exp/apps3/pr_contribute.py
@@ -272,8 +274,12 @@ for node in node_list:
 print(f'contribute nodes num : {len(pr_of_ppr_dic)}')
 
 # 着目ノードとの最短距離を分類
+
 # {最短距離 : [node id]}
-shortest_path_dic = {}        
+shortest_path_dic = {}
+
+# {最短距離 : [ppr 値]}
+shortest_path_ppr_val_dic = {}        
 
 for src_node in pr_of_ppr_dic:
     
@@ -281,11 +287,15 @@ for src_node in pr_of_ppr_dic:
     
     if shortest_path_length not in shortest_path_dic:
         shortest_path_dic[shortest_path_length] = [src_node]
+        shortest_path_ppr_val_dic[shortest_path_length] = [pr_of_ppr_dic[src_node]]
         
     else:
         shortest_path_dic[shortest_path_length].append(src_node)
+        shortest_path_ppr_val_dic[shortest_path_length].append(pr_of_ppr_dic[src_node])
+        
         
 print(len(shortest_path_dic))
+print(shortest_path_ppr_val_dic[1][0])
 
 # 着目しているノードのPRに貢献しているノードの次数を最短距離で分類
 #{最短距離： [次数]}
@@ -306,6 +316,65 @@ for node in pr_of_ppr_dic:
 print(belong_com_dic)
 
 #------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# プロット
+
+# 最小距離の最大値を取り出す
+shortest_path_list = [path for path in shortest_path_dic]
+shortest_path_max = max(shortest_path_list)
+
+# 横軸　１つ目　着目ノードとの距離
+x1 = np.arange(1, shortest_path_max, 1)
+print(x1)
+
+fig, ax = plt.subplots()
+
+#plt.subplot(2, 2, 1)
+
+# 距離と PR 貢献度
+y1 = []
+
+for key in x1:
+    if key in shortest_path_ppr_val_dic:
+        y1.append(shortest_path_ppr_val_dic[key])
+    else:
+        y1.append([])
+
+print(type(shortest_path_ppr_val_dic[1]))
+
+ax.boxplot(y1)
+
+plt.show()
+
+
+
+#plt.subplot(2, 2, 2)
+
+# 距離とノード数の関係
+y2 = []
+
+
+for key in x1:
+    if key in shortest_path_ppr_val_dic:
+        y2.append(len(shortest_path_ppr_val_dic[key]))
+    else:
+        y2.append(0)
+
+plt.bar(x1, y2, align="center")
+plt.show()
+
+#plt.subplot(2, 2, 3)
+
+
+
+
+#plt.subplot(2, 2, 4)
+
+
+
+#------------------------------------------------------------------
+
 
 
 
