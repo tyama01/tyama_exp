@@ -279,7 +279,8 @@ print(f'contribute nodes num : {len(pr_of_ppr_dic)}')
 shortest_path_dic = {}
 
 # {最短距離 : [ppr 値]}
-shortest_path_ppr_val_dic = {}        
+shortest_path_ppr_val_dic = {}      
+  
 
 for src_node in pr_of_ppr_dic:
     
@@ -295,16 +296,22 @@ for src_node in pr_of_ppr_dic:
         
         
 print(len(shortest_path_dic))
-print(shortest_path_ppr_val_dic[1][0])
+print(shortest_path_ppr_val_dic[6][0])
+
 
 # 着目しているノードのPRに貢献しているノードの次数を最短距離で分類
 #{最短距離： [次数]}
-contribute_nodes_degree_dic = {path_length : [] for path_length in shortest_path_dic}
+contribute_nodes_degree_dic = {}
 
 for path_length in shortest_path_dic:
     
+    degree_list = []
     for src_node in shortest_path_dic[path_length]:
-        contribute_nodes_degree_dic[path_length].append(G.degree(src_node))
+        degree = G.degree(src_node)
+        degree_list.append(degree)
+    
+    contribute_nodes_degree_dic[path_length] = degree_list
+        
         
 # 所属コミュニティの関係
 # {所属コミュニティ : ノード数}
@@ -325,12 +332,14 @@ shortest_path_list = [path for path in shortest_path_dic]
 shortest_path_max = max(shortest_path_list)
 
 # 横軸　１つ目　着目ノードとの距離
-x1 = np.arange(1, shortest_path_max, 1)
-print(x1)
+x1 = np.arange(1, shortest_path_max+1, 1)
 
-fig, ax = plt.subplots()
+fig = plt.figure()
 
-#plt.subplot(2, 2, 1)
+#------------------------------------------------------------------
+
+
+ax1 = fig.add_subplot(2, 2, 1)
 
 # 距離と PR 貢献度
 y1 = []
@@ -343,13 +352,14 @@ for key in x1:
 
 print(type(shortest_path_ppr_val_dic[1]))
 
-ax.boxplot(y1)
+ax1.boxplot(y1)
+ax1.set_xlabel("shortest path length")
+ax1.set_ylabel("ppr value")
 
-plt.show()
+#------------------------------------------------------------------
 
 
-
-#plt.subplot(2, 2, 2)
+ax2 = fig.add_subplot(2, 2, 2)
 
 # 距離とノード数の関係
 y2 = []
@@ -361,17 +371,63 @@ for key in x1:
     else:
         y2.append(0)
 
-plt.bar(x1, y2, align="center")
+ax2.bar(x1, y2, align="center")
+ax2.set_xlabel("shortest path length")
+ax2.set_ylabel("num of nodes")
+
+#------------------------------------------------------------------
+
+
+ax3 = fig.add_subplot(2, 2, 3)
+
+
+# 距離と次数の関係
+y3 = []
+
+for key in x1:
+    if key in contribute_nodes_degree_dic:
+        y3.append(contribute_nodes_degree_dic[key])
+    else:
+        y3.append([])
+        
+        
+ax3.boxplot(y3)
+
+focus_id_degree_list = []
+for _ in x1:
+    focus_id_degree_list.append(focus_id_degree)
+
+ax3.plot(x1, focus_id_degree_list, c="r", linestyle = "dashed")
+ax3.set_xlabel("shortest path length")
+ax3.set_ylabel("degree")
+
+
+#------------------------------------------------------------------
+
+ax4 = fig.add_subplot(2, 2, 4)
+# 所属コミュニティとの関係
+
+y = []
+for i in range(len(c_id)):
+    y.append(len(c_id[i]))
+
+z = np.sort(y)[::-1]
+com_size_sort_data = np.argsort(y)[::-1] # コミュニティサイズが大きいラベル
+
+x2 = np.arange(len(com_size_sort_data))
+
+y4 = []
+
+
+for com_id in com_size_sort_data:
+    y4.append(belong_com_dic[com_id])
+    
+ax4.bar(x2, y4, align="center", tick_label=com_size_sort_data)
+ax4.set_xlabel("community labels")
+ax4.set_ylabel("num of nodes")
+
+fig.tight_layout()
 plt.show()
-
-#plt.subplot(2, 2, 3)
-
-
-
-
-#plt.subplot(2, 2, 4)
-
-
 
 #------------------------------------------------------------------
 
