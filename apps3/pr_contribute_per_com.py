@@ -1,4 +1,4 @@
-# PR の貢献度合いを調査するコード パターン別
+# PR の貢献度合いを調査するコード
 
 from utils import *
 import networkx as nx
@@ -6,9 +6,11 @@ import sys
 import pickle
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
+import math
 
 
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps3/pr_contribute_pattern.py
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps3/pr_contribute_per_com.py
 
 
 # ---------------- データ読み込み ------------------
@@ -119,22 +121,19 @@ def is_up_unkown_ver(array):
     return up
      
 #------------------------------------------------------------------
-#------------------------------------------------------------------
 
-# 6パターンごとに分類したリスト
-pattern_list = []
-pattern_num = 5
-print(f'pattern : {pattern_num}')
-path = '../pattern_dir/facebook/pattern' + str(pattern_num) + '.txt'
-
-with open(path, 'r', encoding='utf-8') as fin:
+# 各コミュニティの代表ノードリスト
+com_best_node_list = []
+with open('../com_top_nodes/facebook/com_best_nodes_list.txt', 'r', encoding='utf-8') as fin:
     for line in fin.readlines():
         try:
             num = int(line)
         except ValueError as e:
             print(e, file=sys.stderr)
             continue
-        pattern_list.append(num)
+        com_best_node_list.append(num)
+
+print(com_best_node_list)
         
 #------------------------------------------------------------------
 
@@ -159,6 +158,8 @@ for alpha in alpha_list:
     for src_node in ppr_dic:
         for node in nodes_list:
             if node in ppr_dic[src_node]:
+                
+    
                 ppr_sum_dic[node] += ppr_dic[src_node][node] / n
             else:
                 continue
@@ -168,7 +169,7 @@ for alpha in alpha_list:
 # {node_id : [alpha ごとのPR値]}
 focus_id_pr_dic = {}
 
-for focus_id in pattern_list:
+for focus_id in com_best_node_list:
     pr_value_list = []
     for alpha in alpha_list:
         pr_value_list.append(pr_alpha_dic[alpha][focus_id])
@@ -176,11 +177,74 @@ for focus_id in pattern_list:
     
 #------------------------------------------------------------------
 
+
+
+#-----------------------　ノードを6パターンに分類　 ------------------------
+
+#{上に凸、下に凸、単調増加、単調減少：[ノードID]}
+# pattern1 : 上に凸 pr(0.05) > PR(0.95)
+# pattern2 : 上に凸 pr(0.05) < PR(0.95)
+# pattern3 : 下に凸
+# pattern4 : 単調増加
+# pattern5 : 単調減少
+# pattern6 : その他
+
+classfication_dic = {'pattern1' : [], 'pattern2' : [], 'pattern3' : [], 'pattern4' : [], 'pattern5' : [], 'pattern6' : []}
+for focus_id in com_best_node_list:
+    pr_value_list = focus_id_pr_dic[focus_id]
+    
+    # 単調増加
+    if is_inc(pr_value_list):
+        classfication_dic['pattern4'].append(focus_id)
+        
+    # 単調減少
+    elif is_dec(pr_value_list):
+        classfication_dic['pattern5'].append(focus_id)
+        
+    # 下に凸
+    elif is_down(pr_value_list):
+        classfication_dic['pattern3'].append(focus_id)
+        
+    # 上に凸 hub ver
+    elif is_up_hub_ver(pr_value_list):
+        classfication_dic['pattern1'].append(focus_id)
+        
+    # 上に凸 unknown ver
+    elif is_up_unkown_ver(pr_value_list):
+        classfication_dic['pattern2'].append(focus_id)
+    
+    #elif is_down(pr_value_list):
+        #classfication_dic['pattern3'].append(focus_id)
+    
+    # その他
+    else:
+        classfication_dic['pattern6'].append(focus_id)
+        
+#------------------------------------------------------------------
+
+"""
+#------------------------------------------------------------------
+# コミュニティ ID と 6パターンのどれに該当するかを出力
+
+print(classfication_dic)
+
+for key in classfication_dic:
+    
+    if len(classfication_dic[key]) == 0:
+        continue
+    
+    else:
+        for v in classfication_dic[key]:
+            print(f'{key} : com_id = {id_c[v]}')
+
+#------------------------------------------------------------------
+"""
+
 #------------------------------------------------------------------
 # 着目しているノードについての詳細な分析
 
 # 着目しているノード
-focus_id = pattern_list[0]
+focus_id = com_best_node_list[0]
 
 # 着目しているノードの所属コミュニティ
 com_id = id_c[focus_id]
@@ -193,7 +257,7 @@ print(f'focus_id = {focus_id}, com_id = {com_id}, degree = {focus_id_degree}')
 # PR の貢献度
 
 # alpha の値を設定
-alpha = 80
+alpha = 15
 print(f'alpha = {alpha}')
 path = '../alpha_dir/facebook/alpha_' + str(alpha) + '.pkl'
 with open(path, 'rb') as f:
@@ -209,7 +273,17 @@ for node in node_list:
     
     else:
         if focus_id in ppr_dic[node]:
-            pr_of_ppr_dic[node] = ppr_dic[node][focus_id] / n
+            
+            # コミュニティサイズで割る
+            c_size = len(c_id[id_c[node]])
+            path_length = nx.shortest_path_length(G, source=node, target=focus_id)
+            l = c_size / path_length
+            
+            pr_of_ppr_dic[node] = ppr_dic[node][focus_id] / (c_size**2)
+            
+            # 全ノード
+            #pr_of_ppr_dic[node] = ppr_dic[node][focus_id] / n
+            
 
 print(f'contribute nodes num : {len(pr_of_ppr_dic)}')
 
@@ -260,7 +334,7 @@ belong_com_dic = {com_id : 0 for com_id in c_id}
 for node in pr_of_ppr_dic:
     belong_com_dic[id_c[node]] += 1
     
-#print(belong_com_dic)
+print(belong_com_dic)
 
 #------------------------------------------------------------------
 
@@ -290,6 +364,7 @@ for key in x1:
     else:
         y1.append([])
 
+print(type(shortest_path_ppr_val_dic[1]))
 
 ax1.boxplot(y1)
 ax1.set_xlabel("shortest path length")
