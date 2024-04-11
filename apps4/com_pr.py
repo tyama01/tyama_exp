@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import math
+import matplotlib as mpl
+from matplotlib import rcParams as rcp
 from scipy.stats import kendalltau
 
 
@@ -120,5 +122,204 @@ print(tau_list)
 
 
 #------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# top 100 に各コミュニティのノードがどの程度含まれているか
+
+# 通常の PR
+top_num = 100
+top_pr_node_list = []
+
+for i in range(top_num):
+    top_pr_node_list.append(id_sort[i])
+
+c_id_num_dic = {com_id : 0 for com_id in c_id}
+
+for v in top_pr_node_list:
+    c_id_num_dic[id_c[v]] += 1
+    
+# com pr
+com_pr = com_pr_dic[1]
+com_pr_sort = sorted(com_pr.items(), key=lambda x:x[1], reverse=True)
+
+com_id_sort = []
+for item in com_pr_sort:
+    com_id_sort.append(item[0])
+    
+
+top_com_pr_node_list = []
+
+for i in range(top_num):
+    top_com_pr_node_list.append(com_id_sort[i])
+
+c_id_num_dic2 = {com_id : 0 for com_id in c_id}
+
+for v in top_com_pr_node_list:
+    c_id_num_dic2[id_c[v]] += 1
+
+
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# l を変化させた場合の順位相関 タウ をプロット
+
+# フォントを設定する。
+rcp['font.family'] = 'sans-serif'
+rcp['font.sans-serif'] = ['Hiragino Maru Gothic Pro', 'Yu Gothic', 'Meirio', 'Takao', 'IPAexGothic', 'IPAPGothic', 'VL PGothic', 'Noto Sans CJK JP']
+
+# カラーマップを用意する。
+cmap = plt.get_cmap("tab10")
+
+# Figureを作成する。
+fig = plt.figure()
+# Axesを作成する。
+ax = fig.add_subplot(111)
+
+# Figureの解像度と色を設定する。
+fig.set_dpi(150)
+fig.set_facecolor("white")
+
+# Axesのタイトルと色を設定する。
+#ax.set_title("物品の所有率")
+ax.set_facecolor("white")
+
+# x軸とy軸のラベルを設定する。
+ax.set_xlabel("$\it{l}$", fontsize=14)
+ax.set_ylabel("\u03c4", fontsize=14)
+
+ax.scatter(l_list, tau_list)
+ax.plot(l_list, tau_list)
+
+plt.show()
+
+#------------------------------------------------------------------
+
+
+#------------------------------------------------------------------
+# top 100 に各コミュニティの代表がどのくらい含まれているかをプロット 通常の PR ver
+
+# フォントを設定する。
+rcp['font.family'] = 'sans-serif'
+rcp['font.sans-serif'] = ['Hiragino Maru Gothic Pro', 'Yu Gothic', 'Meirio', 'Takao', 'IPAexGothic', 'IPAPGothic', 'VL PGothic', 'Noto Sans CJK JP']
+
+# カラーマップを用意する。
+cmap = plt.get_cmap("tab10")
+
+# Figureを作成する。
+fig = plt.figure()
+# Axesを作成する。
+ax = fig.add_subplot(111)
+
+# Figureの解像度と色を設定する。
+fig.set_dpi(150)
+fig.set_facecolor("white")
+
+# Axesのタイトルと色を設定する。
+#ax.set_title("物品の所有率")
+ax.set_facecolor("white")
+
+# x軸とy軸のラベルを設定する。
+ax.set_xlabel("community labels", fontsize=14)
+ax.set_ylabel("Num of PR top " + str(top_num) + " nodes", fontsize=14)
+
+# x軸の目盛のラベルの位置を変数xで保持する。
+
+ax.set_ylim(0, 30)
+    
+y = []
+for i in range(len(c_id)):
+    y.append(len(c_id[i]))
+
+z = np.sort(y)[::-1]
+labels_data = np.argsort(y)[::-1]
+x = np.arange(len(labels_data))
+
+pr_top_node_belong_c_list = []
+for i in labels_data:
+    pr_top_node_belong_c_list.append(c_id_num_dic[i])
+
+
+# x軸の目盛の位置を設定する。
+ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
+# x軸の目盛のラベルを設定する。
+ax.xaxis.set_major_formatter(mpl.ticker.FixedFormatter(labels_data))
+
+
+        
+#z1 = z[:11]
+#z2 = z[10:]
+
+bar = ax.bar(x, pr_top_node_belong_c_list)
+        
+plt.show()
+
+
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# top 100 に各コミュニティの代表がどのくらい含まれているかをプロット com PR ver
+
+# フォントを設定する。
+rcp['font.family'] = 'sans-serif'
+rcp['font.sans-serif'] = ['Hiragino Maru Gothic Pro', 'Yu Gothic', 'Meirio', 'Takao', 'IPAexGothic', 'IPAPGothic', 'VL PGothic', 'Noto Sans CJK JP']
+
+# カラーマップを用意する。
+cmap = plt.get_cmap("tab10")
+
+# Figureを作成する。
+fig = plt.figure()
+# Axesを作成する。
+ax = fig.add_subplot(111)
+
+# Figureの解像度と色を設定する。
+fig.set_dpi(150)
+fig.set_facecolor("white")
+
+# Axesのタイトルと色を設定する。
+#ax.set_title("物品の所有率")
+ax.set_facecolor("white")
+
+# x軸とy軸のラベルを設定する。
+ax.set_xlabel("community labels", fontsize=14)
+ax.set_ylabel("Num of PR top " + str(top_num) + " nodes", fontsize=14)
+
+
+# x軸の目盛のラベルの位置を変数xで保持する。
+
+ax.set_ylim(0, 30)
+
+    
+y = []
+for i in range(len(c_id)):
+    y.append(len(c_id[i]))
+
+z = np.sort(y)[::-1]
+labels_data = np.argsort(y)[::-1]
+x = np.arange(len(labels_data))
+
+pr_top_node_belong_c_list = []
+for i in labels_data:
+    pr_top_node_belong_c_list.append(c_id_num_dic2[i])
+
+
+# x軸の目盛の位置を設定する。
+ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(x))
+# x軸の目盛のラベルを設定する。
+ax.xaxis.set_major_formatter(mpl.ticker.FixedFormatter(labels_data))
+
+
+        
+#z1 = z[:11]
+#z2 = z[10:]
+
+bar = ax.bar(x, pr_top_node_belong_c_list)
+        
+plt.show()
+
+
+#------------------------------------------------------------------
+
+
+        
 
         
