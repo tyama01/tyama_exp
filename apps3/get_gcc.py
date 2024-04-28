@@ -20,6 +20,6 @@ G0 = Gcc[0]
 
 H = Gd.subgraph(G0)
 
-nx.write_edgelist(H, "wiki-Vote_gcc.txt", data=False)
+nx.write_edgelist(H, "email.txt", data=False)
 
 

@@ -57,7 +57,7 @@ for src_node in ppr_dic:
 # コミュニティサイズで重みづけした PR を計算
 
 # コミュニティサイズの -l 乗　で重みづけ
-l_list = [0, 1, 2, 3, 4, 5] 
+l_list = [0, 0.1, 2, 3, 4, 5] 
 com_pr_dic = {}
 
 
@@ -110,7 +110,7 @@ for l in l_list:
         com_pr_value_sort_dic[l].append(com_pr_dic[l][id])
         
 # com pr  を降順にソート
-com_pr = com_pr_dic[1]
+com_pr = com_pr_dic[0.1]
 com_pr_sort = sorted(com_pr.items(), key=lambda x:x[1], reverse=True)
 
 com_id_sort = []
