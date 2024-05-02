@@ -24,8 +24,8 @@ ppr_obj = PPR(G)
 ppr_dic = {}
 
 for v in node_list:
-    ppr = ppr_obj.calc_ppr_by_random_walk(source_id=v, count=10000, alpha=0.95)
+    ppr = ppr_obj.calc_ppr_by_random_walk(source_id=v, count=10000, alpha=0.15)
     ppr_dic[v] = ppr
     
-with open('../alpha_dir/wiki/alpha_95.pkl', 'wb') as f:
+with open('../alpha_dir/wiki/alpha_15.pkl', 'wb') as f:
     pickle.dump(ppr_dic, f)

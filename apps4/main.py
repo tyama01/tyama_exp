@@ -76,7 +76,7 @@ with open("../alpha_dir/wiki/self_ppr_15.txt") as f:
 # 提案手法 flow PR の計算
 flow_pr_obj = flow_PR(G)
 
-flow_pr = flow_pr_obj.calc_flow_rw_pr(self_ppr_dic=self_ppr_dic, alpha=0.05, w=4)
+flow_pr = flow_pr_obj.calc_flow_rw_pr(self_ppr_dic=self_ppr_dic, alpha=0.15, w=4)
 
 flow_pr_val = []
 
@@ -119,7 +119,7 @@ ax.set_facecolor("white")
 ax.set_xlabel("Node ID (PR sort)", fontsize=14)
 ax.set_ylabel("value of node importance (log scale)", fontsize=14)
 
-ax.set_yscale('log')
+#ax.set_yscale('log')
 
 x = np.arange(len(id_sort))
 
@@ -172,10 +172,11 @@ for id in self_ppr_dic:
     flow_pr_list.append(flow_pr[id])
 
 
-ax.scatter(self_ppr_list, pr_list)
-ax.scatter(self_ppr_list, flow_pr_list)
+ax.scatter(self_ppr_list, pr_list, label="PR")
+ax.scatter(self_ppr_list, flow_pr_list, label = "Proposed")
 
-
+plt.legend()
+plt.tight_layout()
 plt.show()
 
 
