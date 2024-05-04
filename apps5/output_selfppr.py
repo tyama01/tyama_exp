@@ -13,7 +13,7 @@ from matplotlib import rcParams as rcp
 from scipy.stats import kendalltau
 
 
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps4/output_selfppr.py
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps5/output_selfppr.py
 
 # -------------------------- データ読み込み -------------------------
 dataset_name = input("Enter the dataset name: ")
@@ -44,7 +44,7 @@ for v in node_list:
 
 
 # txt file に出力
-f = open('self_ppr_15.txt', 'a', encoding='UTF-8')
+f = open('../alpha_dir/' + dataset_name + '/self_ppr_15.txt', 'a', encoding='UTF-8')
 for tmp_self_ppr in sorted(self_ppr_dic.items(), key=lambda x:x[1], reverse=True):
     f.write(str(tmp_self_ppr[0]))
     f.write(' ')

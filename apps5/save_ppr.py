@@ -3,7 +3,7 @@ import networkx as nx
 import pickle
 
 
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps3/save_ppr.py
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps5/save_ppr.py
 
 
 # ---------------- データ読み込み ------------------
@@ -24,8 +24,8 @@ ppr_obj = PPR(G)
 ppr_dic = {}
 
 for v in node_list:
-    ppr = ppr_obj.calc_ppr_by_random_walk(source_id=v, count=10000, alpha=0.15)
+    ppr = ppr_obj.calc_ppr_by_random_walk(source_id=v, count=1000, alpha=0.15)
     ppr_dic[v] = ppr
     
-with open('../alpha_dir/wiki/alpha_15.pkl', 'wb') as f:
+with open('../alpha_dir/' + dataset_name + '/alpha_15.pkl', 'wb') as f:
     pickle.dump(ppr_dic, f)
