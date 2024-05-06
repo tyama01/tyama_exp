@@ -1,13 +1,14 @@
-# self PPR と Clustering係数 の相関を見るコード
+# self PPR の α を変更させた場合と clustering 係数の相関係数をプロットするコードs
 
 from utils import *
 import pickle
+import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib import rcParams as rcp
 
 
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps5/cor_selfppr_clustering.py
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps5/calc_corr.py
 
 # -------------------------- データ読み込み -------------------------
 
@@ -29,34 +30,31 @@ for dataset_name in datasets:
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
-# self PPR を計算
+# self PPR を読み込む
 
-# {データセット名：{ノードID : selfPPR}}
-self_ppr_dic = {dataset_name : {} for dataset_name in datasets}
+# alpha を 0.5 ~ 0.95 まで変化させる
+alpha_list = [alpha for alpha in range(5, 100, 5)]
 
-# self PPR の合計値
-self_ppr_sum_dic = {dataset_name : 0 for dataset_name in datasets}
-
-# alpha の設定
-alpha = 85
-
+# {データセット名：{alpha : {Node ID : selfPPR}}}
+self_ppr_dic = {dataset_name : {alpha : {} for alpha in alpha_list} for dataset_name in datasets}
 
 for dataset_name in datasets:
-    path = '../alpha_dir/' + dataset_name + '/self_ppr_' + str(alpha) + '.txt'
-    with open(path) as f:
-         for line in f:
-             (id, val) = line.split()
-             self_ppr_dic[dataset_name][int(id)] = float(val)
-             self_ppr_sum_dic[dataset_name] += float(val)
-             
-# self PPR 値を正規化
-
-for dataset_name in datasets:
-    node_list = G_dic[dataset_name].nodes
-    
-    for node in node_list:
-        self_ppr_dic[dataset_name][node] /= self_ppr_sum_dic[dataset_name]
-    
+    for alpha in alpha_list:
+        # self PPR の合計値
+        self_ppr_sum_dic = {dataset_name : 0 for dataset_name in datasets}
+        
+        path = '../alpha_dir/' + dataset_name + '/self_ppr_' + str(alpha) + '.txt'
+        with open(path) as f:
+            for line in f:
+                (id, val) = line.split()
+                self_ppr_dic[dataset_name][alpha][int(id)] = float(val)
+                self_ppr_sum_dic[dataset_name] += float(val)        
+                
+        # 正規化
+        node_list = G_dic[dataset_name].nodes
+        for node in node_list:
+            self_ppr_dic[dataset_name][alpha][node] /= self_ppr_sum_dic[dataset_name]
+        
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -70,6 +68,46 @@ for dataset_name in datasets:
         for line in f:
             (id, val) = line.split()
             clustering_dic[dataset_name][int(id)] = float(val)
+
+
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# 相関係数の計算
+
+corr_dic = {}
+
+for dataset_name in ["dolphins", "facebook"]:
+    
+    #print(dataset_name)
+    corr_list = []
+    
+    for alpha in alpha_list:
+        
+        ppr_list = []
+        c_list = []
+        
+        for node in clustering_dic[dataset_name]:
+            ppr_list.append(self_ppr_dic[dataset_name][alpha][node])
+            c_list.append(clustering_dic[dataset_name][node])
+    
+        
+        s1 = pd.Series(ppr_list)
+        s2 = pd.Series(c_list)
+        
+        res = s1.corr(s2)
+        #print(res)
+    
+        corr_list.append(res)
+        
+    #print(dataset_name)
+    corr_dic[dataset_name] = corr_list
+    
+        
+print(len(alpha_list))
+
+#print(len(corr_dic["dolphins"]))
+        
 
 
 #------------------------------------------------------------------
@@ -99,27 +137,16 @@ for dataset_name in datasets:
     #ax.set_title("物品の所有率")
     ax.set_facecolor("white")
     
-    ax.set_xscale('log')
-    ax.set_yscale('log')
-
     # x軸とy軸のラベルを設定する。
-    ax.set_xlabel("Normalized Self PPR value", fontsize=14)
-    ax.set_ylabel("Normalized Clustering coefficient", fontsize=14)
+    ax.set_xlabel(r"$\alpha$", fontsize=14)
+    ax.set_ylabel("corr", fontsize=14)
 
 
-    node_list = G_dic[dataset_name].nodes
     
-    #for node in node_list:
-        #ax.scatter(self_ppr_dic[dataset_name][node], clustering_dic[dataset_name][node], c="blue")
-
-    self_ppr_val = []
-    clustering_val = []
-    
-    for node in node_list:
-        self_ppr_val.append(self_ppr_dic[dataset_name][node])
-        clustering_val.append(clustering_dic[dataset_name][node])
         
-    ax.scatter(self_ppr_val, clustering_val)
+    ax.scatter(alpha_list, corr_dic[dataset_name])
+    ax.plot(alpha_list, corr_dic[dataset_name])
+    
     
     # グリッドを表示する。
     ax.set_axisbelow(True)
@@ -132,4 +159,6 @@ for dataset_name in datasets:
 
 
 #------------------------------------------------------------------
+
+
 

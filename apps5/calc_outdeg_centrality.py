@@ -3,7 +3,7 @@ import networkx as nx
 import pickle
 
 
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps5/save_ppr.py
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps5/calc_outdeg_centrality.py
 
 
 # ---------------- データ読み込み ------------------
@@ -18,14 +18,14 @@ n = len(node_list)
 
 # -----------------------------------------------
 
-# ------------------- PPR -----------------------
-ppr_obj = PPR(G)
+# -----------------------------------------------
+out_centlarity = nx.out_degree_centrality(G)
 
-ppr_dic = {}
+deg_list = []
+for node in out_centlarity:
+    if(out_centlarity[node] == 0):
+        deg_list.append(node)
+        
+print(len(deg_list))
 
-for v in node_list:
-    ppr = ppr_obj.calc_ppr_by_random_walk(source_id=v, count=100, alpha=0.15)
-    ppr_dic[v] = ppr
-    
-with open('../alpha_dir/' + dataset_name + '/alpha_15.pkl', 'wb') as f:
-    pickle.dump(ppr_dic, f)
+# -----------------------------------------------

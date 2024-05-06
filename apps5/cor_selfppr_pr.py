@@ -12,7 +12,7 @@ from matplotlib import rcParams as rcp
 # -------------------------- データ読み込み -------------------------
 
 # データセットの 名前　と 有向か無向か
-datasets = {"dolphins" : False, "facebook" : False, "twitter" : True, "google" : True}
+datasets = {"dolphins" : False, "facebook" : False}
 
 # グラフ G_dic[dataset名]
 G_dic = {}
@@ -62,26 +62,33 @@ for dataset_name in datasets:
 #------------------------------------------------------------------
 # PPR から PR 演算
 
-# alpha の設定
-alpha = 15
+# # alpha の設定
+# alpha = 15
 
-# {データセット名：{source_node : [ppr値]}}
-ppr_dic = {}
+# # {データセット名：{source_node : [ppr値]}}
+# ppr_dic = {}
 
-for dataset_name in datasets:
-    path = '../alpha_dir/' + dataset_name + '/alpha_' + str(alpha) + '.pkl'
-    with open(path, 'rb') as f:
-        ppr_dic[dataset_name] = pickle.load(f)
+# for dataset_name in datasets:
+#     path = '../alpha_dir/' + dataset_name + '/alpha_' + str(alpha) + '.pkl'
+#     with open(path, 'rb') as f:
+#         ppr_dic[dataset_name] = pickle.load(f)
 
-# PR 計算
-pr_by_ppr_dic = {}
+# # PR 計算
+# pr_by_ppr_dic = {}
 
-for dataset_name in datasets:
-    pr_obj = PR(G_dic[dataset_name])
-    node_list = G_dic[dataset_name].nodes
-    pr = pr_obj.calc_pr_by_ppr(ppr_dic[dataset_name], node_list)
+# for dataset_name in datasets:
+#     pr_obj = PR(G_dic[dataset_name])
+#     node_list = G_dic[dataset_name].nodes
+#     pr = pr_obj.calc_pr_by_ppr(ppr_dic[dataset_name], node_list)
             
-    pr_by_ppr_dic[dataset_name] = pr
+#     pr_by_ppr_dic[dataset_name] = pr
+
+# networkx で計算
+pr_by_ppr_dic = {}
+for dataset_name in datasets:
+    pr_by_ppr_dic[dataset_name] = nx.pagerank(G_dic[dataset_name], alpha=0.85)
+    
+print("End calc")
 
 #------------------------------------------------------------------
 
@@ -109,7 +116,7 @@ for dataset_name in datasets:
     # Axesのタイトルと色を設定する。
     #ax.set_title("物品の所有率")
     ax.set_facecolor("white")
-    
+
     ax.set_xscale('log')
     ax.set_yscale('log')
 
@@ -119,9 +126,17 @@ for dataset_name in datasets:
 
 
     node_list = G_dic[dataset_name].nodes
+
+    #for node in node_list:
+        #ax.scatter(self_ppr_dic[dataset_name][node], pr_by_ppr_dic[dataset_name][node], c="blue")
     
+    self_ppr_val = []
+    pr_val = []    
     for node in node_list:
-        ax.scatter(self_ppr_dic[dataset_name][node], pr_by_ppr_dic[dataset_name][node], c="blue")
+        self_ppr_val.append(self_ppr_dic[dataset_name][node])
+        pr_val.append(pr_by_ppr_dic[dataset_name][node])
+        
+    ax.scatter(self_ppr_val, pr_val)
 
     # グリッドを表示する。
     ax.set_axisbelow(True)

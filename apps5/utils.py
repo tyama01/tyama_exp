@@ -48,9 +48,16 @@ class PPR:
                 neighbors = list(self.G.neighbors(current_node))
                 
                 if(len(neighbors) == 0): # 有向エッジがない場合はランダムジャンプ
-                    random_index = random.randrange(len(node_list))
-                    current_node = node_list[random_index]
-                    path.append(current_node)
+                    # random_index = random.randrange(len(node_list))
+                    # current_node = node_list[random_index]
+                    # path.append(current_node)
+                    
+                    # 全ノードにスコアを均等に分配 無理っぽい
+                    node_list.remove(current_node)
+                    path = node_list
+                        
+                    node_list = list(self.G.nodes)
+                    
                     
                 else:   
                     random_index = random.randrange(len(neighbors))

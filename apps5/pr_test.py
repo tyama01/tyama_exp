@@ -11,6 +11,8 @@ from scipy.stats import kendalltau
 
 # データセットの 名前　と 有向か無向か
 datasets = {"dolphins" : False, "email" : True, "facebook" : False, "wiki" : True}
+#datasets = {"dolphins" : False, "facebook" : False, "twitter" : True, "Google" : True}
+
 
 # グラフ G_dic[dataset名]
 G_dic = {}
