@@ -24,7 +24,7 @@ ppr_obj = PPR(G)
 ppr_dic = {}
 
 for v in node_list:
-    ppr = ppr_obj.calc_ppr_by_random_walk(source_id=v, count=100, alpha=0.15)
+    ppr = ppr_obj.calc_ppr_by_random_walk(source_id=v, count=1000, alpha=0.15)
     ppr_dic[v] = ppr
     
 with open('../alpha_dir/' + dataset_name + '/alpha_15.pkl', 'wb') as f:

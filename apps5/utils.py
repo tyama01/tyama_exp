@@ -37,8 +37,8 @@ class PPR:
     
     def get_paths(self, source_node, count, alpha):
         paths = list()
-        node_list = list(self.G.nodes)
-        
+        node_list = list(self.G.nodes)         
+            
         for _ in range(count):
             current_node = source_node
             path = [source_node]
@@ -52,11 +52,11 @@ class PPR:
                     # current_node = node_list[random_index]
                     # path.append(current_node)
                     
-                    # 全ノードにスコアを均等に分配 無理っぽい
-                    node_list.remove(current_node)
-                    path = node_list
-                        
-                    node_list = list(self.G.nodes)
+                    # 強制終了 RWer を死亡させる
+                    current_node = source_node
+                    break
+                    
+                    
                     
                     
                 else:   
@@ -104,10 +104,15 @@ class SelfPPR:
                     break
                 neighbors = list(self.G.neighbors(current_node))
                 
-                if(len(neighbors) == 0): # 有向エッジがない場合はランダムジャンプ
-                    random_index = random.randrange(len(node_list))
-                    current_node = node_list[random_index]
-                    path.append(current_node)
+                if(len(neighbors) == 0): # 有向エッジがない場合は終了
+                    #random_index = random.randrange(len(node_list))
+                    #current_node = node_list[random_index]
+                    #path.append(current_node)
+                    
+                    current_node = source_node
+                    break
+                    #path.append(source_node)
+                    #continue
                     
                 else:   
                     random_index = random.randrange(len(neighbors))
@@ -147,18 +152,44 @@ class PR:
     def __init__(self, G):
         self.G = G
         
-    def calc_pr_by_ppr(self, ppr_dic, node_list):
+    def calc_pr_by_ppr(self, ppr_dic, node_list, alpha, is_directed):
         n = len(node_list)
         pr = {target_node : 0 for target_node in ppr_dic}
+        
+        
         for src_node in ppr_dic:
-            for target_node in node_list:
-                if target_node in ppr_dic[src_node]:
-                    pr[target_node] += ppr_dic[src_node][target_node] / n
+            for target_node in ppr_dic[src_node]:
+                pr[target_node] += ppr_dic[src_node][target_node] / n
+                
+        return pr
                     
+               
+        # 有向グラフの場合 dangling ノードのスコア分配をやると逆に精度が悪くなる、、、        
+        if(is_directed):
+                
+            # dangling ノードを検出、スコアも再定義
+            dangling_score_list = []
+            for node in node_list:
+                if(self.G.out_degree[node] == 0):
+                    dangling_score = pr[node] / n
+                    dangling_score_list.append(dangling_score)
+                    pr[node] = 0
                 else:
                     continue
                 
-        return pr
+            #print(f"dangling num : {len(dangling_score_list)}")
+            #print(f"danglng score : {dangling_score_list[0]}")
+            
+            # ダングリングノードに溜まったスコアを分配        
+            for dangling_score in dangling_score_list:
+                for node in node_list:
+                    pr[node] += dangling_score
+                    
+            return pr
+        
+        # 無向グラフの場合
+        else:    
+            return pr
         
         
 

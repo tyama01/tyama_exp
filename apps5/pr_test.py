@@ -11,6 +11,7 @@ from scipy.stats import kendalltau
 
 # データセットの 名前　と 有向か無向か
 datasets = {"dolphins" : False, "email" : True, "facebook" : False, "wiki" : True}
+#datasets = {"wiki" : True}
 #datasets = {"dolphins" : False, "facebook" : False, "twitter" : True, "Google" : True}
 
 
@@ -69,7 +70,14 @@ for dataset_name in datasets:
     pr_obj = PR(G_dic[dataset_name])
     node_list = G_dic[dataset_name].nodes
     n = len(node_list)
-    pr = pr_obj.calc_pr_by_ppr(ppr_dic[dataset_name], node_list)
+    pr = pr_obj.calc_pr_by_ppr(ppr_dic[dataset_name], node_list, alpha, is_directed=datasets[dataset_name])
+    
+    c_sum = 0
+    
+    for node in pr:
+        c_sum += pr[node]
+        
+    print(f"PR sum : {c_sum}")
     
     # pr = {target_node : 0 for target_node in ppr_dic[dataset_name]}
     # for src_node in ppr_dic[dataset_name]:

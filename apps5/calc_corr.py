@@ -1,4 +1,4 @@
-# self PPR の α を変更させた場合と clustering 係数の相関係数をプロットするコードs
+# self PPR の α を変更させた場合と clustering 係数の相関係数をプロットするコード
 
 from utils import *
 import pickle
@@ -108,8 +108,6 @@ print(len(alpha_list))
 
 #print(len(corr_dic["dolphins"]))
         
-
-
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -141,11 +139,13 @@ for dataset_name in datasets:
     ax.set_xlabel(r"$\alpha$", fontsize=14)
     ax.set_ylabel("corr", fontsize=14)
 
-
     
+    alpha_list2 = []
+    for alpha in alpha_list:
+        alpha_list2.append(alpha/100)
         
-    ax.scatter(alpha_list, corr_dic[dataset_name])
-    ax.plot(alpha_list, corr_dic[dataset_name])
+    ax.scatter(alpha_list2, corr_dic[dataset_name])
+    ax.plot(alpha_list2, corr_dic[dataset_name])
     
     
     # グリッドを表示する。
