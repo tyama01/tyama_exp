@@ -38,24 +38,44 @@ self_ppr_dic = {dataset_name : {} for dataset_name in datasets}
 self_ppr_sum_dic = {dataset_name : 0 for dataset_name in datasets}
 
 # alpha の設定
-alpha = 85
+alpha = 15
 
+
+# for dataset_name in datasets:
+#     path = '../alpha_dir/' + dataset_name + '/self_ppr_' + str(alpha) + '.txt'
+#     with open(path) as f:
+#          for line in f:
+#              (id, val) = line.split()
+#              self_ppr_dic[dataset_name][int(id)] = float(val)
+#              self_ppr_sum_dic[dataset_name] += float(val)
+             
+# # self PPR 値を正規化
+
+# for dataset_name in datasets:
+#     node_list = G_dic[dataset_name].nodes
+    
+#     for node in node_list:
+#         self_ppr_dic[dataset_name][node] /= self_ppr_sum_dic[dataset_name]
+
+self_ppr = {}
 
 for dataset_name in datasets:
-    path = '../alpha_dir/' + dataset_name + '/self_ppr_' + str(alpha) + '.txt'
-    with open(path) as f:
-         for line in f:
-             (id, val) = line.split()
-             self_ppr_dic[dataset_name][int(id)] = float(val)
-             self_ppr_sum_dic[dataset_name] += float(val)
-             
+    path = '../alpha_dir/' + dataset_name + '/self_ppr_' + str(alpha) + '.pkl'
+    with open(path, 'rb') as f:
+        self_ppr[dataset_name] = pickle.load(f)
+        
+    for src in self_ppr[dataset_name]:
+        self_ppr_dic[dataset_name][src] = self_ppr[dataset_name][src][src]
+        self_ppr_sum_dic[dataset_name] += self_ppr[dataset_name][src][src]
+        
+
 # self PPR 値を正規化
 
 for dataset_name in datasets:
     node_list = G_dic[dataset_name].nodes
     
     for node in node_list:
-        self_ppr_dic[dataset_name][node] /= self_ppr_sum_dic[dataset_name]
+        self_ppr_dic[dataset_name][node] /= self_ppr_sum_dic[dataset_name]    
     
 #------------------------------------------------------------------
 
