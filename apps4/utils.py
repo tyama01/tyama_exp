@@ -236,11 +236,16 @@ class SelfPPR:
         paths = self.get_paths(source_id, count, alpha)
         visited_ratio = self.get_visited_ratio(paths)
         
-        if source_id in visited_ratio:
-            return visited_ratio[source_id]
+        if source_id not in visited_ratio: # 自ノードに帰ってこない場合は self PPR 値は0
+            visited_ratio[source_id] = 0
         
-        else:
-            return 0
+        return visited_ratio
+        
+        # if source_id in visited_ratio:
+        #     return visited_ratio[source_id]
+        
+        # else:
+        #     return 0
     
 class flow_PR:
     def __init__(self, G):

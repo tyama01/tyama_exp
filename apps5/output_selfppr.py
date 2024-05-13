@@ -17,8 +17,8 @@ from scipy.stats import kendalltau
 
 # -------------------------- データ読み込み -------------------------
 #dataset_name = input("Enter the dataset name: ")
-dataset_name = "facebook"
-data_loader = DataLoader(dataset_name, is_directed=False)
+dataset_name = "epinions"
+data_loader = DataLoader(dataset_name, is_directed=True)
 G = data_loader.get_graph()
 print(G) # グラフのノード数、エッジ数出力
 

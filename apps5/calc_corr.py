@@ -13,7 +13,8 @@ from matplotlib import rcParams as rcp
 # -------------------------- データ読み込み -------------------------
 
 # データセットの 名前　と 有向か無向か
-datasets = {"dolphins" : False, "facebook" : False}
+#datasets = {"dolphins" : False, "facebook" : False}
+datasets = {"wiki" : True, "epinions" : True}
 
 # グラフ G_dic[dataset名]
 G_dic = {}

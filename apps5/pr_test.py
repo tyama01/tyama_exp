@@ -10,7 +10,7 @@ from scipy.stats import kendalltau
 # -------------------------- データ読み込み -------------------------
 
 # データセットの 名前　と 有向か無向か
-datasets = {"dolphins" : False, "email" : True, "facebook" : False, "wiki" : True}
+datasets = {"dolphins" : False, "email" : True, "facebook" : False, "wiki" : True, "epinions" : True}
 #datasets = {"wiki" : True}
 #datasets = {"dolphins" : False, "facebook" : False, "twitter" : True, "Google" : True}
 
