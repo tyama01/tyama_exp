@@ -1,4 +1,4 @@
-# RW の経路から部分グラフを作成し、密度を見てみるコード
+# APPR で検出したコミュニテイから部分グラフを作成し、密度を見てみるコード
 
 from utils import *
 import pickle
@@ -7,7 +7,7 @@ import matplotlib as mpl
 from matplotlib import rcParams as rcp
 import numpy as np
 
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps5/density.py
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps5/appr_density.py
 
 # -------------------------- データ読み込み -------------------------
 dataset_name = input("Enter the dataset name: ")
@@ -30,50 +30,55 @@ alpha = 15
 path = '../alpha_dir/' + dataset_name + '/self_ppr_' + str(alpha) + '.pkl'
 with open(path, 'rb') as f:
     self_ppr = pickle.load(f)
+    
+#------------------------------------------------------------------
 
+#------------------------------------------------------------------
+# APPR で検出されたコミュニティの読み込み
+
+# {シードノード ID : [同じコミュニティと判定されたノードID のリスト]}
+appr_dic = {}
+
+path = '../appr_dir/' + dataset_name + '_appr.pkl'
+with open(path, 'rb') as f:
+    appr_dic = pickle.load(f)
+    
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
 # 密度の計算
 # {ノードID : 密度}
-# 密度： (RW の経路から生成した部分グラフのエッジ数) / (完全グラフのエッジ数 nC2)
+# 密度： (APPR から検出したコミュニティの部分グラフのエッジ数) / (完全グラフのエッジ数 nC2)
 density_dic = {}
+
+# {src_node : コミュニティサイズ}
+subgraph_node_num = {}
 
 # 部分グラフを格納
 subgraph_dic = {}
 
-# {src_node : RW の経路数}
-subgraph_node_num = {}
-
 for src_node in self_ppr:
     
-    # 経路にいたノード
-    target_node_list = []
-    target_node_list.append(src_node)
-    for target_node in self_ppr[src_node]:
-        # 自身の周辺よりもあまりにも遠いものは消す (self PPR １０倍以上に設定)
-        if self_ppr[src_node][target_node] > (1/10)*self_ppr[src_node][src_node]:
-        #if self_ppr[src_node][target_node] > 0.0001:
-        
-        
-            target_node_list.append(target_node)
-    
-    # 経路から部分グラフを生成
-    H = G.subgraph(target_node_list)
-    n_H = len(target_node_list)
-    
-    # if n_H == 1:
-    #     print("only self")
-    #     break
+    H = G.subgraph(appr_dic[src_node])
+    n_H = len(list(H.nodes))
     
     if n_H == 1:
         density = 0
-    
+
     else:
         density = 2*(H.number_of_edges()) / (n_H*(n_H-1))
-    
+        
+        
     density_dic[src_node] = density
     subgraph_node_num[src_node] = n_H
     subgraph_dic[src_node] = H
-        
+    
+    
+    
+#------------------------------------------------------------------
 
+#------------------------------------------------------------------
+# Plot するためのその他諸々の処理
 
 # self PPR 値を取得 {ノードID : Self PPR 値}
 self_ppr_val = {}
@@ -101,6 +106,9 @@ for id in self_ppr_id_sort:
     density_list.append(density_dic[id])
     subgraph_node_num_list.append(subgraph_node_num[id])
 
+
+    
+print("End")
 
 # 上位 5% のサブグラフの PR 順位を計算
 top_x = int(n * 0.1)
@@ -136,12 +144,10 @@ for src in id_sort_dic:
     else:
         total_num += 1
 
-#print(ture_num)
-#print(total_num)   
- 
+# print(ture_num)
+# print(total_num)    
 print(ture_num/total_num)
-print("End")
-    
+
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -364,7 +370,7 @@ fig.set_facecolor("white")
 ax.set_facecolor("white")
 
 ax.set_xscale('log')
-#ax.set_yscale('log')
+ax.set_yscale('log')
 
 # x軸とy軸のラベルを設定する。
 ax.set_xlabel("density", fontsize=14)
@@ -389,6 +395,11 @@ plt.show()
 
 
 #------------------------------------------------------------------
-
-
 """
+
+
+
+
+
+
+
