@@ -84,5 +84,11 @@ def read_digraph(path: str, weighted=True) -> nx.DiGraph:
 
 
 if __name__ == "__main__":
-    G = read_digraph("clickstream_weighted_edges.tsv", weighted=False)
+    #G = read_digraph("clickstream_weighted_edges.tsv", weighted=False)
+    dataset_path = "../datasets/indexed_edges.txt"
+    
+    G = nx.read_edgelist(dataset_path, nodetype=int, create_using=nx.DiGraph)
+    
     ppr_matome = PPRs(G)
+    
+    print(ppr_matome[7])

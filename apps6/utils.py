@@ -1,7 +1,12 @@
 import networkx as nx 
 import random
+from queue import Queue
 import numpy as np
 import itertools
+import math
+from collections import deque
+
+
 
 #------------------------------------------------------------------
 
@@ -53,7 +58,7 @@ class PPR:
     
     def get_paths(self, source_node, count, alpha):
         paths = list()
-        node_list = list(self.G.nodes)         
+        #node_list = list(self.G.nodes)         
             
         for _ in range(count):
             current_node = source_node
@@ -101,6 +106,158 @@ class PPR:
 
 #------------------------------------------------------------------
 
+# FORA 実装
+class FORA:
+    def __init__(self, G):
+        self.G = G
+        self.node_list = list(self.G.nodes)
+        self.push_queue_dict = {node : False for node in list(self.G.nodes)}
+        
+    def calc_ppr_by_forward_push(self, source_node, alpha, walk_count):
+        
+        r_dict = dict()
+        ppr_dict = dict()
+        r_dict[source_node] = 1
+        push_queue = Queue()
+        push_queue.put(source_node)
+        self.push_queue_dict[source_node] = True
+        
+        while not push_queue.empty():
+            node = push_queue.get()
+            self.push_queue_dict[node] = False
+            
+            neighbors = list(self.G.neighbors(node))
+            
+            if len(neighbors) != 0:
+                for adj_node in neighbors:
+                    
+                    # 隣接ノードに PPR 値を push 左：隣接ノードのキーを入力して PPR 値を 0 とする。 右：push した PPR 値を足す
+                    r_dict[adj_node] = r_dict.get(adj_node, 0) + (1 - alpha) * r_dict[node] / len(neighbors)
+                    
+                    
+                    # 残余が閾値を超えている場合、そのノードの隣接をキューに追加
+                    adj_neighbors = list(self.G.neighbors(adj_node))
+                    
+                    if (r_dict[adj_node] > len(adj_neighbors)/(alpha * walk_count)) and (self.push_queue_dict[adj_node] == False):
+                        push_queue.put(adj_node)
+                        self.push_queue_dict[adj_node] = True
+                        
+                
+                ppr_dict[node] = ppr_dict.get(node, 0) + alpha * r_dict[node]
+                
+            else:
+                ppr_dict[node] = ppr_dict.get(node, 0) + alpha * r_dict[node]
+                #r_dict[source_node] += r_dict[node] * (1 - alpha)
+                
+            r_dict[node] = 0
+            
+        return ppr_dict, r_dict    
+    
+    def get_random_walk_end_node_list(self, source_node, count, alpha):
+        end_node_list = list()
+        for _ in range(count):
+            current_node = source_node
+            while True:
+                if random.random() < alpha:
+                    end_node_list.append(current_node)
+                    break
+                
+                neighbors = list(self.G.neighbors(current_node))
+                random_index = random.randrange(len(neighbors))
+                current_node = neighbors[random_index]
+                
+        return end_node_list
+    
+    def set_index_for_fora_plus(self, alpha):
+        self.index_for_fora_plus = dict()
+        
+        for node in self.node_list:
+            neighbors = list(self.G.neighbors(node))
+            precompute_count = math.ceil(len(neighbors) / alpha)
+            
+            self.index_for_fora_plus[node] = self.get_random_walk_end_node_list(node, precompute_count, alpha)
+    
+    
+        return
+        
+    def calc_PPR_by_fora(self, source_node, alpha, walk_count, has_index):
+        
+        ppr_dict, residue_dict = self.calc_ppr_by_forward_push(source_node, alpha, walk_count)
+        
+        for node, r_val in residue_dict.items():
+            if r_val == 0:
+                continue
+            
+            walk_count_i = math.ceil(r_val * walk_count)
+            
+            if has_index:
+                end_node_list = self.index_for_fora_plus[node][:walk_count_i]
+                
+            else:
+                
+                end_node_list = self.get_random_walk_end_node_list(node, walk_count_i, alpha)
+                
+                
+            for end_node in end_node_list:
+                ppr_dict[end_node] = ppr_dict.get(end_node, 0) + r_val / walk_count_i
+
+
+
+        return ppr_dict
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# thenter Foward Push 実装
+
+class FP:
+    def __init__(self, G) -> dict:
+        self.G = G
+        self.node_list = list(self.G.nodes)
+        self.push_queue_dict = {node : False for node in list(self.G.nodes)}
+        self.residue = {node : 0 for node in self.node_list} # 残余
+        self.reserve = {node : 0 for node in self.node_list} # 確定値
+        
+    def calc_ppr_by_forward_push(self, source_node, alpha, eps):
+        
+        self.residue[source_node] = 1 # 初期値
+        q = deque([source_node])
+        
+        while q:
+            node = q.popleft()
+            neighbors = list(self.G.neighbors(node))
+            self.reserve[node] += self.residue[node] * alpha
+            if(len(neighbors) == 0):
+                self.residue[source_node] += self.residue[node] * (1 - alpha)
+                self.residue[node] = 0
+                continue
+            
+            push_val = self.residue[node] * (1 - alpha)
+            self.residue[node] = 0
+            
+            for nbr_node in neighbors:
+                nbr_val_old = self.residue[nbr_node]
+                self.residue[nbr_node] += push_val / len(neighbors)
+                nbr_neighbors = list(self.G.neighbors(nbr_node))
+                if nbr_val_old <= eps * len(nbr_neighbors) < self.residue[nbr_node]:
+                    q.append(nbr_node)
+                    
+        
+        # 正規化
+        sum_resurve = sum(self.reserve.values())
+        for node in self.reserve.keys():
+            self.reserve[node] /= sum_resurve
+            
+        return self.reserve
+                
+
+#------------------------------------------------------------------
+
+
+
+
+
+
+
 #------------------------------------------------------------------
 
 # 自ノードのPPR 演算    
@@ -110,7 +267,7 @@ class SelfPPR:
     
     def get_paths(self, source_node, count, alpha):
         paths = list()
-        node_list = list(self.G.nodes)
+        #node_list = list(self.G.nodes)
         
         for _ in range(count):
             current_node = source_node
@@ -135,8 +292,8 @@ class SelfPPR:
                     current_node = neighbors[random_index]
                     path.append(current_node)
                     
-                    if(current_node == source_node):
-                        break
+                    # if(current_node == source_node):
+                    #     break
                     
             paths.append(path)
             

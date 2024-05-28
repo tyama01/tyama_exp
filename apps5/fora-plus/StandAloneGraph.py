@@ -82,6 +82,7 @@ class StandAloneGraph():
         paths = self.get_paths(source_id, count, alpha)
         return self.get_visited_ratio(paths)
 
+    # epsilon 
     def calc_ppr_by_power_iteration(self, source_id, alpha, epsilon):
         transition_matrix, index_to_node_id = self.create_transiton_matrix_for_PPR(source_id, alpha)
         ppr_vec = np.random.rand(len(self.nodes))
@@ -138,13 +139,21 @@ class StandAloneGraph():
             node.in_push_queue = False
             if node.degree != 0:
                 for adj_node in node.adj.values():
+                    
+                    # 隣接ノードに PPR 値を push 左：隣接ノードのキーを入力して PPR 値を 0 とする。 右：push した PPR 値を足す
                     r_dict[adj_node.id] = r_dict.get(adj_node.id, 0) + (1 - alpha) * r_dict[node.id] / node.degree
+                    
+                    # 残余が閾値を超えている場合、そのノードの隣接をキューに追加
                     if (r_dict[adj_node.id] > adj_node.degree / (alpha * walk_count)) and (adj_node.in_push_queue == False):
                         push_queue.put(adj_node)
                         adj_node.in_push_queue = True
+                        
                 ppr_dict[node.id] = ppr_dict.get(node.id, 0) + alpha * r_dict[node.id]
+                
+                
             else:
                 ppr_dict[node.id] = ppr_dict.get(node.id, 0) + r_dict[node.id]
+                
             r_dict[node.id] = 0
 
         return ppr_dict, r_dict
@@ -161,6 +170,8 @@ class StandAloneGraph():
         return cut_count / min(total_degree, total_edge_count - total_degree)
 
     def calc_PPR_by_fora(self, source_id, alpha, walk_count, has_index):
+        
+        
         ppr_dict, residue_dict = self.calc_ppr_by_forward_push(source_id, alpha, walk_count)
 
         for node_id, r_val in residue_dict.items():
@@ -171,6 +182,8 @@ class StandAloneGraph():
             if has_index:
                 end_node_id_list = self.index_for_fora_plus[node_id][:walk_count_i]
             else:
+                
+                # 終点ノードだけを保持したリスト
                 end_node_id_list = self.get_random_walk_end_node_id_list(node_id, walk_count_i, alpha)
             
             for end_node_id in end_node_id_list:

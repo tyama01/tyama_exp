@@ -7,8 +7,8 @@ import pickle
 
 
 # ---------------- データ読み込み ------------------
-dataset_name = "wiki"
-data_loader = DataLoader(dataset_name, is_directed=True)
+dataset_name = "facebook_com_1"
+data_loader = DataLoader(dataset_name, is_directed=False)
 G = data_loader.get_graph()
 print(G) # グラフのノード数、エッジ数出力
 print("-----------------------------------")

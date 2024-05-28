@@ -90,15 +90,15 @@ for com_id in c_id:
 
 #------------------------------------------------------------------
 
-# クラスタリング係数
+# # クラスタリング係数
 
-clustering_dic = {}
+# clustering_dic = {}
 
-path = '../clustering_dir/' + dataset_name + '_clustering.txt'
-with open(path) as f:
-    for line in f:
-        (id, val) = line.split()
-        clustering_dic[int(id)] = float(val)
+# path = '../clustering_dir/' + dataset_name + '_clustering.txt'
+# with open(path) as f:
+#     for line in f:
+#         (id, val) = line.split()
+#         clustering_dic[int(id)] = float(val)
 
 
 #------------------------------------------------------------------
@@ -123,10 +123,10 @@ for com_id in c_id:
     for id in com_pr[com_id]:
         per_com_pr_dic[com_id].append(com_pr[com_id][id])
 
-per_com_clustering_dic = {com_id : [] for com_id in c_id}
-for com_id in c_id:
-    for id in com_pr[com_id]:
-        per_com_clustering_dic[com_id].append(clustering_dic[id])
+# per_com_clustering_dic = {com_id : [] for com_id in c_id}
+# for com_id in c_id:
+#     for id in com_pr[com_id]:
+#         per_com_clustering_dic[com_id].append(clustering_dic[id])
 
 #------------------------------------------------------------------
 
@@ -169,14 +169,14 @@ ax.set_ylabel("ComPR", fontsize=14)
 for com_id in c_id:
     ax.scatter(per_com_self_ppr_dic[com_id], per_com_pr_dic[com_id], label = str(com_id))
     
-    # s1 = pd.Series(per_com_self_ppr_dic[com_id])
-    # s2 = pd.Series(per_com_pr_dic[com_id])
+    s1 = pd.Series(per_com_self_ppr_dic[com_id])
+    s2 = pd.Series(per_com_pr_dic[com_id])
         
-    # res = s1.corr(s2)
-    # print(f"{com_id} : {res}")
-    #ax.scatter(per_com_clustering_dic[com_id], per_com_pr_dic[com_id])
+    res = s1.corr(s2)
+    print(f"{com_id} : {res}")
+#     #ax.scatter(per_com_clustering_dic[com_id], per_com_pr_dic[com_id])
 
-# com_id = 6
+# com_id = 1
 # ax.scatter(per_com_self_ppr_dic[com_id], per_com_pr_dic[com_id], label = str(com_id))
 
 # グリッドを表示する。

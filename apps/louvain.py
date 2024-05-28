@@ -8,7 +8,7 @@ from collections import Counter
 FILE_PARH = "../datasets"
 #FILE_NAME = "karate"
 # FILE_NAME = "web-Google"
-FILE_NAME = "dolphins"
+FILE_NAME = "facebook_com_1"
 
 
 def main():
