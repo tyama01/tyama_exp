@@ -204,6 +204,33 @@ class FORA:
 
 
         return ppr_dict
+    
+    
+    # Self PPR の デルタ を決める
+    def determine_delta(self, source_node, alpha):
+        
+        
+        # source node の隣接ノード
+        adj_list = list(self.G.neighbors(source_node))
+        
+        # source node の次数
+        source_node_degree = len(adj_list)
+        
+        # hamonic_centrarity の計算 source ノードの隣接ノードの次数の逆数の総和
+        hamonic_c = 0
+        
+        for adj_node in adj_list:
+            hamonic_c += 1 / (self.G.degree[adj_node])
+            
+        # 公比
+        r = (((1 - alpha) * (1 - alpha)) / source_node_degree) * hamonic_c
+        
+        deno = 1 - r
+        delta = alpha / deno
+        
+        return delta
+    
+    
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------

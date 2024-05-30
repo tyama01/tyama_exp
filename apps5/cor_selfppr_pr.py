@@ -5,6 +5,8 @@ import pickle
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib import rcParams as rcp
+import pandas as pd
+
 
 
 # /usr/bin/python3 /Users/tyama/tyama_exp/apps5/cor_selfppr_pr.py
@@ -111,6 +113,9 @@ for dataset_name in datasets:
     
 print("End calc")
 
+
+
+
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -156,6 +161,13 @@ for dataset_name in datasets:
     for node in node_list:
         self_ppr_val.append(self_ppr_dic[dataset_name][node])
         pr_val.append(pr_by_ppr_dic[dataset_name][node])
+        
+    s1 = pd.Series(self_ppr_val)
+    s2 = pd.Series(pr_val)
+    
+    res = s1.corr(s2)
+    
+    print(f"{dataset_name} corr : {res}")
         
     ax.scatter(self_ppr_val, pr_val)
 
