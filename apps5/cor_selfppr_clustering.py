@@ -123,8 +123,8 @@ for dataset_name in datasets:
     ax.set_yscale('log')
 
     # x軸とy軸のラベルを設定する。
-    ax.set_xlabel("Normalized Self PPR value", fontsize=14)
-    ax.set_ylabel("Normalized Clustering coefficient", fontsize=14)
+    ax.set_xlabel("還流度", fontsize=14)
+    ax.set_ylabel("クラスタリング係数", fontsize=14)
 
 
     node_list = G_dic[dataset_name].nodes

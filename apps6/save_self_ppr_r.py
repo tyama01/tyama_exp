@@ -29,7 +29,7 @@ for v in node_list:
 # -----------------------------------------------
 # 結果出力
 
-with open('../alpha_dir/' + dataset_name + '/self_ppr_15_r.pkl', 'wb') as f:
+with open('../alpha_dir/' + dataset_name + '/self_ppr_5_r.pkl', 'wb') as f:
     pickle.dump(self_ppr_dic, f)
     
 print("End")

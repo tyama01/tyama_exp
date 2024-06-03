@@ -19,7 +19,7 @@ import pandas as pd
 # /usr/bin/python3 /Users/tyama/tyama_exp/apps6/self_ppr_com.py
 
 # -------------------------- データ読み込み -------------------------
-dataset_name = input("Enter the dataset name: ")
+dataset_name = "facebook"
 data_loader = DataLoader(dataset_name, is_directed=False)
 G = data_loader.get_graph()
 print(G) # グラフのノード数、エッジ数出力
@@ -59,7 +59,7 @@ for src_node in self_ppr_val:
     self_ppr_sum += self_ppr_val[src_node]
     
 for src_node in self_ppr_val:
-    self_ppr_val[src_node] /= n
+    self_ppr_val[src_node] /= self_ppr_sum
     
 #------------------------------------------------------------------
 
@@ -73,17 +73,45 @@ com_pr = {}
 # コミュニティの密度
 com_density = {}
 
+total = 0
+
 for com_id in c_id:
     
     # そのコミュニティの部分グラフ
     H = G.subgraph(c_id[com_id])
-    com_pr[com_id] = nx.pagerank(H, alpha=0.85)
-    
     n_H = len(list(H.nodes))
+    
+    com_pr_before = nx.pagerank(H, alpha=0.85)
+    
+    for id in com_pr_before:
+        com_pr_before[id] =  com_pr_before[id] / n_H
+            
+    #  正規化
+    com_before_sum = 0
+    for id in com_pr_before:
+        com_before_sum += com_pr_before[id]
+        
+    total += com_before_sum
+        
+    com_pr_after = {}
+        
+    for id in com_pr_before:
+        com_pr_after[id] = com_pr_before[id] / com_before_sum
+        
+    com_pr[com_id] = com_pr_before
+    
     com_density[com_id] = 2*(H.number_of_edges()) / (n_H*(n_H-1))
     
+
+    
+# for com_id in c_id:
+#     print(f"{com_id} density : {com_density[com_id]}")
+
 for com_id in c_id:
-    print(f"{com_id} density : {com_density[com_id]}")
+    
+    for id in com_pr[com_id]:
+        
+        com_pr[com_id][id] /= total
     
 
 #------------------------------------------------------------------
@@ -154,19 +182,25 @@ fig.set_facecolor("white")
 #ax.set_title("物品の所有率")
 ax.set_facecolor("white")
 
-ax.set_xscale('log')
+#ax.set_xscale('log')
 ax.set_yscale('log')
 
 # x軸とy軸のラベルを設定する。
-ax.set_xlabel("Self PPR", fontsize=14)
-ax.set_ylabel("ComPR", fontsize=14)
+ax.set_xlabel(r"還流度 ($\alpha$=0.15)", fontsize=14)
+ax.set_ylabel(r"ComPR($\alpha$=0.15)", fontsize=14)
 
+y = []
+for i in range(len(c_id)):
+    y.append(len(c_id[i]))
 
+z = np.sort(y)[::-1]
+labels_data = np.argsort(y)[::-1]
+labels_data = labels_data.tolist()
 
 #plt.xticks(x)
 #plt.ylim(0,1)
 
-for com_id in c_id:
+for com_id in labels_data:
     ax.scatter(per_com_self_ppr_dic[com_id], per_com_pr_dic[com_id], label = str(com_id))
     
     s1 = pd.Series(per_com_self_ppr_dic[com_id])
