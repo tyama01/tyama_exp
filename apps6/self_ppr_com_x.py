@@ -65,7 +65,7 @@ for item in pr_sort:
 #------------------------------------------------------------------
 # Self PPR 読み込み　
 
-alpha_list = [5, 15, 30, 50]
+alpha_list = [5, 15]
 
 # self_ppr_per_dic {alpha : {ID : SelfPPR値}　}
 
@@ -83,7 +83,7 @@ x_dic = {alpha : {com_id : [] for com_id in c_id} for alpha in alpha_list}
 
 for alpha in alpha_list:
     
-    path = '../alpha_dir/' + dataset_name + '/self_ppr_' + str(alpha) + '.pkl'
+    path = '../alpha_dir/' + dataset_name + '/self_ppr_' + str(alpha) + '_fora.pkl'
     
     with open(path, 'rb') as f:
         self_ppr = pickle.load(f)

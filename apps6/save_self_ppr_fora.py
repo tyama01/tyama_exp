@@ -14,7 +14,7 @@ def calc_omega(delta, n):
     
     # 各種パラメータ
     Pf = 1/n
-    eps = 0.01
+    eps = 0.1
     
     omega = (4 * math.log(1/Pf)) / ((eps**2) * delta)
     
@@ -42,11 +42,11 @@ self_ppr_dic = {}
 
 self_obj = FORA(G)
 
-alpha = 0.15
+alpha = 0.05
 
 for node in node_list:
     omega = calc_omega(delta=alpha, n=n)
-    tyama_self_ppr = self_obj.calc_PPR_by_fora(source_node=node, alpha=0.15, walk_count=omega, has_index=False)
+    tyama_self_ppr = self_obj.calc_PPR_by_fora(source_node=node, alpha=alpha, walk_count=omega, has_index=False)
     tyama_self_ppr[node] = (tyama_self_ppr[node] - alpha) / (1 - alpha)
     self_ppr_dic[node] = tyama_self_ppr
     
@@ -55,7 +55,7 @@ for node in node_list:
 # -----------------------------------------------
 # 結果出力
 
-with open('../alpha_dir/' + dataset_name + '/self_ppr_15_fora.pkl', 'wb') as f:
+with open('../alpha_dir/' + dataset_name + '/self_ppr_5_fora.pkl', 'wb') as f:
     pickle.dump(self_ppr_dic, f)
     
 print("End")

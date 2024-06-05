@@ -38,7 +38,7 @@ alpha = 15
 # {ID : 還流度}
 self_ppr_val = {}
 
-path = '../alpha_dir/' + dataset_name + '/self_ppr_' + str(alpha) + '.pkl'
+path = '../alpha_dir/' + dataset_name + '/self_ppr_' + str(alpha) + '_fora.pkl'
     
 with open(path, 'rb') as f:
     self_ppr = pickle.load(f)
@@ -111,7 +111,7 @@ fig.set_facecolor("white")
 #ax.set_title("物品の所有率")
 ax.set_facecolor("white")
 
-#ax.set_xscale('log')
+ax.set_xscale('log')
 #ax.set_yscale('log')
 
 # x軸とy軸のラベルを設定する。
