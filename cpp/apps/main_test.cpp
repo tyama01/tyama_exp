@@ -13,7 +13,7 @@
 #include "../include/read.h"
 
 // Files to compile
-// c++ main.cpp graph.cpp read.cpp -std=gnu++17 -O3 -march=native -o a.out 
+// c++ main_test.cpp graph.cpp read.cpp -std=gnu++17 -O3 -march=native -o a.out 
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -63,14 +63,16 @@ int main(int argc, char* argv[]){
     for (int src_id : node_list_vector){
         double delta = 1/N;
         int walk_count = graph.calc_omega(delta);
-        unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
+        cout << "SSPPR : " << walk_count << endl;
+        break;
+        //unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
     }
 
     auto end_ss = chrono::system_clock::now();
 
     chrono::duration<double> elapsed_ss = end_ss - start_ss;
 
-    cout << "SSPPR : " << elapsed_ss.count() << "sec" << endl;
+    //cout << "SSPPR : " << elapsed_ss.count() << "sec" << endl;
 
      // BATON
     auto start_bt = chrono::system_clock::now();
@@ -78,15 +80,19 @@ int main(int argc, char* argv[]){
     for (int src_id : node_list_vector){
         int deg = graph.get_degree(src_id);
         double delta = (alpha * (1 - alpha)) / deg;
+        //cout << delta << endl;
         int walk_count = graph.calc_omega(delta);
-        unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
+        cout << "BATON : " << walk_count << endl;
+        break;
+
+        //unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
     }
 
     auto end_bt = chrono::system_clock::now();
 
     chrono::duration<double> elapsed_bt = end_bt - start_bt;
 
-    cout << "BATON : " << elapsed_bt.count() << "sec" << endl;
+    //cout << "BATON : " << elapsed_bt.count() << "sec" << endl;
 
 
     // Proposed 1
@@ -94,30 +100,38 @@ int main(int argc, char* argv[]){
 
     for (int src_id : node_list_vector){
         int walk_count = graph.calc_omega(alpha);
-        unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
+
+        cout << "Proposed_1 : "  << walk_count << endl;
+        break;
+        //unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
     }
 
     auto end1 = chrono::system_clock::now();
 
     chrono::duration<double> elapsed = end1 - start1;
 
-    cout << "Proposed_1 : " << elapsed.count() << "sec" << endl;
+    //cout << "Proposed_1 : " << elapsed.count() << "sec" << endl;
 
 
     // Proposed 2
     auto start2 = chrono::system_clock::now();
 
+    
+
     for (int src_id : node_list_vector){
         double delta = graph.determine_delta(src_id, alpha);
         int walk_count = graph.calc_omega(delta);
-        unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
+
+        cout << "Proposed_2 : " << walk_count << endl;
+        break;
+        //unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
     }
 
     auto end2 = chrono::system_clock::now();
 
     chrono::duration<double> elapsed2 = end2 - start2;
 
-    cout << "Proposed_2 : " << elapsed2.count() << "sec" << endl;  
+    //cout << "Proposed_2 : " << elapsed2.count() << "sec" << endl;  
 
 
     return 0;

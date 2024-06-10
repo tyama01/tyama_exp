@@ -216,7 +216,7 @@ class FORA:
         # source node の次数
         source_node_degree = len(adj_list)
         
-        # hamonic_centrarity の計算 source ノードの隣接ノードの次数の逆数の総和
+        # hamonic_centrality の計算 source ノードの隣接ノードの次数の逆数の総和
         hamonic_c = 0
         
         for adj_node in adj_list:

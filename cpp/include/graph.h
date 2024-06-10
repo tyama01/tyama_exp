@@ -62,6 +62,9 @@ class Graph{
         // RWer 数を決める関数
         int calc_omega(double delta);
 
+        // delta を求める (α 以上)
+        double determine_delta(int src_id, double alpha);
+
 
 };
 

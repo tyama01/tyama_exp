@@ -165,12 +165,40 @@ const unordered_map<int, double> Graph::calc_ppr_by_fora(int src_id, int walk_co
 
  // RWer 数を決める関数
 int Graph::calc_omega(double delta){
-
+    
     int n = get_number_of_nodes();
-    double Pf = 1/n;
+    double Pf = 1.0/ static_cast<double>(n);
     double eps = 0.1;
 
     double omega = (4 * log(1/Pf)) / ((eps * eps) * delta);
 
     return ceil(omega);
+}
+
+// delta を求める (α 以上)
+double Graph::determine_delta(int src_id, double alpha){
+
+    // source node の隣接ノード
+    vector<int> neigh_list = this->adj_list[src_id];
+
+    // source node の次数
+    int src_id_degree = get_degree(src_id);
+
+    // hamonic centrality の計算 ： source node の隣接ノード次数の逆数の総和
+    double hamonic_c = 0;
+
+    for (int neigh_id : neigh_list){
+        int neigh_id_degree = get_degree(neigh_id);
+        hamonic_c += 1.0/static_cast<double>(neigh_id_degree); 
+    }
+
+    // 公比
+    double r = (((1 - alpha) * (1 - alpha)) / src_id_degree) * hamonic_c;
+
+    double deno = 1 - r;
+
+    double delta = alpha / deno;
+
+    return delta;
+
 }
