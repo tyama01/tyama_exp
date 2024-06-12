@@ -54,6 +54,7 @@ int main(int argc, char* argv[]){
     //int walk_count = 10000;
     double alpha = 0.15;
     double r_max_coef = 1;
+    double eps = 0.1;
 
     vector<int> node_list_vector = graph.get_node_list();
 
@@ -62,7 +63,7 @@ int main(int argc, char* argv[]){
 
     for (int src_id : node_list_vector){
         double delta = 1/N;
-        int walk_count = graph.calc_omega(delta);
+        int walk_count = graph.calc_omega(delta, eps);
         unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
     }
 
@@ -78,7 +79,7 @@ int main(int argc, char* argv[]){
     for (int src_id : node_list_vector){
         int deg = graph.get_degree(src_id);
         double delta = (alpha * (1 - alpha)) / deg;
-        int walk_count = graph.calc_omega(delta);
+        int walk_count = graph.calc_omega(delta, eps);
         unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
     }
 
@@ -93,7 +94,7 @@ int main(int argc, char* argv[]){
     auto start1 = chrono::system_clock::now();
 
     for (int src_id : node_list_vector){
-        int walk_count = graph.calc_omega(alpha);
+        int walk_count = graph.calc_omega(alpha, eps);
         unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
     }
 
@@ -109,7 +110,7 @@ int main(int argc, char* argv[]){
 
     for (int src_id : node_list_vector){
         double delta = graph.determine_delta(src_id, alpha);
-        int walk_count = graph.calc_omega(delta);
+        int walk_count = graph.calc_omega(delta, eps);
         unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
     }
 

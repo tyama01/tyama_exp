@@ -60,7 +60,7 @@ class Graph{
         const unordered_map<int, double> calc_ppr_by_fora(int src_id, int walk_count, double alpha, double r_max_coef);
 
         // RWer 数を決める関数
-        int calc_omega(double delta);
+        int calc_omega(double delta, double eps);
 
         // delta を求める (α 以上)
         double determine_delta(int src_id, double alpha);

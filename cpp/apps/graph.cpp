@@ -164,11 +164,11 @@ const unordered_map<int, double> Graph::calc_ppr_by_fora(int src_id, int walk_co
 }
 
  // RWer 数を決める関数
-int Graph::calc_omega(double delta){
-    
+int Graph::calc_omega(double delta, double eps){
+
     int n = get_number_of_nodes();
     double Pf = 1.0/ static_cast<double>(n);
-    double eps = 0.1;
+    //double eps = 0.1;
 
     double omega = (4 * log(1/Pf)) / ((eps * eps) * delta);
 
