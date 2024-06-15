@@ -13,7 +13,7 @@
 #include "../include/read.h"
 
 // Files to compile
-// c++ main.cpp graph.cpp read.cpp -std=gnu++17 -O3 -march=native -o a.out 
+// c++ omega_num_main.cpp graph.cpp read.cpp -std=gnu++17 -O3 -march=native -o a.out 
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -58,69 +58,39 @@ int main(int argc, char* argv[]){
 
     vector<int> node_list_vector = graph.get_node_list();
 
-     // SSPPR
-    auto start_ss = chrono::system_clock::now();
+    // SSPPR RWer 数
+    double delta_ss = 1/static_cast<double>(N);
+    int omega_ss = graph.calc_omega(delta_ss, eps);
 
-    for (int src_id : node_list_vector){
-        double delta = 1/N;
-        int walk_count = graph.calc_omega(delta, eps);
-        unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
-    }
+    cout << "SSPPR omega : " << omega_ss << endl;
 
-    auto end_ss = chrono::system_clock::now();
+    // BATON
 
-    chrono::duration<double> elapsed_ss = end_ss - start_ss;
-
-    cout << "SSPPR : " << elapsed_ss.count() << "sec" << endl;
-
-     // BATON
-    auto start_bt = chrono::system_clock::now();
-
+    double omega_bt = 0;
     for (int src_id : node_list_vector){
         int deg = graph.get_degree(src_id);
-        double delta = (alpha * (1 - alpha)) / deg;
+        double delta = (alpha * (1 - alpha)) / static_cast<double>(deg);
         int walk_count = graph.calc_omega(delta, eps);
-        unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
+        omega_bt += walk_count / static_cast<double>(N);
     }
 
-    auto end_bt = chrono::system_clock::now();
-
-    chrono::duration<double> elapsed_bt = end_bt - start_bt;
-
-    cout << "BATON : " << elapsed_bt.count() << "sec" << endl;
-
+    cout << "BATON omega : " << int(ceil(omega_bt)) << endl;
 
     // Proposed 1
-    auto start1 = chrono::system_clock::now();
-
-    for (int src_id : node_list_vector){
-        int walk_count = graph.calc_omega(alpha, eps);
-        unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
-    }
-
-    auto end1 = chrono::system_clock::now();
-
-    chrono::duration<double> elapsed = end1 - start1;
-
-    cout << "Proposed_1 : " << elapsed.count() << "sec" << endl;
+    int omega_1 = graph.calc_omega(alpha, eps);
+    cout << "Proposed_1 omega : " << omega_1 << endl;
 
 
     // Proposed 2
-    auto start2 = chrono::system_clock::now();
-
+    double omega_2 = 0;
     for (int src_id : node_list_vector){
         double delta = graph.determine_delta(src_id, alpha);
         int walk_count = graph.calc_omega(delta, eps);
-        unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
+        omega_2 += walk_count/static_cast<double>(N);   
     }
 
-    auto end2 = chrono::system_clock::now();
-
-    chrono::duration<double> elapsed2 = end2 - start2;
-
-    cout << "Proposed_2 : " << elapsed2.count() << "sec" << endl;  
+    cout << "Proposed_2 omega : " << int(ceil(omega_2)) << endl;
 
 
     return 0;
-
 }

@@ -65,6 +65,11 @@ class Graph{
         // delta を求める (α 以上)
         double determine_delta(int src_id, double alpha);
 
+        // 比較関数を定義
+        bool comareByValue(const pair<int, int>& a, const pair<int, int>& b){
+            return a.second > b.second; // 値で降順にソート
+        }
+
 
 };
 
