@@ -54,7 +54,7 @@ int main(int argc, char* argv[]){
     //int walk_count = 10000;
     double alpha = 0.15;
     double r_max_coef = 1;
-    double eps = 0.1;
+    double eps = 0.9;
 
     vector<int> node_list_vector = graph.get_node_list();
 

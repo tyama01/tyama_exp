@@ -17,7 +17,7 @@ from scipy.stats import kendalltau
 import pandas as pd
 
 
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps7/change_a.py
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps7/change_a_selfppr.py
 
 # -------------------------- データ読み込み -------------------------
 dataset_name = "facebook"
@@ -38,9 +38,31 @@ n = len(node_list)
 
 #------------------------------------------------------------------
 
-# PageRank 計算
-pr = nx.pagerank(G=G, alpha=0.15)
+# self_ppr PageRank 計算
 
+# self ppr 読み込み
+
+alpha = 15
+
+
+
+# self PPR 値を取得 {ノードID : Self PPR 値}
+pr = {}
+path = '../alpha_dir/' + dataset_name + '/selfppr_15_01.txt'
+with open(path) as f:
+    for line in f:
+        (id, val) = line.split()
+        pr[int(id)] = float(val)
+    
+# 正規化
+self_ppr_sum = 0
+
+for src in pr:
+    self_ppr_sum += pr[src]
+    
+for src_node in pr:
+        pr[src_node] /=  self_ppr_sum
+        
 pr_sort = sorted(pr.items(), key=lambda x:x[1], reverse=True)
 
 
@@ -65,7 +87,7 @@ for item in pr_sort:
 #------------------------------------------------------------------
 # Self PPR 読み込み　
 
-alpha_list = [5, 15]
+alpha_list = [5, 15, 30]
 
 # self_ppr_per_dic {alpha : {ID : SelfPPR値}　}
 
@@ -146,7 +168,7 @@ ax.set_facecolor("white")
 #ax.set_yscale('log')
 
 # x軸とy軸のラベルを設定する。
-ax.set_xlabel("PR 値", fontsize=14)
+ax.set_xlabel(r"($\alpha$=0.15)", fontsize=14)
 ax.set_ylabel(r"($\alpha$=0.05)/($\alpha$=0.15)", fontsize=14)
 
 
@@ -257,9 +279,6 @@ one_list_dic =  {com_id : [] for com_id in c_id}
 
 
 
-focus_alpha_1 = 5
-
-focus_alpha_2 = 15
 
 y = []
 for i in range(len(c_id)):

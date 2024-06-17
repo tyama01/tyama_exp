@@ -52,7 +52,7 @@ int main(int argc, char* argv[]){
 
     //int src_id = 0;
     //int walk_count = 10000;
-    double alpha = 0.15;
+    double alpha = 0.3;
     double r_max_coef = 1;
     double eps = 0.1;
 
@@ -92,7 +92,7 @@ int main(int argc, char* argv[]){
         return l.first < r.first;
     });
 
-     string result_path = "selfppr_15_01.txt";
+     string result_path = "selfppr_30_01.txt";
     ofstream ofs;
     ofs.open(result_path);
 
