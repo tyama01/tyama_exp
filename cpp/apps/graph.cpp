@@ -202,3 +202,33 @@ double Graph::determine_delta(int src_id, double alpha){
     return delta;
 
 }
+
+// 還流度 PR を計算
+const unordered_map<int, double> Graph::calc_selfpr_by_fora(double alpha, double eps, double r_max_coef){
+
+    int n = get_number_of_nodes();
+
+    vector<int> node_list_vec = get_node_list();
+
+    unordered_map<int, double> selfpr;
+
+    for (int id : node_list_vec){
+        selfpr[id] = 0;
+    }
+
+    for (int src_id : node_list_vec){
+        double delta = 1/static_cast<double>(n);
+        int walk_count = calc_omega(delta, eps);
+        unordered_map<int, double> ppr = calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
+        ppr[src_id] -= alpha;
+
+        for (auto [id, ppr_val] : ppr){
+            ppr[id] /= (1 - alpha);
+            selfpr[id] += ppr[id] / static_cast<double>(n);
+        }
+    }
+
+
+
+    return selfpr;
+}

@@ -16,7 +16,7 @@ import pandas as pd
 
 
 
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps7/selfppr_com_plot.py
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps7/selfpr_com_plot.py
 
 # -------------------------- データ読み込み -------------------------
 dataset_name = "facebook"
@@ -42,7 +42,7 @@ alpha = 15
 
 # self PPR 値を取得 {ノードID : Self PPR 値}
 self_ppr_val = {}
-path = '../alpha_dir/' + dataset_name + '/selfppr_5_01.txt'
+path = '../alpha_dir/' + dataset_name + '/selfppr_15_01.txt'
 with open(path) as f:
     for line in f:
         (id, val) = line.split()
@@ -61,54 +61,15 @@ for src_node in self_ppr_val:
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
-# コミュニティごとの PR を計算
+#  SelfPR を計算
 
-# コミュニティごとの PR 
-# {com_id : PR 値}
-com_pr = {}
+self_pr = dict()
 
-# コミュニティの密度
-com_density = {}
-
-total = 0
-
-for com_id in c_id:
-    
-    # そのコミュニティの部分グラフ
-    H = G.subgraph(c_id[com_id])
-    n_H = len(list(H.nodes))
-    
-    com_pr_before = nx.pagerank(H, alpha=0.85)
-    
-    # for id in com_pr_before:
-    #     com_pr_before[id] =  com_pr_before[id] / n_H
-            
-    #  正規化
-    com_before_sum = 0
-    for id in com_pr_before:
-        com_before_sum += com_pr_before[id]
-        
-    total += com_before_sum
-        
-    com_pr_after = {}
-        
-    for id in com_pr_before:
-        com_pr_after[id] = com_pr_before[id] / com_before_sum
-        
-    com_pr[com_id] = com_pr_before
-    
-    com_density[com_id] = 2*(H.number_of_edges()) / (n_H*(n_H-1))
-    
-
-    
-for com_id in c_id:
-    print(f"{com_id} density : {com_density[com_id]}")
-
-for com_id in c_id:
-    
-    for id in com_pr[com_id]:
-        
-        com_pr[com_id][id] /= total
+path = '../alpha_dir/' + dataset_name + '/selfpr_15_01.txt'
+with open(path) as f:
+    for line in f:
+        (id, val) = line.split()
+        self_pr[int(id)] = float(val)
     
 
 #------------------------------------------------------------------
@@ -137,16 +98,16 @@ for com_id in c_id:
 # {com_id : [Self PPR値]}
 per_com_self_ppr_dic = {com_id : [] for com_id in c_id}
 
-for com_id in c_id:
-    for id in com_pr[com_id]:
-        per_com_self_ppr_dic[com_id].append(self_ppr_val[id])
+
+for id in self_pr:
+    per_com_self_ppr_dic[id_c[id]].append(self_ppr_val[id])
 
 #{com_id : [ComPR値]}
 per_com_pr_dic = {com_id : [] for com_id in c_id}
 
-for com_id in c_id:
-    for id in com_pr[com_id]:
-        per_com_pr_dic[com_id].append(com_pr[com_id][id])
+
+for id in self_pr:
+    per_com_pr_dic[id_c[id]].append(self_pr[id])
 
 # per_com_clustering_dic = {com_id : [] for com_id in c_id}
 # for com_id in c_id:
@@ -183,8 +144,8 @@ ax.set_xscale('log')
 ax.set_yscale('log')
 
 # x軸とy軸のラベルを設定する。
-ax.set_xlabel(r"還流度 ($\alpha$=0.05)", fontsize=14)
-ax.set_ylabel(r"ComPR($\alpha$=0.15)", fontsize=14)
+ax.set_xlabel(r"還流度 ($\alpha$=0.15)", fontsize=14)
+ax.set_ylabel(r"SelfPR($\alpha$=0.15)", fontsize=14)
 
 
 y = []

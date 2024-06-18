@@ -13,7 +13,7 @@
 #include "../include/read.h"
 
 // Files to compile
-// c++ output_selfppr.cpp graph.cpp read.cpp -std=gnu++17 -O3 -march=native -o a.out 
+// c++ selfpr_main.cpp graph.cpp read.cpp -std=gnu++17 -O3 -march=native -o a.out 
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -50,39 +50,19 @@ int main(int argc, char* argv[]){
 
     // パラメータ
 
-    //int src_id = 0;
-    //int walk_count = 10000;
-    double alpha = 0.3;
+    double alpha = 0.1;
     double r_max_coef = 1;
     double eps = 0.1;
 
-    vector<int> node_list_vector = graph.get_node_list(); 
+    unordered_map<int, double> selfpr = graph.calc_selfpr_by_fora(alpha, eps, r_max_coef);
 
-    // self_ppr 値
-    unordered_map<int, double> self_ppr;
-
-    // Proposed 2
-    auto start2 = chrono::system_clock::now();
-
-
-    for (int src_id : node_list_vector){
-        double delta = graph.determine_delta(src_id, alpha);
-        int walk_count = graph.calc_omega(delta, eps);
-        unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
-        self_ppr[src_id] = (ppr[src_id] - alpha) / (1 - alpha);
-    }
-
-    auto end2 = chrono::system_clock::now();
-
-    chrono::duration<double> elapsed2 = end2 - start2;
-
-    cout << "Proposed_2 : " << elapsed2.count() << "sec" << endl;
+    cout << "End calc" << endl;
 
     // map valueソート して出力
     typedef pair<int, double> pair;
     vector<pair> vec;
 
-    copy(self_ppr.begin(), self_ppr.end(), back_inserter<vector<pair> >(vec));
+    copy(selfpr.begin(), selfpr.end(), back_inserter<vector<pair> >(vec));
 
     sort(vec.rbegin(), vec.rend(), [](const pair &l, const pair &r)
     {
@@ -92,7 +72,7 @@ int main(int argc, char* argv[]){
         return l.first < r.first;
     });
 
-    string result_path = "selfppr_30_01.txt";
+    string result_path = "selfpr_15_01.txt";
     ofstream ofs;
     ofs.open(result_path);
 

@@ -70,6 +70,8 @@ class Graph{
             return a.second > b.second; // 値で降順にソート
         }
 
+        // 還流度 PR を計算
+        const unordered_map<int, double> calc_selfpr_by_fora(double alpha, double eps, double r_max_coef);
 
 };
 
