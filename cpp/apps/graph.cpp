@@ -203,6 +203,24 @@ double Graph::determine_delta(int src_id, double alpha){
 
 }
 
+ /* top k 還流度順位の精度保証のために用いる関数たち */
+pair<double, double> Graph::calc_upper_and_lower_ppr(double ppr_val, double eps){
+
+    double upper_ppr = ppr_val / (1 - eps);
+    double lower_ppr = ppr_val / (1 + eps);
+
+    return make_pair(upper_ppr, lower_ppr);
+}
+
+double Graph::determine_new_eps(double ppr_val, double eps, double d){
+
+    double new_eps = (d - ppr_val * eps) / (ppr_val + d);
+
+    return new_eps;
+}
+
+
+
 // 還流度 PR を計算
 const unordered_map<int, double> Graph::calc_selfpr_by_fora(double alpha, double eps, double r_max_coef){
 

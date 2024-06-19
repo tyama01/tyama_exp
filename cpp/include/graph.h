@@ -65,10 +65,16 @@ class Graph{
         // delta を求める (α 以上)
         double determine_delta(int src_id, double alpha);
 
-        // 比較関数を定義
-        bool comareByValue(const pair<int, int>& a, const pair<int, int>& b){
-            return a.second > b.second; // 値で降順にソート
-        }
+        /* top k 還流度順位の精度保証のために用いる関数たち */
+
+        // ppr値 の上限と下限を求める関数
+        pair<double, double> calc_upper_and_lower_ppr(double ppr_val, double eps);
+
+        // new_eps を決定する関数
+        double determine_new_eps(double ppr_val, double eps, double d);
+
+
+
 
         // 還流度 PR を計算
         const unordered_map<int, double> calc_selfpr_by_fora(double alpha, double eps, double r_max_coef);
