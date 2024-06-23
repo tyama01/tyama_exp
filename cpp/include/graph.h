@@ -73,6 +73,9 @@ class Graph{
         // new_eps を決定する関数
         double determine_new_eps(double ppr_val, double eps, double d);
 
+        // new_eps を計算する関数 パート2
+        double calc_new_eps(double ppr_i, double ppr_i_1, double eps_i, double eps_i_1);
+
 
 
 

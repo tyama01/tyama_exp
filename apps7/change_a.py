@@ -325,7 +325,54 @@ plt.show()
 
 #------------------------------------------------------------------
 
+#------------------------------------------------------------------
+# PR と 還流度の増減比の一次近似
 
+# フォントを設定する。
+rcp['font.family'] = 'sans-serif'
+rcp['font.sans-serif'] = ['Hiragino Maru Gothic Pro', 'Yu Gothic', 'Meirio', 'Takao', 'IPAexGothic', 'IPAPGothic', 'VL PGothic', 'Noto Sans CJK JP']
 
+# カラーマップを用意する。
+cmap = plt.get_cmap("tab10")
 
+# Figureを作成する。
+fig = plt.figure()
+# Axesを作成する。
+ax = fig.add_subplot(111)
 
+# Figureの解像度と色を設定する。
+fig.set_dpi(150)
+fig.set_facecolor("white")
+
+# Axesのタイトルと色を設定する。
+#ax.set_title("物品の所有率")
+ax.set_facecolor("white")
+
+#ax.set_xscale('log')
+#ax.set_yscale('log')
+
+# x軸とy軸のラベルを設定する。
+ax.set_xlabel("コミュニティサイズ", fontsize=14)
+ax.set_ylabel("一次近似の傾き", fontsize=14)
+
+a_self_ppr_list_dic = dict()
+a_pr_val_sort_dic = dict()
+
+for com_id in labels_data:
+    a_self_ppr_list_dic[com_id] = np.array(self_ppr_list_dic[com_id])
+    a_pr_val_sort_dic[com_id] = np.array(pr_val_sort_dic[com_id])
+
+for com_id in labels_data:
+    a, b = np.polyfit(a_pr_val_sort_dic[com_id], a_self_ppr_list_dic[com_id], 1)
+    plt.plot(len(c_id[com_id]), a, marker = ".", label=str(com_id), markersize=20)
+    
+# グリッドを表示する。
+ax.set_axisbelow(True)
+ax.grid(True, "major", "x", linestyle="--")
+ax.grid(True, "major", "y", linestyle="--")
+
+plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+plt.tight_layout()
+plt.show()
+ 
+#------------------------------------------------------------------

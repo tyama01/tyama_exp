@@ -215,6 +215,18 @@ pair<double, double> Graph::calc_upper_and_lower_ppr(double ppr_val, double eps)
 double Graph::determine_new_eps(double ppr_val, double eps, double d){
 
     double new_eps = (d - ppr_val * eps) / (ppr_val + d);
+    //double new_eps = (d - ppr_val*eps*(1 - eps)/2)  / (ppr_val + d);
+
+
+    return new_eps;
+}
+
+double Graph::calc_new_eps(double ppr_i, double ppr_i_1, double eps_i, double eps_i_1){
+
+    double ppr_ratio = ppr_i_1 / ppr_i;
+    double eps_ratio = (1 + eps_i) / (1 + eps_i_1);
+    double new_eps = 1 - (ppr_ratio * eps_ratio);
+    //double new_eps = 1 - ppr_ratio;
 
     return new_eps;
 }

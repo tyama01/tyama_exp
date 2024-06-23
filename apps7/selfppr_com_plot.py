@@ -202,11 +202,11 @@ labels_data = labels_data.tolist()
 for com_id in labels_data:
     ax.scatter(per_com_self_ppr_dic[com_id], per_com_pr_dic[com_id], label = str(com_id))
     
-    s1 = pd.Series(per_com_self_ppr_dic[com_id])
-    s2 = pd.Series(per_com_pr_dic[com_id])
+    # s1 = pd.Series(per_com_self_ppr_dic[com_id])
+    # s2 = pd.Series(per_com_pr_dic[com_id])
         
-    res = s1.corr(s2)
-    print(f"{com_id} : {res}")
+    # res = s1.corr(s2)
+    # print(f"{com_id} : {res}")
     #ax.scatter(per_com_clustering_dic[com_id], per_com_pr_dic[com_id])
 
 #com_id = 6
@@ -225,6 +225,119 @@ plt.show()
 
 
 #------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# plot 縦軸： ComPR 値, 横軸： SelfPPR
+
+# フォントを設定する。
+rcp['font.family'] = 'sans-serif'
+rcp['font.sans-serif'] = ['Hiragino Maru Gothic Pro', 'Yu Gothic', 'Meirio', 'Takao', 'IPAexGothic', 'IPAPGothic', 'VL PGothic', 'Noto Sans CJK JP']
+
+# カラーマップを用意する。
+cmap = plt.get_cmap("tab10")
+
+# Figureを作成する。
+fig = plt.figure()
+# Axesを作成する。
+ax = fig.add_subplot(111)
+
+# Figureの解像度と色を設定する。
+fig.set_dpi(150)
+fig.set_facecolor("white")
+
+# Axesのタイトルと色を設定する。
+#ax.set_title("物品の所有率")
+ax.set_facecolor("white")
+
+#ax.set_xscale('log')
+#ax.set_yscale('log')
+
+# x軸とy軸のラベルを設定する。
+ax.set_xlabel(r"コミュニティサイズ", fontsize=14)
+ax.set_ylabel(r"相関係数", fontsize=14)
+
+for com_id in labels_data:
+    #ax.scatter(per_com_self_ppr_dic[com_id], per_com_pr_dic[com_id], label = str(com_id))
+    
+    s1 = pd.Series(per_com_self_ppr_dic[com_id])
+    s2 = pd.Series(per_com_pr_dic[com_id])
+    res = s1.corr(s2)
+    
+    
+    plt.plot(len(c_id[com_id]), res, marker = ".", label=str(com_id), markersize=20)
+    
+        
+    #res = s1.corr(s2)
+    #print(f"{com_id} : {res}")
+    
+# グリッドを表示する。
+ax.set_axisbelow(True)
+ax.grid(True, "major", "x", linestyle="--")
+ax.grid(True, "major", "y", linestyle="--")
+
+plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+plt.tight_layout()
+plt.show()
+ 
+
+
+#------------------------------------------------------------------
+# 相関係数ではなく 1次近似直線の傾きを見る plot
+
+# フォントを設定する。
+rcp['font.family'] = 'sans-serif'
+rcp['font.sans-serif'] = ['Hiragino Maru Gothic Pro', 'Yu Gothic', 'Meirio', 'Takao', 'IPAexGothic', 'IPAPGothic', 'VL PGothic', 'Noto Sans CJK JP']
+
+# カラーマップを用意する。
+cmap = plt.get_cmap("tab10")
+
+# Figureを作成する。
+fig = plt.figure()
+# Axesを作成する。
+ax = fig.add_subplot(111)
+
+# Figureの解像度と色を設定する。
+fig.set_dpi(150)
+fig.set_facecolor("white")
+
+# Axesのタイトルと色を設定する。
+#ax.set_title("物品の所有率")
+ax.set_facecolor("white")
+
+#ax.set_xscale('log')
+#ax.set_yscale('log')
+
+# x軸とy軸のラベルを設定する。
+ax.set_xlabel(r"コミュニティサイズ", fontsize=14)
+ax.set_ylabel(r"一次近似の傾き", fontsize=14)
+
+# list を numpy に変換
+a_com_per_self_ppr_dic = dict()
+a_per_com_pr_dic = dict()
+
+for com_id in labels_data:
+    a_com_per_self_ppr_dic[com_id] = np.array(per_com_self_ppr_dic[com_id])
+    a_per_com_pr_dic[com_id] = np.array(per_com_pr_dic[com_id])
+
+for com_id in labels_data:
+    a, b = np.polyfit(a_com_per_self_ppr_dic[com_id], a_per_com_pr_dic[com_id], 1)
+    plt.plot(len(c_id[com_id]), a, marker = ".", label=str(com_id), markersize=20)
+    
+    #print(f"{com_id} : {a}")
+    
+# グリッドを表示する。
+ax.set_axisbelow(True)
+ax.grid(True, "major", "x", linestyle="--")
+ax.grid(True, "major", "y", linestyle="--")
+
+plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+plt.tight_layout()
+plt.show()
+ 
+
+    
+#------------------------------------------------------------------
+
 
 # #------------------------------------------------------------------
 # # プロット 横軸：密度, 縦軸：相関係数
