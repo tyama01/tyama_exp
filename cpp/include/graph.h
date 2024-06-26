@@ -16,17 +16,19 @@
 #include <ctime>
 #include <cstdlib>
 #include <cmath>
+#include <bits/stdc++.h>
 // #define NDEBUG
 #include <cassert>
 
+using namespace std;
 using namespace std;
 
 class Graph{
     private:
         unordered_set<int> node_list_set;
         unordered_map<int, vector<int> > adj_list; // ノードid -> 隣接ノードのvector
-        double r_max_func(int degree, double alpha, int walk_count, double r_max_coef) const {
-            return (double)degree * r_max_coef / (alpha * (double)walk_count);
+        double r_max_func(int degree, double alpha, long long walk_count, double r_max_coef) const {
+            return (double)degree * r_max_coef / (alpha * (long double)walk_count);
         }
 
     public:
@@ -55,12 +57,12 @@ class Graph{
 
 
         // FORA 実装
-        const vector<int> get_random_walk_end_nodes(int src_id, int walk_count, double alpha);
-        const pair<unordered_map<int, double>, unordered_map<int, double> > calc_ppr_by_fp(int src_id, int walk_count, double alpha, double r_max_coef);
-        const unordered_map<int, double> calc_ppr_by_fora(int src_id, int walk_count, double alpha, double r_max_coef);
+        const vector<int> get_random_walk_end_nodes(int src_id, long long walk_count, double alpha);
+        const pair<unordered_map<int, double>, unordered_map<int, double> > calc_ppr_by_fp(int src_id, long long walk_count, double alpha, double r_max_coef);
+        const unordered_map<int, double> calc_ppr_by_fora(int src_id, long long walk_count, double alpha, double r_max_coef);
 
         // RWer 数を決める関数
-        int calc_omega(double delta, double eps);
+        long long calc_omega(double delta, double eps);
 
         // delta を求める (α 以上)
         double determine_delta(int src_id, double alpha);
@@ -81,6 +83,7 @@ class Graph{
 
         // 還流度 PR を計算
         const unordered_map<int, double> calc_selfpr_by_fora(double alpha, double eps, double r_max_coef);
+
 
 };
 

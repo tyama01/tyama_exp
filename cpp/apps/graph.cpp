@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <time.h>
+#include <bits/stdc++.h>
 #include "../include/graph.h"
 
 using namespace std;
@@ -84,7 +85,7 @@ const vector<int> Graph::get_node_list(){
  /* FORA 実装 */
 
 // RW した際の終点を記録 
-const vector<int> Graph::get_random_walk_end_nodes(int src_id, int walk_count, double alpha){
+const vector<int> Graph::get_random_walk_end_nodes(int src_id, long long walk_count, double alpha){
     vector<int> end_node_id_list;
     for (int i = 0; i < walk_count; i++){
         int current_node_id = src_id;
@@ -102,7 +103,7 @@ const vector<int> Graph::get_random_walk_end_nodes(int src_id, int walk_count, d
 
 
 // Forward Push
-const pair<unordered_map<int, double>, unordered_map<int, double>> Graph::calc_ppr_by_fp(int src_id, int walk_count, double alpha, double r_max_coef){
+const pair<unordered_map<int, double>, unordered_map<int, double>> Graph::calc_ppr_by_fp(int src_id, long long walk_count, double alpha, double r_max_coef){
     unordered_map<int, double> ppr, residue;
     unordered_set<int> active_node_set;
     queue<int> active_node_queue;
@@ -143,7 +144,7 @@ const pair<unordered_map<int, double>, unordered_map<int, double>> Graph::calc_p
 
 
 // FORA
-const unordered_map<int, double> Graph::calc_ppr_by_fora(int src_id, int walk_count, double alpha, double r_max_coef=1){
+const unordered_map<int, double> Graph::calc_ppr_by_fora(int src_id, long long walk_count, double alpha, double r_max_coef=1){
     pair<unordered_map<int, double>, unordered_map<int, double>> tmp = calc_ppr_by_fp(src_id, walk_count, alpha, r_max_coef);
     unordered_map<int, double> ppr = tmp.first;
     unordered_map<int, double> residure = tmp.second;
@@ -164,7 +165,7 @@ const unordered_map<int, double> Graph::calc_ppr_by_fora(int src_id, int walk_co
 }
 
  // RWer 数を決める関数
-int Graph::calc_omega(double delta, double eps){
+long long Graph::calc_omega(double delta, double eps){
 
     int n = get_number_of_nodes();
     double Pf = 1.0/ static_cast<double>(n);

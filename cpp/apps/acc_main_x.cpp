@@ -146,7 +146,7 @@ int main(int argc, char* argv[]){
 
     int flag = 1;
 
-    double omega_sum = 0;
+    long double omega_sum = 0;
     int cnt_node = 0;
 
     while(flag == 1){
@@ -169,14 +169,19 @@ int main(int argc, char* argv[]){
             double ppr_i_1_max = tmp_i_1.first;
 
 
+            
 
             if(ppr_i_min < ppr_i_1_max){
 
                 //double eps_para = ( (new_eps_map[top_k_node_list[i]] + new_eps_map[top_k_node_list[i+1]]) / (1 - new_eps_map[top_k_node_list[i+1]]) );
 
-                re_omega_id_list_set.insert(top_k_node_list[i+1]);
+                
+                if(d > 1e-05){
+                    re_omega_id_list_set.insert(top_k_node_list[i+1]);
+                    //re_omega_id_list_set.insert(top_k_node_list[i]);
 
-                id_map[top_k_node_list[i+1]] = top_k_node_list[i];
+                    id_map[top_k_node_list[i+1]] = top_k_node_list[i];
+                }
 
                 //if(ppr_i < ppr_i_1){
                 //if(top_k_self_ppr[top_k_node_list[i]] < top_k_self_ppr[top_k_node_list[i+1]]){
@@ -185,6 +190,7 @@ int main(int argc, char* argv[]){
                 //}
                 
             }
+            
         }
 
          // 再計算必要なくなったらループから抜ける
@@ -212,7 +218,7 @@ int main(int argc, char* argv[]){
 
                 double new_eps = graph.calc_new_eps(ppr_i, ppr_i_1, eps_i, eps_i_1);
 
-                if(new_eps < 0){
+                if(new_eps <= 0){
                     continue;
                     //cout << "Nooooooooooooooooooo!!" << endl;
                 }
@@ -221,18 +227,27 @@ int main(int argc, char* argv[]){
                     min_eps = new_eps;
                 }
 
-                new_eps_map[src_id] = new_eps;
+                if(min_eps > new_eps/10){
+                    min_eps = min_eps - 0.1 * min_eps;
+                }
 
 
-                cout << "ID :"<<  src_id << "-> eps : " << new_eps_map[src_id] << endl;
+                new_eps_map[src_id] = min_eps;
+
+
+                //cout << "ID :"<<  src_id << "-> eps : " << new_eps_map[src_id] << endl;
+                cout << new_eps_map[src_id] << endl;
+
                 double delta = graph.determine_delta(src_id, alpha);
-                int walk_count = graph.calc_omega(delta, new_eps_map[src_id]);
+                long long walk_count = graph.calc_omega(delta, new_eps_map[src_id]);
                 omega_sum += walk_count;
                 cnt_node += 1;
                 unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
                 top_k_self_ppr[src_id] = ppr[src_id];
             }
         }
+
+        cout << "------------- Loop End -----------------" << endl;
 
         vector<pair_sort> vec;
         copy(top_k_self_ppr.begin(), top_k_self_ppr.end(), back_inserter<vector<pair_sort> >(vec));
@@ -272,7 +287,7 @@ int main(int argc, char* argv[]){
 
     std::cout << "check times : " << cnt_node << endl;
 
-    std::cout << "Average omega : " << int(ceil(omega_sum/static_cast<double>(cnt_node))) << endl;
+    std::cout << "Average omega : " << static_cast<long long>(omega_sum/static_cast<double>(cnt_node)) << endl;
 
 
 

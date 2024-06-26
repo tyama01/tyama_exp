@@ -15,7 +15,7 @@ from scipy.stats import kendalltau
 import pandas as pd
 
 
-# /usr/bin/python3 /Users/tyama/tyama_exp/cpp/apps/plot_acc_omega.py
+# /usr/bin/python3 /Users/tyama/tyama_exp/cpp/plot/plot_acc_time.py
 
 #------------------------------------------------------------------
 
@@ -43,34 +43,28 @@ fig.set_facecolor("white")
 ax.set_facecolor("white")
 
 #ax.set_xscale('log')
-ax.set_yscale('log')
+#ax.set_yscale('log')
 
 # x軸とy軸のラベルを設定する。
 #ax.set_xlabel("$\u03b5$", fontsize=14)
-ax.set_ylabel("1ノード当たりに必要な平均RWer数", fontsize=14)
+ax.set_ylabel("実行時間 (sec)", fontsize=20)
 
 x = [1, 2]
-y = [21498, 232580]
+y = [8.2097, 4.74548]
 
 ax.bar(x, y, color=["blue", "red"])
 
-x_labels = ["$\u03b5$=0.1 で全ノードの還流度を計算", "top-100の精度保証"]
+x_labels = ["$\u03b5$=0.1で\n全ノードの\n還流度を計算", "top-100の\n精度保証 $\u0394$=1e$^-4$"]
 
 # ラベルの設定
-plt.xticks(x, x_labels)
-
-pos = [1, 10, 10**2, 10**3, 10**4, 10**5, 10**6]
-ax.set_yticks(pos)
-
-plt.ylim(0,10**6)
-
+plt.xticks(x, x_labels, fontsize = 18)
 
 # グリッドを表示する。
 ax.set_axisbelow(True)
 ax.grid(True, "major", "x", linestyle="--")
 ax.grid(True, "major", "y", linestyle="--")
 
-plt.legend()
+#plt.legend()
 plt.tight_layout()
 plt.show()
 

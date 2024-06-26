@@ -7,6 +7,7 @@
 #include <utility>
 #include <bits/stdc++.h> // iota
 #include <time.h> // time
+#include <math.h>
 #include <chrono>
 #include <thread>
 #include "../include/graph.h"
@@ -54,42 +55,42 @@ int main(int argc, char* argv[]){
     //int walk_count = 10000;
     double alpha = 0.15;
     double r_max_coef = 1;
-    double eps = 0.9;
+    double eps = 1.62e-05;
 
     vector<int> node_list_vector = graph.get_node_list();
 
     // SSPPR RWer 数
     double delta_ss = 1/static_cast<double>(N);
-    int omega_ss = graph.calc_omega(delta_ss, eps);
+    long long omega_ss = graph.calc_omega(delta_ss, eps);
 
     cout << "SSPPR omega : " << omega_ss << endl;
 
     // BATON
 
-    double omega_bt = 0;
+    long double omega_bt = 0;
     for (int src_id : node_list_vector){
         int deg = graph.get_degree(src_id);
         double delta = (alpha * (1 - alpha)) / static_cast<double>(deg);
-        int walk_count = graph.calc_omega(delta, eps);
+        long long walk_count = graph.calc_omega(delta, eps);
         omega_bt += walk_count / static_cast<double>(N);
     }
 
-    cout << "BATON omega : " << int(ceil(omega_bt)) << endl;
+    cout << "BATON omega : " << static_cast<long long>(omega_bt) << endl;
 
     // Proposed 1
-    int omega_1 = graph.calc_omega(alpha, eps);
+    long long omega_1 = graph.calc_omega(alpha, eps);
     cout << "Proposed_1 omega : " << omega_1 << endl;
 
 
     // Proposed 2
-    double omega_2 = 0;
+    long double omega_2 = 0;
     for (int src_id : node_list_vector){
         double delta = graph.determine_delta(src_id, alpha);
-        int walk_count = graph.calc_omega(delta, eps);
+        long long walk_count = graph.calc_omega(delta, eps);
         omega_2 += walk_count/static_cast<double>(N);   
     }
 
-    cout << "Proposed_2 omega : " << int(ceil(omega_2)) << endl;
+    cout << "Proposed_2 omega : " << static_cast<long long>(omega_2) << endl;
 
 
     return 0;
