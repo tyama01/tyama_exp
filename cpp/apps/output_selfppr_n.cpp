@@ -1,3 +1,5 @@
+// 還流度を正規化
+
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -13,7 +15,7 @@
 #include "../include/read.h"
 
 // Files to compile
-// c++ output_selfppr.cpp graph.cpp read.cpp -std=gnu++17 -O3 -march=native -o a.out 
+// c++ output_selfppr_n.cpp graph.cpp read.cpp -std=gnu++17 -O3 -march=native -o a.out 
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -56,6 +58,8 @@ int main(int argc, char* argv[]){
     double r_max_coef = 1;
     double eps = 0.1;
 
+    double self_ppr_sum = 0;
+
     vector<int> node_list_vector = graph.get_node_list(); 
 
     // self_ppr 値
@@ -70,6 +74,7 @@ int main(int argc, char* argv[]){
         int walk_count = graph.calc_omega(delta, eps);
         unordered_map<int, double> ppr = graph.calc_ppr_by_fora(src_id, walk_count, alpha, r_max_coef);
         self_ppr[src_id] = (ppr[src_id] - alpha) / (1 - alpha);
+        self_ppr_sum += self_ppr[src_id];
     }
 
     auto end2 = chrono::system_clock::now();
@@ -92,12 +97,12 @@ int main(int argc, char* argv[]){
         return l.first < r.first;
     });
 
-    string result_path = "selfppr_15_01.txt";
+    string result_path = "selfppr_15_01_n.txt";
     ofstream ofs;
     ofs.open(result_path);
 
     for(auto const &pair: vec){
-        ofs << pair.first << " " << pair.second << endl;
+        ofs << pair.first << " " << pair.second / self_ppr_sum << endl;
     }
 
 
