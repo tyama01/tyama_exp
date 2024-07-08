@@ -1,4 +1,4 @@
-// 還流度を正規化
+// 還流度 正規化した値で出力
 
 #include <fstream>
 #include <iostream>

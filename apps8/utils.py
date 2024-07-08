@@ -234,433 +234,69 @@ class FORA:
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
-# thenter Foward Push 実装
-
-class FP:
-    def __init__(self, G) -> dict:
-        self.G = G
-        self.node_list = list(self.G.nodes)
-        self.push_queue_dict = {node : False for node in list(self.G.nodes)}
-        self.residue = {node : 0 for node in self.node_list} # 残余
-        self.reserve = {node : 0 for node in self.node_list} # 確定値
-        
-    def calc_ppr_by_forward_push(self, source_node, alpha, eps):
-        
-        self.residue[source_node] = 1 # 初期値
-        q = deque([source_node])
-        
-        while q:
-            node = q.popleft()
-            neighbors = list(self.G.neighbors(node))
-            self.reserve[node] += self.residue[node] * alpha
-            if(len(neighbors) == 0):
-                self.residue[source_node] += self.residue[node] * (1 - alpha)
-                self.residue[node] = 0
-                continue
-            
-            push_val = self.residue[node] * (1 - alpha)
-            self.residue[node] = 0
-            
-            for nbr_node in neighbors:
-                nbr_val_old = self.residue[nbr_node]
-                self.residue[nbr_node] += push_val / len(neighbors)
-                nbr_neighbors = list(self.G.neighbors(nbr_node))
-                if nbr_val_old <= eps * len(nbr_neighbors) < self.residue[nbr_node]:
-                    q.append(nbr_node)
-                    
-        
-        # 正規化
-        sum_resurve = sum(self.reserve.values())
-        for node in self.reserve.keys():
-            self.reserve[node] /= sum_resurve
-            
-        return self.reserve
-                
-
-#------------------------------------------------------------------
 
 
+# エッジ還流度 演算
 
-
-
-
-
-#------------------------------------------------------------------
-
-# 自ノードのPPR 演算    
-class SelfPPR:
-    def __init__(self, G):
-        self.G = G    
-    
-    def get_paths(self, source_node, count, alpha):
-        paths = list()
-        #node_list = list(self.G.nodes)
-        
-        for _ in range(count):
-            current_node = source_node
-            path = []
-            while True:
-                if random.random() < alpha:
-                    break
-                neighbors = list(self.G.neighbors(current_node))
-                
-                if(len(neighbors) == 0): # 有向エッジがない場合は終了
-                    #random_index = random.randrange(len(node_list))
-                    #current_node = node_list[random_index]
-                    #path.append(current_node)
-                    
-                    current_node = source_node
-                    break
-                    #path.append(source_node)
-                    #continue
-                    
-                else:   
-                    random_index = random.randrange(len(neighbors))
-                    current_node = neighbors[random_index]
-                    path.append(current_node)
-                    
-                    # if(current_node == source_node):
-                    #     break
-                    
-            paths.append(path)
-            
-        return paths
-
-    
-    def get_visited_ratio(self, paths):
-        visited_count = dict()
-        for path in paths:
-            for node_id in path:
-                visited_count[node_id] = visited_count.get(node_id, 0) + 1
-        total_step = sum(visited_count.values())
-        visited_ratio = dict()
-        for node_id, count in visited_count.items():
-            visited_ratio[node_id] = count / total_step
-        return visited_ratio
-    
-    def calc_self_ppr_by_random_walk(self, source_id, count, alpha):
-        paths = self.get_paths(source_id, count, alpha)
-        visited_ratio = self.get_visited_ratio(paths)
-        
-        if source_id not in visited_ratio: # 自ノードに帰ってこない場合は self PPR 値は0
-            visited_ratio[source_id] = 0
-        
-        return visited_ratio
-        
-        # if source_id in visited_ratio:
-        #     return visited_ratio[source_id]
-        
-        # else:
-        #     return 0
-
-#------------------------------------------------------------------
-
-#------------------------------------------------------------------
-
-# 自ノードのPPR 演算    
-class SelfPPR_Reach:
-    def __init__(self, G):
-        self.G = G    
-    
-    def get_paths(self, source_node, count, alpha):
-        paths = list()
-        #node_list = list(self.G.nodes)
-        
-        for _ in range(count):
-            current_node = source_node
-            path = []
-            while True:
-                if random.random() < alpha:
-                    break
-                neighbors = list(self.G.neighbors(current_node))
-                
-                if(len(neighbors) == 0): # 有向エッジがない場合は終了
-                    #random_index = random.randrange(len(node_list))
-                    #current_node = node_list[random_index]
-                    #path.append(current_node)
-                    
-                    current_node = source_node
-                    break
-                    #path.append(source_node)
-                    #continue
-                    
-                else:   
-                    random_index = random.randrange(len(neighbors))
-                    current_node = neighbors[random_index]
-                    path.append(current_node)
-                    
-                    if(current_node == source_node):
-                        break
-                    
-            paths.append(path)
-            
-        return paths
-
-    
-    def get_visited_ratio(self, paths):
-        visited_count = dict()
-        for path in paths:
-            for node_id in path:
-                visited_count[node_id] = visited_count.get(node_id, 0) + 1
-        total_step = sum(visited_count.values())
-        visited_ratio = dict()
-        for node_id, count in visited_count.items():
-            visited_ratio[node_id] = count / total_step
-        return visited_ratio
-    
-    def calc_self_ppr_by_random_walk(self, source_id, count, alpha):
-        paths = self.get_paths(source_id, count, alpha)
-        visited_ratio = self.get_visited_ratio(paths)
-        
-        if source_id not in visited_ratio: # 自ノードに帰ってこない場合は self PPR 値は0
-            visited_ratio[source_id] = 0
-        
-        return visited_ratio
-        
-        # if source_id in visited_ratio:
-        #     return visited_ratio[source_id]
-        
-        # else:
-        #     return 0
-
-#------------------------------------------------------------------
-
-#------------------------------------------------------------------
-## PPR から PR 演算
-class PR:
+class EPPR:
     def __init__(self, G):
         self.G = G
+        self.edge_list = list(self.G.edges())
         
-    def calc_pr_by_ppr(self, ppr_dic, node_list, alpha, is_directed):
-        n = len(node_list)
-        pr = {target_node : 0 for target_node in ppr_dic}
+    
+    # エッジ還流度を計算 (次数 1を含むエッジは除く)    
+    def calc_edge_selfppr(self, node_selfppr):
         
+        edge_selfppr = {}
         
-        for src_node in ppr_dic:
-            for target_node in ppr_dic[src_node]:
-                pr[target_node] += ppr_dic[src_node][target_node] / n
-                
-        return pr
-                    
-               
-        # 有向グラフの場合 dangling ノードのスコア分配をやると逆に精度が悪くなる、、、        
-        if(is_directed):
-                
-            # dangling ノードを検出、スコアも再定義
-            dangling_score_list = []
-            for node in node_list:
-                if(self.G.out_degree[node] == 0):
-                    dangling_score = pr[node] / n
-                    dangling_score_list.append(dangling_score)
-                    pr[node] = 0
-                else:
-                    continue
-                
-            #print(f"dangling num : {len(dangling_score_list)}")
-            #print(f"danglng score : {dangling_score_list[0]}")
+        for edge in self.edge_list:
             
-            # ダングリングノードに溜まったスコアを分配        
-            for dangling_score in dangling_score_list:
-                for node in node_list:
-                    pr[node] += dangling_score
-                    
-            return pr
-        
-        # 無向グラフの場合
-        else:    
-            return pr
-        
-        
-
-#------------------------------------------------------------------
-
-#------------------------------------------------------------------
-# 自ノードに何ホップで帰ってきたかを 計測する RW 到達しても RWer は死亡しない
-
-class SelfRW:
-    def __init__(self, G):
-        self.G = G
-        
-    def calc_come_back_num(self, source_node, rwer_num, hop_num):
-        
-        # {n hop : 自ノードに帰ってきたRWer数}
-        come_back_dic = {n : 0 for n in range(hop_num+1)}
-        
-        # 全ホップ数 総和
-        total_hop_num = 0
-        
-        for _ in range(rwer_num):
+            edge_selfppr_val = 0
+            flag = 1
             
-            # 現在のノード
-            current_node = source_node
-            
-            # 現在の歩数
-            current_hop_num = 0
-            
-            while current_hop_num < hop_num:
+            for id in edge:
                 
-                neighbors = list(self.G.neighbors(current_node)) 
+                neighbors_list = list(self.G.neighbors(id))
+                neighbors_num = len(neighbors_list)
                 
-                # 有向グラフの場合 隣接ノードがない場合は RW を終了
-                if (len(neighbors) == 0):
-                    current_node = source_node
+                # 次数 1 のやつは除く
+                if(neighbors_num == 1):
+                    flag = 0
                     break
                 
-                else:
-                    random_index = random.randrange(len(neighbors))
-                    current_node = neighbors[random_index]
-                    
-                    current_hop_num += 1
-                    
-                    if(source_node == current_node):
-                        come_back_dic[current_hop_num] += 1
-        
-            total_hop_num += current_hop_num
-                        
-        
-        return come_back_dic
-        
-    def calc_cumulative_sum_by_self_rw(self, source_node, rwer_num, hop_num):
-        
-        # hop ごとの RWer 数の累積和
-        cumulative_sum_dic = {n : 0 for n in range(hop_num+1)}
-        
-        come_back_dic = self.calc_come_back_num(source_node, rwer_num, hop_num)
-        
-        come_back_list = []
-        
-        for tmp_key in come_back_dic:
-            come_back_list.append(come_back_dic[tmp_key])
+                # ノード の還流度 / そのノードの出次数
+                edge_selfppr_val += node_selfppr[id] / neighbors_num
             
-        
-        cumulative_list = []
-        i = 0
-        current_hop_num = 0
-        
-        
-        for num in itertools.accumulate(come_back_list):
-            cumulative_sum_dic[i] = num
-            if current_hop_num == 0:
-                cumulative_list.append(num)
+            if (flag == 1):    
+                edge_selfppr[edge] = edge_selfppr_val
             
-            else:
-                cumulative_list.append(num / (rwer_num * current_hop_num))
             
-            i+=1
-            current_hop_num += 1
-            
-        #return cumulative_sum_dic
-        
-        return cumulative_list
+        return edge_selfppr
     
-    def calc_area(self, cumlative_list):
-        
-        # 面積を格納したリスト
-        area_list = []
-        area_sum = 0
-        
-        for i in range(1, len(cumlative_list)):
-            area = cumlative_list[i - 1] + (cumlative_list[i]-cumlative_list[i-1])/2
-            area_sum += area
-            area_list.append(area_sum)
     
-        return area_list
+    
+    # 還流度の低いエッジを削除していってコミュニティを取得, ただし、次数 1 のやつはスルー
+    def get_community_sub_graph(self, edge_selfppr, k):
+        
+        # # 元グラフの情報を保持しておきたい
+        # G_copy = self.G.copy()
+        
+        c = 0
+        
+        # エッジ還流度が低い順からエッジを削除
+        for tmp in sorted(edge_selfppr.items(), key=lambda x:x[1], reverse=False):
+            print(tmp[1])
             
-
-
-
+            c += 1
+            
+            if(c > k):
+                break
+        
+        
+        return 0
+    
+    
 #------------------------------------------------------------------
-
-#------------------------------------------------------------------
-# 自ノードに何ホップで帰ってきたかを 計測する RW 到達したら RWer は死亡
-
-class SelfRW_Reach:
-    def __init__(self, G):
-        self.G = G
-        
-    def calc_come_back_num(self, source_node, rwer_num, hop_num):
-        
-        # {n hop : 自ノードに帰ってきたRWer数}
-        come_back_dic = {n : 0 for n in range(hop_num+1)}
-        
-        # 全ホップ数 総和
-        total_hop_num = 0
-        
-        for _ in range(rwer_num):
-            
-            # 現在のノード
-            current_node = source_node
-            
-            # 現在の歩数
-            current_hop_num = 0
-            
-            while current_hop_num < hop_num:
-                
-                neighbors = list(self.G.neighbors(current_node)) 
-                
-                # 有向グラフの場合 隣接ノードがない場合は RW を終了
-                if (len(neighbors) == 0):
-                    current_node = source_node
-                    break
-                
-                else:
-                    random_index = random.randrange(len(neighbors))
-                    current_node = neighbors[random_index]
-                    
-                    current_hop_num += 1
-                    
-                    if(source_node == current_node):
-                        come_back_dic[current_hop_num] += 1
-                        
-                        break
-        
-            total_hop_num += current_hop_num
-                        
-        
-        return come_back_dic
-        
-    def calc_cumulative_sum_by_self_rw(self, source_node, rwer_num, hop_num):
-        
-        # hop ごとの RWer 数の累積和
-        cumulative_sum_dic = {n : 0 for n in range(hop_num+1)}
-        
-        come_back_dic = self.calc_come_back_num(source_node, rwer_num, hop_num)
-        
-        come_back_list = []
-        
-        for tmp_key in come_back_dic:
-            come_back_list.append(come_back_dic[tmp_key])
-            
-        
-        cumulative_list = []
-        i = 0
-        for num in itertools.accumulate(come_back_list):
-            cumulative_sum_dic[i] = num
-            cumulative_list.append(num/rwer_num)
-            i+=1
-            
-        #return cumulative_sum_dic
-        
-        return cumulative_list
-    
-    def calc_area(self, cumlative_list):
-        
-        # 面積を格納したリスト
-        area_list = []
-        area_sum = 0
-        
-        for i in range(1, len(cumlative_list)):
-            area = cumlative_list[i - 1] + (cumlative_list[i]-cumlative_list[i-1])/2
-            area_sum += area
-            area_list.append(area_sum)
-    
-        return area_list
-            
-
-
-
-#------------------------------------------------------------------
-
 
 
 
