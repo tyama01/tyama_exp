@@ -276,24 +276,90 @@ class EPPR:
     
     
     # 還流度の低いエッジを削除していってコミュニティを取得, ただし、次数 1 のやつはスルー
-    def get_community_sub_graph(self, edge_selfppr, k):
+    def get_community_sub_graph_nodes(self, edge_selfppr, k):
         
-        # # 元グラフの情報を保持しておきたい
-        # G_copy = self.G.copy()
+        # 元グラフの情報を保持しておきたい
+        G_copy = self.G.copy()
         
-        c = 0
+        Gcc = sorted(nx.connected_components(G_copy), key=len, reverse=True)    
+        
+        
         
         # エッジ還流度が低い順からエッジを削除
         for tmp in sorted(edge_selfppr.items(), key=lambda x:x[1], reverse=False):
-            print(tmp[1])
+            #print(tmp[1])
             
-            c += 1
+            # エッジ削除
+            node_a_deg = len(list(G_copy.neighbors(tmp[0][0])))
+            node_b_deg = len(list(G_copy.neighbors(tmp[0][1])))
             
-            if(c > k):
+            if(node_a_deg == 1 or node_b_deg == 1):
+                continue
+            
+            G_copy.remove_edge(*tmp[0])
+            
+            Gcc = sorted(nx.connected_components(G_copy), key=len, reverse=True)
+            
+            if(len(Gcc) == k):
                 break
+            
+    
+        return Gcc
+    
+    
+    # 提案手法で得られた分割のモジュラリティを計算
+    def calc_modularity(self, edge_selfppr, k):
+        
+        # 元グラフの情報を保持しておきたい
+        G_copy = self.G.copy()
+        
+        Gcc = sorted(nx.connected_components(G_copy), key=len, reverse=True)    
         
         
-        return 0
+        
+        # エッジ還流度が低い順からエッジを削除
+        for tmp in sorted(edge_selfppr.items(), key=lambda x:x[1], reverse=False):
+            #print(tmp[1])
+            
+            # 連結成分数
+            min_c_num = len(Gcc)
+            
+            # エッジ削除
+            node_a_deg = len(list(G_copy.neighbors(tmp[0][0])))
+            node_b_deg = len(list(G_copy.neighbors(tmp[0][1])))
+            
+            if(node_a_deg == 1 or node_b_deg == 1):
+                continue
+            
+            # if(tmp[0][0] not in Gcc[0] or tmp[0][1] not in Gcc[0]):
+            #     #print("Nooooooooooooooo!!")
+            #     continue
+            
+            G_copy.remove_edge(*tmp[0])
+            
+            Gcc = sorted(nx.connected_components(G_copy), key=len, reverse=True)
+            
+            Gcc_min = Gcc[-1]
+            
+            if(len(Gcc_min) < 10):
+                G_copy.add_edge(*tmp[0])
+                continue
+            
+            if(len(Gcc) > min_c_num):
+                part = []
+                
+                for group_nodes in Gcc:
+                    part.append(group_nodes)
+                    
+                print(f"{min_c_num} : {nx.community.modularity(self.G, part)}")
+                                
+                
+            if(len(Gcc) == k):
+                break
+            
+    
+        return Gcc
+        
     
     
 #------------------------------------------------------------------

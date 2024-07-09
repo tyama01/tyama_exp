@@ -30,7 +30,7 @@ n = len(node_list)
 # 還流度読み込み
 # self PPR 値を取得 {ノードID : Self PPR 値}
 node_selfppr = {}
-path = '../alpha_dir/' + dataset_name + '/selfppr_15_01_n.txt' # n の場合は正規化されている
+path = '../alpha_dir/' + dataset_name + '/selfppr_10_01_n.txt' # n の場合は正規化されている
 with open(path) as f:
     for line in f:
         (id, val) = line.split()
@@ -49,21 +49,19 @@ edge_selfppr = eppr_obj.calc_edge_selfppr(node_selfppr=node_selfppr)
 print("End Calc Edge_selfPPR")
 #print(len(edge_selfppr))
 
-eppr_obj.get_community_sub_graph(edge_selfppr, k=5)
+#Gcc = eppr_obj.get_community_sub_graph_nodes(edge_selfppr, k=1000)
+
+# モジュラリティを計算
+Gcc = eppr_obj.calc_modularity(edge_selfppr, k=1000)
+
+print(f"commponent num : {len(Gcc)}") # 変更後のグラフ
 
 
-#------------------------------------------------------------------
 
-#------------------------------------------------------------------
-
-
-# for tmp in sorted(edge_selfppr.items(), key=lambda x:x[1], reverse=True):
-#     print(f"({tmp[0][0]}, {tmp[0][1]}) : {tmp[1]}")
+# # コミュニティサイズ出力
+# for i in range(len(Gcc)):
+#     print(len(Gcc[i]))
     
-# print("End")
+
 
 #------------------------------------------------------------------
-
-
-
-
