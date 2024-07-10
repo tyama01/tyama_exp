@@ -313,7 +313,9 @@ class EPPR:
         # 元グラフの情報を保持しておきたい
         G_copy = self.G.copy()
         
-        Gcc = sorted(nx.connected_components(G_copy), key=len, reverse=True)    
+        Gcc = sorted(nx.connected_components(G_copy), key=len, reverse=True)
+        
+        mod_list = []    
         
         
         
@@ -343,7 +345,10 @@ class EPPR:
             
             if(len(Gcc_min) < 10):
                 G_copy.add_edge(*tmp[0])
-                continue
+                
+            Gcc = sorted(nx.connected_components(G_copy), key=len, reverse=True)
+            
+            
             
             if(len(Gcc) > min_c_num):
                 part = []
@@ -351,14 +356,15 @@ class EPPR:
                 for group_nodes in Gcc:
                     part.append(group_nodes)
                     
-                print(f"{min_c_num} : {nx.community.modularity(self.G, part)}")
+                #print(f"{min_c_num} : {nx.community.modularity(self.G, part)}")
+                mod_list.append(nx.community.modularity(self.G, part))
                                 
-                
+                    
             if(len(Gcc) == k):
                 break
             
     
-        return Gcc
+        return Gcc, mod_list
         
     
     
