@@ -244,7 +244,7 @@ class EPPR:
         self.edge_list = list(self.G.edges())
         
     
-    # エッジ還流度を計算 (次数 1を含むエッジは除く)    
+    # エッジ還流度を計算    
     def calc_edge_selfppr(self, node_selfppr):
         
         edge_selfppr = {}
@@ -259,10 +259,10 @@ class EPPR:
                 neighbors_list = list(self.G.neighbors(id))
                 neighbors_num = len(neighbors_list)
                 
-                # 次数 1 のやつは除く
-                if(neighbors_num == 1):
-                    flag = 0
-                    break
+                # # 次数 1 のやつは除く
+                # if(neighbors_num == 1):
+                #     flag = 0
+                #     break
                 
                 # ノード の還流度 / そのノードの出次数
                 edge_selfppr_val += node_selfppr[id] / neighbors_num
@@ -281,13 +281,22 @@ class EPPR:
         # 元グラフの情報を保持しておきたい
         G_copy = self.G.copy()
         
-        Gcc = sorted(nx.connected_components(G_copy), key=len, reverse=True)    
+        group_nodes_list = []
+        
+        Gcc = sorted(nx.connected_components(G_copy), key=len, reverse=True)
+        
+        e = 0    
         
         
         
         # エッジ還流度が低い順からエッジを削除
         for tmp in sorted(edge_selfppr.items(), key=lambda x:x[1], reverse=False):
             #print(tmp[1])
+            
+            node_list = list(G_copy.nodes)
+            
+            if((tmp[0][0] not in node_list) or (tmp[0][1] not in node_list)):
+                continue
             
             # エッジ削除
             node_a_deg = len(list(G_copy.neighbors(tmp[0][0])))
@@ -297,14 +306,36 @@ class EPPR:
                 continue
             
             G_copy.remove_edge(*tmp[0])
+            e += 1
+            print(f"delete : {e}")
             
             Gcc = sorted(nx.connected_components(G_copy), key=len, reverse=True)
             
-            if(len(Gcc) == k):
+            Gcc_min = Gcc[-1]
+            
+            # # 連結成分数
+            # min_c_num = len(Gcc)
+            
+            if(len(Gcc_min) < 50):
+                G_copy.add_edge(*tmp[0])
+                
+                e -= 1
+                print(f"add : {e}")
+                
+                continue
+                
+            if(len(Gcc) >= 2):
+                group_nodes_list.append(Gcc_min)    
+                G_copy.remove_nodes_from(Gcc_min)
+                print("##############################################")
+            
+            
+            if(len(group_nodes_list) >= k - 1):
+                group_nodes_list.append(Gcc[0])
                 break
             
     
-        return Gcc
+        return group_nodes_list
     
     
     # 提案手法で得られた分割のモジュラリティを計算
@@ -358,9 +389,10 @@ class EPPR:
                     
                 #print(f"{min_c_num} : {nx.community.modularity(self.G, part)}")
                 mod_list.append(nx.community.modularity(self.G, part))
+            
                                 
                     
-            if(len(Gcc) == k):
+            if(len(Gcc) >= k):
                 break
             
     

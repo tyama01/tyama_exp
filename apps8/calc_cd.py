@@ -1,3 +1,5 @@
+# コンダクタンス　を計算するコード
+
 # モジュラリティを計算するコード
 
 from utils import *
@@ -15,7 +17,7 @@ from scipy.stats import kendalltau
 import pandas as pd
 
 
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps8/calc_mod.py
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps8/calc_cd.py
 
 # -------------------------- データ読み込み -------------------------
 dataset_name = "facebook"
@@ -42,7 +44,8 @@ for com_id in c_id:
     part.append(c_id[com_id])
     
 #print(len(part))
-print(nx.community.modularity(G, part))
+for i in range(len(part)):
+    print(f"{len(part[i])} : {nx.conductance(G, part[i])}")
 
 #------------------------------------------------------------------
 

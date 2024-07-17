@@ -13,7 +13,7 @@ from scipy.stats import kendalltau
 import pandas as pd
 
 
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps8/test.py
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps8/test_mod.py
 
 # -------------------------- データ読み込み -------------------------
 dataset_name = "facebook"
