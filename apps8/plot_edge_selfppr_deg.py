@@ -117,6 +117,8 @@ for tmp in sorted(edge_selfppr.items(), key=lambda x:x[1], reverse=False):
         com_bound_max_deg_list = np.append(com_bound_max_deg_list, max(deg_list))
         com_bound_min_deg_list = np.append(com_bound_min_deg_list, min(deg_list))
         
+        #print(f"max degree: {max(deg_list)}, min degree : {min(deg_list)}")
+        
         # コミュニティ内エッジ
         other_max_deg_list = np.append(other_max_deg_list, np.nan)
         other_min_deg_list = np.append(other_min_deg_list, np.nan)
@@ -129,11 +131,11 @@ for tmp in sorted(edge_selfppr.items(), key=lambda x:x[1], reverse=False):
         other_max_deg_list = np.append(other_max_deg_list, max(deg_list))
         other_min_deg_list = np.append(other_min_deg_list, min(deg_list))
         
-print(len(x))
-print(len(com_bound_max_deg_list))
-print(len(com_bound_min_deg_list))
-print(len(other_max_deg_list))
-print(len(other_min_deg_list))
+# print(len(x))
+# print(len(com_bound_max_deg_list))
+# print(len(com_bound_min_deg_list))
+# print(len(other_max_deg_list))
+# print(len(other_min_deg_list))
     
 #------------------------------------------------------------------
 
@@ -174,12 +176,12 @@ range_x = len(edge_selfppr)
 
 s = 80
 
-ax.scatter(x[:range_x], other_max_deg_list[:range_x], label="コミュニティ内エッジ 最大次数", s=s, alpha=alpha, c="blue", marker = '^')
-ax.scatter(x[:range_x], other_min_deg_list[:range_x], label="コミュニティ内エッジ 最小次数", s=s, alpha=alpha, c="blue", marker="v")
+ax.scatter(x[:range_x], other_max_deg_list[:range_x], label="コミュニティ内エッジ 大きい方の次数", s=s, alpha=alpha, c="blue", marker = '^')
+ax.scatter(x[:range_x], other_min_deg_list[:range_x], label="コミュニティ内エッジ 小さい方の次数", s=s, alpha=alpha, c="blue", marker="v")
 
 #ax.scatter(x[:range_x], deg_1_edge_list[:range_x], label="次数1を含むエッジ", s=10, alpha=alpha)
-#ax.scatter(x[:range_x], com_bound_max_deg_list[:range_x], label="コミュニティ間エッジ 最大次数", s=s, alpha=alpha, c="red", marker="^")
-#ax.scatter(x[:range_x], com_bound_max_deg_list[:range_x], label="コミュニティ間エッジ 最小次数", s=s, alpha=alpha, c= "red", marker="v")
+ax.scatter(x[:range_x], com_bound_max_deg_list[:range_x], label="コミュニティ間エッジ 大きい方の次数", s=s, alpha=alpha, c="red", marker="^")
+ax.scatter(x[:range_x], com_bound_min_deg_list[:range_x], label="コミュニティ間エッジ 小さい方の次数", s=s, alpha=alpha, c= "red", marker="v")
 
 # グリッドを表示する。
 ax.set_axisbelow(True)
