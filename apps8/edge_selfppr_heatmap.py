@@ -19,7 +19,7 @@ import pandas as pd
 # /usr/bin/python3 /Users/tyama/tyama_exp/apps8/edge_selfppr_heatmap.py
 
 # -------------------------- データ読み込み -------------------------
-dataset_name = "sbm03"
+dataset_name = "sbm100"
 data_loader = DataLoader(dataset_name, is_directed=False)
 G = data_loader.get_graph()
 print(G) # グラフのノード数、エッジ数出力

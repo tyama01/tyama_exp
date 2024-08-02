@@ -21,7 +21,7 @@ import pandas as pd
 
 # パラメータ設定
 ## 対角成分（クラスタ内）を密に、他を疎にしています。
-sizes = [100, 200, 300]
+sizes = [100, 100, 100]
 probs = [
     [0.3, 0.003, 0.003], 
     [0.003, 0.3, 0.003],
@@ -32,6 +32,6 @@ G = nx.stochastic_block_model(sizes, probs, seed=0)
 print(G)
 
 # 出力
-nx.write_edgelist(G, "../datasets/sbm03.txt", data=False)
+nx.write_edgelist(G, "../datasets/sbm100.txt", data=False)
 
 #------------------------------------------------------------------

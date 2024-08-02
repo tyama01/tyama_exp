@@ -117,9 +117,13 @@ for tmp in sorted(edge_selfppr.items(), key=lambda x:x[1], reverse=False):
     A[tmp[0][0]][tmp[0][1]] = tmp[1] * 100000000000000
     A[tmp[0][1]][tmp[0][0]] = tmp[1] * 100000000000000
     
+    
+    # A[tmp[0][0]][tmp[0][1]] = 1 * 100000000000000
+    # A[tmp[0][1]][tmp[0][0]] = 1 * 100000000000000
+    
 print("-----------------------------------")
 
-n_components = 20
+n_components = 17
 
 # 最適なSNMFを適用して行列Rを取得
 R = best_snmf(A, n_components)
