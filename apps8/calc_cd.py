@@ -43,7 +43,7 @@ part = []
 for com_id in c_id:
     part.append(c_id[com_id])
     
-#print(len(part))
+print(len(part))
 for i in range(len(part)):
     print(f"{len(part[i])} : {nx.conductance(G, part[i])}")
 

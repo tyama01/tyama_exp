@@ -41,7 +41,7 @@ part = []
 for com_id in c_id:
     part.append(c_id[com_id])
     
-#print(len(part))
+print(len(part))
 print(nx.community.modularity(G, part))
 
 #------------------------------------------------------------------

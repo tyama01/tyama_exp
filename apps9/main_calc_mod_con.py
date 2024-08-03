@@ -1,4 +1,4 @@
-# SNMF 仮実装 ver 2
+# tyama 手法のモジュラリティとコンダクタンスを調査
 
 from utils import *
 import networkx as nx
@@ -16,48 +16,7 @@ from sklearn.preprocessing import normalize
 
 import pandas as pd
 
-
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps8/snmf_test2.py
-
-#------------------------------------------------------------------
-
-def snmf(A, n_components, max_iter=200, tol=1e-4, random_state=None):
-    if random_state is not None:
-        np.random.seed(random_state)
-    
-    n = A.shape[0]
-    R = np.random.rand(n, n_components)
-    
-    for iteration in range(max_iter):
-        R_old = R.copy()
-        
-        numerator = A @ R
-        denominator = R @ (R.T @ R) + 1e-9
-        
-        R *= numerator / denominator
-        
-        if np.linalg.norm(R - R_old, 'fro') < tol:
-            break
-
-    return R
-
-def best_snmf(A, n_components, max_iter=200, tol=1e-4, n_runs=10):
-    best_R = None
-    best_obj_value = float('inf')
-    
-    for i in range(n_runs):
-        R = snmf(A, n_components, max_iter, tol, random_state=i)
-        
-        obj_value = np.linalg.norm(A - R @ R.T, 'fro')
-        
-        if obj_value < best_obj_value:
-            best_obj_value = obj_value
-            best_R = R
-
-    return best_R
-
-
-#------------------------------------------------------------------
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps9/main_calc_mod_con.py
 
 # -------------------------- データ読み込み -------------------------
 dataset_name = "facebook"
@@ -79,8 +38,11 @@ print("-----------------------------------")
 node_list = list(G.nodes)
 n = len(node_list)
 
-#------------------------------------------------------------------
+edge_list = list(G.edges())
 
+#print(edge_list)
+
+#------------------------------------------------------------------
 
 #------------------------------------------------------------------
 # ノード還流度読み込み
@@ -96,37 +58,37 @@ with open(path) as f:
 
 #------------------------------------------------------------------
 
+pr = nx.pagerank(G=G, alpha=0.9)
+
 # エッジ還流度計算
 
 eppr_obj = EPPR(G)
 
 
-edge_selfppr = eppr_obj.calc_edge_selfppr(node_selfppr=node_selfppr)
+edge_selfppr = eppr_obj.calc_edge_selfppr(node_selfppr=pr)
 
 print("End Calc Edge_selfPPR")
 
+print(len(edge_selfppr))
+
 #------------------------------------------------------------------
 
-
 #------------------------------------------------------------------
-# 演算してみる
+# NMF を適用
 
-A = nx.to_numpy_array(G)
+# 隣接行列を取得
+A = data_loader.get_adj_matrix(is_directed=False)
+print("Complete convert G to A")
 
-for tmp in sorted(edge_selfppr.items(), key=lambda x:x[1], reverse=False):    
-    A[tmp[0][0]][tmp[0][1]] = tmp[1] * 100000000000000
-    A[tmp[0][1]][tmp[0][0]] = tmp[1] * 100000000000000
+# 還流度行列
+S = data_loader.get_adj_matrix(is_directed=False)
+#S = nx.to_numpy_array(G)
+for tmp in sorted(edge_selfppr.items(), key=lambda x:x[1], reverse=False):
+    S[tmp[0][0]][tmp[0][1]] = tmp[1]
+    S[tmp[0][1]][tmp[0][0]] = tmp[1]
     
-    
-    # A[tmp[0][0]][tmp[0][1]] = 1 * 100000000000000
-    # A[tmp[0][1]][tmp[0][0]] = 1 * 100000000000000
-    
-print("-----------------------------------")
-
-n_components = 18
-
-# 最適なSNMFを適用して行列Rを取得
-R = best_snmf(A, n_components)
+snmf_obj = SNMF(S)
+R = snmf_obj.get_best_Rvec(k=16) 
 
 print(R.shape)
 #print(R)
@@ -134,11 +96,6 @@ print(R.shape)
 R_normalized = normalize(R, norm='l1', axis=1)
 
 print("Normalized Matrix R (membership probabilities):")
-# print(R_normalized)
-
-# # 各ノードのコミュニティ所属確率の表示
-# for node in range(R_normalized.shape[0]):
-#     print(f"Node {node}: {R_normalized[node]}")
 
 # コミュニティの抽出
 communities = np.argmax(R, axis=1)
@@ -153,8 +110,7 @@ for node, community in enumerate(communities):
 for com_id in node_communities:
     print(f"community ID {com_id} : {len(node_communities[com_id])}")
     
-#print(node_communities)
-    
+
 part = []
 
 for com_id in node_communities:
@@ -163,15 +119,14 @@ for com_id in node_communities:
 for i in range(len(part)):
     H = G.subgraph(part[i])
     Gcc = sorted(nx.connected_components(H), key=len, reverse=True)
-    print(f"component num : {len(Gcc)}")
+    print(f"component num {len(part[i])} : {len(Gcc)}")
     
-    
-print(nx.community.modularity(G, part))
+# モジュラリティ計算    
+print(f"modularity : {nx.community.modularity(G, part)}")
 
+# コンダクタンス計算
 for i in range(len(part)):
     print(f"conductance {len(part[i])} : {nx.conductance(G, part[i])}")
-    
-
 
 
 #------------------------------------------------------------------
