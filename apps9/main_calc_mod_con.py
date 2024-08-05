@@ -87,8 +87,8 @@ for tmp in sorted(edge_selfppr.items(), key=lambda x:x[1], reverse=False):
     S[tmp[0][0]][tmp[0][1]] = tmp[1]
     S[tmp[0][1]][tmp[0][0]] = tmp[1]
     
-snmf_obj = SNMF(S)
-R = snmf_obj.get_best_Rvec(k=16) 
+snmf_obj = SNMF(A)
+R = snmf_obj.get_best_Rvec(k=6) 
 
 print(R.shape)
 #print(R)
