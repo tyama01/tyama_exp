@@ -76,8 +76,7 @@ class DataLoader:
 class EPPR:
     def __init__(self, G):
         self.G = G
-        self.edge_list = list(self.G.edges())
-        
+        self.edge_list = list(self.G.edges())        
     
     # エッジ還流度を計算    
     def calc_edge_selfppr(self, node_selfppr):
