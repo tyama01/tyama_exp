@@ -1,5 +1,5 @@
 # コミュニティ内エッジのエッジ還流度分布を箱ひげ図でプロット
-# できればコミュニティサイズ順にソート ラベルがコミュニティサイズ
+# コミュニティサイズ順にソート ラベルがコミュニティサイズ
 
 from utils import *
 import networkx as nx
@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import math
+import statistics
 import matplotlib as mpl
 from matplotlib import rcParams as rcp
 from scipy.stats import kendalltau
@@ -118,7 +119,7 @@ for tmp in sorted(edge_selfppr.items(), key=lambda x:x[1], reverse=False):
 #------------------------------------------------------------------
 
 
-# Louvain 手法
+# # Louvain 手法
 
 # # {コミュニティラベル : 部分グラフ}
 # com_G_dic = {}
@@ -172,6 +173,9 @@ for com_id in com_G_dic:
         
 
 #------------------------------------------------------------------
+
+
+
 
 #------------------------------------------------------------------
 # 箱ひげ図プロット
@@ -239,5 +243,29 @@ ax.grid(True, "major", "y", linestyle="--")
 
 plt.tight_layout()
 plt.show()
+
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# 各コミュニティのエッジ還流度の標準偏差を計算
+
+print("-----------------------------------")
+
+s_sum = 0
+
+for com_id in labels_data:
+    s = statistics.pstdev(edge_flow_dic[com_id])
+    s_sum += s
+    print(f"com size {len(com_G_dic[com_id])} : {s}")
+
+print("-----------------------------------")
+
+    
+
+print(f"avg s : {s_sum/len(labels_data)}")
+
+print("-----------------------------------")
+
+
 
 #------------------------------------------------------------------
