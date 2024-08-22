@@ -19,7 +19,7 @@ import pandas as pd
 # /usr/bin/python3 /Users/tyama/tyama_exp/apps9/main_calc_mod_con.py
 
 # -------------------------- データ読み込み -------------------------
-dataset_name = "sbm03"
+dataset_name = "facebook"
 data_loader = DataLoader(dataset_name, is_directed=False)
 G = data_loader.get_graph()
 print(G) # グラフのノード数、エッジ数出力
@@ -87,8 +87,8 @@ for tmp in sorted(edge_selfppr.items(), key=lambda x:x[1], reverse=False):
     S[tmp[0][0]][tmp[0][1]] = tmp[1]
     S[tmp[0][1]][tmp[0][0]] = tmp[1]
     
-snmf_obj = SNMF(S)
-R = snmf_obj.get_best_Rvec(k=3) 
+snmf_obj = SNMF(A)
+R = snmf_obj.get_best_Rvec(k=16) 
 
 print(R.shape)
 #print(R)
