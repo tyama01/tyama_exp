@@ -19,7 +19,7 @@ import pandas as pd
 # /usr/bin/python3 /Users/tyama/tyama_exp/apps8/edge_selfppr_heatmap.py
 
 # -------------------------- データ読み込み -------------------------
-dataset_name = "sbm100"
+dataset_name = "sbm03"
 data_loader = DataLoader(dataset_name, is_directed=False)
 G = data_loader.get_graph()
 print(G) # グラフのノード数、エッジ数出力
@@ -48,7 +48,7 @@ print("-----------------------------------")
 # ノード還流度読み込み
 # self PPR 値を取得 {ノードID : Self PPR 値}
 node_selfppr = {}
-path = '../alpha_dir/' + dataset_name + '/selfppr_10_01_n.txt' # n の場合は正規化されている
+path = '../alpha_dir/' + dataset_name + '/selfppr_15_01_n.txt' # n の場合は正規化されている
 with open(path) as f:
     for line in f:
         (id, val) = line.split()

@@ -63,6 +63,43 @@ class DataLoader:
                 A[edge[1]][edge[0]] = 1
                 
         return A
+    
+    # コミュニティ境界ノードを取得
+    def get_bound_node(self):
+        
+        # {所属コミュニティ：境界ノード}
+        com_bound_node_dic = {com_id : [] for com_id in self.c_id}
+        
+        for com_id in self.c_id:
+            for v in self.c_id[com_id]:
+                v_neighbors_list = list(self.G.neighbors(v))
+                
+                for adj_node in v_neighbors_list:
+                    if(com_id != self.id_c[adj_node]):
+                        com_bound_node_dic[com_id].append(v)
+                        
+        
+        return com_bound_node_dic 
+    
+    # ノード情報取得 (次数(コミュニティ内/外), 所属コミュニティ)
+    def get_node_info(self, v):
+        
+        # 次数
+        v_deg = self.G.degree(v)
+        
+        # 所属コミュニティ
+        v_belong_com = self.id_c[v]
+        
+        # どれだけ他のコミュニティノードと繋がっているか
+        com_bound_deg_dic = {com_id : 0 for com_id in self.c_id}
+        
+        v_neighbors_list = list(self.G.neighbors(v))
+        for adj_node in v_neighbors_list:
+            com_bound_deg_dic[self.id_c[adj_node]] += 1
+            
+            
+        return v_deg, v_belong_com, com_bound_deg_dic
+    
         
           
 
