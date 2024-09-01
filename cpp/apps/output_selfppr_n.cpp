@@ -54,7 +54,7 @@ int main(int argc, char* argv[]){
 
     //int src_id = 0;
     //int walk_count = 10000;
-    double alpha = 0.3;
+    double alpha = 0.01;
     double r_max_coef = 1;
     double eps = 0.1;
 
@@ -97,7 +97,7 @@ int main(int argc, char* argv[]){
         return l.first < r.first;
     });
 
-    string result_path = "selfppr_30_01_n.txt";
+    string result_path = "selfppr_1_01_n.txt";
     ofstream ofs;
     ofs.open(result_path);
 
