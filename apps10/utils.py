@@ -226,3 +226,42 @@ class EPPR:
       
 #------------------------------------------------------------------
 
+#------------------------------------------------------------------
+# 幅優先探索 BFS
+class BFS:
+    def __init__(self, G):
+        self.G = G
+        self.node_list = list(self.G.nodes)
+        
+    def calc_simple_bfs(self, src_node):
+        
+        # BFS のためのデータ構造
+        dist_dict = {node : -1 for node in self.node_list} # 全ノードを「未訪問」に初期化
+        que = Queue()
+        
+        # 初期化条件 (ソースノードを初期ノードとする)
+        dist_dict[src_node] = 0
+        que.put(src_node)
+        
+        # BFS 開始 (キューがからになるまで探索を行う)
+        while not que.empty():
+            node = que.get() # キューから先頭ノードを取り出す
+            
+            # node から辿れるノードを全て辿る
+            adj_list = list(self.G.neighbors(node))
+            if(len(adj_list) != 0):
+                for adj_node in adj_list:
+                    if (dist_dict[adj_node] != -1):
+                        continue # 既に発見済みのノードは探索しない
+                    
+                    # 新たに発見した頂点について距離情報を更新してキューに追加
+                    dist_dict[adj_node] = dist_dict[node] + 1
+                    que.put(adj_node)
+                    
+        return dist_dict
+        
+        
+
+#------------------------------------------------------------------
+
+

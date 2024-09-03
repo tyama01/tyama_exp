@@ -1,4 +1,4 @@
-# FLOW を pickle ファイルで出力
+# BFS 実装の確認
 
 from utils import *
 import networkx as nx
@@ -12,14 +12,16 @@ import matplotlib as mpl
 from matplotlib import rcParams as rcp
 from scipy.stats import kendalltau
 
+import japanize_matplotlib
+
 from sklearn.preprocessing import normalize
 
 import pandas as pd
 
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps10/output_pickle_flow.py
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps10/test_bfs.py
 
 # -------------------------- データ読み込み -------------------------
-dataset_name = "facebook"
+dataset_name = "wheel"
 data_loader = DataLoader(dataset_name, is_directed=False)
 G = data_loader.get_graph()
 print(G) # グラフのノード数、エッジ数出力
@@ -38,27 +40,10 @@ edge_list = list(G.edges())
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
-flow_obj = FLOW(G)
+# BFS 検証
+bfs_obj = BFS(G)
+dist = bfs_obj.calc_simple_bfs(src_node=0)
 
-# {node : {(エッジ) : 通過回数}}
-flow_dic = {}
-
-for v in node_list:
-    flow_times = flow_obj.get_flow_times(src_node=v, count = 10000, alpha=0.1)
-    flow_dic[v] = flow_times 
-    
-    
-
-#print(flow_times)
+print(dist)
 
 #------------------------------------------------------------------
-
-# -----------------------------------------------
-# 結果出力
-
-with open('../alpha_dir/' + dataset_name + '/flow_10.pkl', 'wb') as f:
-    pickle.dump(flow_dic, f)
-    
-print("End")
-
-# -----------------------------------------------

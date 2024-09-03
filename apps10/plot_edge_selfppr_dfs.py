@@ -12,11 +12,13 @@ import matplotlib as mpl
 from matplotlib import rcParams as rcp
 from scipy.stats import kendalltau
 
+import japanize_matplotlib
+
 from sklearn.preprocessing import normalize
 
 import pandas as pd
 
-# /usr/bin/python3 /Users/tyama/tyama_exp/apps10/test.py
+# /usr/bin/python3 /Users/tyama/tyama_exp/apps10/plot_edge_selfppr_dfs.py
 
 # -------------------------- データ読み込み -------------------------
 dataset_name = "wheel"
@@ -69,6 +71,69 @@ edge_selfppr = eppr_obj.calc_flow_edge_selfppr(node_selfppr=node_selfppr, flow=f
 
 print("End Calc Edge_selfPPR")
 
-print(edge_selfppr)
+#print(edge_selfppr)
 
 #------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# dfs した際の仮の経路
+
+sample_dfs_list = [(0, 1), (0, 2), (2, 3), (3, 4), (4, 10), (10, 6), (6, 7)]
+
+sample_edge_selfppr_val_list = []
+
+for edge in sample_dfs_list:
+    
+    # 無向グラフでの例外処理
+    try: # キーがエッジだが、(3, 0) がキーにある場合(0, 3) がないので両方対応するため
+        sample_edge_selfppr_val_list.append(edge_selfppr[edge])
+    except KeyError:
+        sample_edge_selfppr_val_list.append(edge_selfppr[(edge[1], edge[0])])
+     
+hop_num_list = [i for i in range(1, len(sample_edge_selfppr_val_list) + 1)] 
+ 
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# plot
+
+sns.set()
+sns.set(font='IPAexGothic')
+
+# Figureを作成する。
+fig = plt.figure(figsize=(8, 6))
+# Axesを作成する。
+ax = fig.add_subplot(111)
+
+fig.set_dpi(150)
+
+# x軸とy軸のラベルを設定する。
+ax.set_xlabel("Hop 数", fontsize=20)
+ax.set_ylabel("エッジ還流度", fontsize=20)
+
+#labelsizeで軸の数字の文字サイズ変更
+plt.tick_params(labelsize=18)
+
+# グラフ装飾用カラー
+
+# cool
+# jet
+# spring
+# summer
+# autumn
+# winter
+
+
+cm = plt.get_cmap("cool")
+
+
+ax.scatter(hop_num_list, sample_edge_selfppr_val_list, color=cm(500))
+ax.plot(hop_num_list, sample_edge_selfppr_val_list, color=cm(500))
+
+plt.tight_layout()
+plt.show()
+#plt.savefig('../apps10/plot/wheel_edge_selfppr_dfs.pdf')
+
+#------------------------------------------------------------------
+
+
