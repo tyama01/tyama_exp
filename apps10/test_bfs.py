@@ -40,10 +40,87 @@ edge_list = list(G.edges())
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
+# ノード還流度読み込み
+# self PPR 値を取得 {ノードID : Self PPR 値}
+node_selfppr = {}
+path = '../alpha_dir/' + dataset_name + '/selfppr_5_01_n.txt' # n の場合は正規化されている
+with open(path) as f:
+    for line in f:
+        (id, val) = line.split()
+        node_selfppr[int(id)] = float(val)
+
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# FLOW の結果読み込み
+alpha = 5
+
+# self_ppr {src_node : {node_id : ppr 値}}
+
+path = '../alpha_dir/' + dataset_name + '/flow_' + str(alpha) + '.pkl'
+with open(path, 'rb') as f:
+    flow_dic = pickle.load(f)
+    
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# エッジ還流度計算
+
+eppr_obj = EPPR(G)
+edge_selfppr = eppr_obj.calc_flow_edge_selfppr(node_selfppr=node_selfppr, flow=flow_dic)
+
+print("End Calc Edge_selfPPR")
+
+print(edge_selfppr)
+
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
 # BFS 検証
 bfs_obj = BFS(G)
-dist = bfs_obj.calc_simple_bfs(src_node=0)
+#dist = bfs_obj.calc_simple_bfs(src_node=0)
 
-print(dist)
+#print(len(dist))
+#print("End calc")
+
+Gcc = bfs_obj.get_com_by_bfs(node_selfppr=node_selfppr, edge_selfppr=edge_selfppr, a_ratio=0.002)
+print(Gcc[-1])
+
+# print(list(G.neighbors(3987)))
+# print(list(G.neighbors(4012)))
+
+
+#print(list(G.neighbors(3980)))
+
+
+#print(len(list(G.neighbors(3980))))
+
+# max_edge = (3987, 4012)
+# print(edge_selfppr[max_edge])
+
+
+# base_edge = (3980, 3987)
+# print(edge_selfppr[base_edge])
+
+# cnt = 0
+
+# for adj_node in list(G.neighbors(3980)):
+    
+#     try:
+#         edge_selfppr_val = edge_selfppr[(3980, adj_node)]
+#     except KeyError:
+#         edge_selfppr_val = edge_selfppr[(adj_node, 3980)]
+        
+#     if(edge_selfppr_val > edge_selfppr[base_edge]):
+#         cnt += 1
+#         print("---------------------")
+#         print(edge_selfppr_val)
+#         print("---------------------")
+        
+        
+# print(f"cnt : {cnt}")
+        
+        
+
 
 #------------------------------------------------------------------

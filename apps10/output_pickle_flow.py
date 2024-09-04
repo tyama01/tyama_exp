@@ -44,7 +44,7 @@ flow_obj = FLOW(G)
 flow_dic = {}
 
 for v in node_list:
-    flow_times = flow_obj.get_flow_times(src_node=v, count = 10000, alpha=0.1)
+    flow_times = flow_obj.get_flow_times(src_node=v, count = 10000, alpha=0.15)
     flow_dic[v] = flow_times 
     
     
@@ -56,7 +56,7 @@ for v in node_list:
 # -----------------------------------------------
 # 結果出力
 
-with open('../alpha_dir/' + dataset_name + '/flow_10.pkl', 'wb') as f:
+with open('../alpha_dir/' + dataset_name + '/flow_15.pkl', 'wb') as f:
     pickle.dump(flow_dic, f)
     
 print("End")

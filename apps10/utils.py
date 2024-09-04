@@ -259,6 +259,184 @@ class BFS:
                     que.put(adj_node)
                     
         return dist_dict
+    
+    # 山下り でコミュニティ分割
+    # 計算量に関しては改善の余地あり (現状は全探索している。部分的に探索すればもっと早くなりそう)
+    def get_com_by_bfs(self, node_selfppr, edge_selfppr, a_ratio):
+        
+        # エッジ還流度が大きい順にエッジをソート
+        edge_sort_list = []
+        for tmp in sorted(edge_selfppr.items(), key=lambda x:x[1], reverse=True):
+            edge_sort_list.append(tmp[0])
+            
+        # エッジ還流度が最も大きいエッジを取得
+        # そのエッジの内ノード還流度か高い方のノードを始点ノードとしてBFS
+        
+        max_edge = edge_sort_list[2] # エッジ還流度が最大のエッジ
+        
+        #print(f"max edge : {max_edge}")
+        
+        #a_val = edge_selfppr[max_edge] * a_ratio  #増加幅の許容範囲
+        
+        if(node_selfppr[max_edge[0]] > node_selfppr[max_edge[1]]): # ノード還流度が大きい方が始点
+            src_node = max_edge[0]
+        else:
+            src_node = max_edge[1]
+            
+        print(f"src_node : {src_node}")
+            
+        # BFS を実行 {ノードID : 距離k層}
+        dist_dic = self.calc_simple_bfs(src_node)
+        #print(dist_dic)
+        
+        # 最大距離
+        max_dist = max(dist_dic.values())
+        
+        
+        # {距離k層 : [ノードリスト]}
+        key_dist_dic = {dist : [node for node, k in dist_dic.items() if k == dist] for dist in range(max_dist + 1)}
+        #print(key_dist_dic)
+        
+        # 距離k層以内のノードリスト
+        # 距離1層までのノードを先に入れとく
+        k_dist_node_list = [src_node]
+        for node in key_dist_dic[1]:
+            k_dist_node_list.append(node)
+        
+        
+        # {距離層 k : [エッジ]}
+        H_k_edge_diff_dic = {k : [] for k in range(1, max_dist+1)}
+        
+        # k距離1層までのエッジを先に入れとく
+        H_1 = self.G.subgraph(k_dist_node_list)
+        H_1_edge_list = list(H_1.edges())
+        
+        for edge in H_1_edge_list:
+            H_k_edge_diff_dic[1].append(edge)
+        
+        
+        # 元グラフの情報を保持しておきたい
+        G_copy = self.G.copy()
+            
+        for k in range(1, max_dist):
+            
+            # 距離k+1層のノードリスト
+            k_plus_one_dist_node_list = []
+            for node in k_dist_node_list:
+                k_plus_one_dist_node_list.append(node)
+            for node in key_dist_dic[k+1]:
+                k_plus_one_dist_node_list.append(node)
+                
+            # print(f"{k}_node_list : {k_dist_node_list}")
+            # print(f"{k+1}_plut_one_node_list : {k_plus_one_dist_node_list}")
+                
+            
+            # 部分グラフ生成
+            H_k = G_copy.subgraph(k_dist_node_list)
+            H_k_1 = G_copy.subgraph(k_plus_one_dist_node_list)
+            
+            # 部分グラフのエッジを取得
+            H_k_edge_list = list(H_k.edges())
+            #print(H_k_edge_list)
+            print(f"H_k_edge_num : {len(H_k_edge_list)}")
+            print("---------------------")
+            
+            H_k_1_edge_list = list(H_k_1.edges())
+            #print(H_k_1_edge_list)
+            print(f"H_k_1_edge_num : {len(H_k_1_edge_list)}")
+            print("---------------------")
+    
+            dist_k_1_edge_list = []
+            
+            for k_1_edge in H_k_1_edge_list:
+                if(((k_1_edge[0], k_1_edge[1]) not in H_k_edge_list)):
+                   if ((k_1_edge[1], k_1_edge[0]) not in H_k_edge_list):
+                        dist_k_1_edge_list.append(k_1_edge)
+            
+            print(f"差 : {len(dist_k_1_edge_list)}")
+            print("---------------------")
+            
+            for edge in dist_k_1_edge_list:
+                H_k_edge_diff_dic[k+1].append(edge)
+            
+            
+                    
+          
+            
+            # エッジ還流度が減少から増加に変わるタイミングのエッジを削除していく
+            for edge_k in H_k_edge_diff_dic[k]:
+                
+                # 無向グラフでの例外処理
+                try: # キーがエッジだが、(3, 0) がキーにある場合(0, 3) がないので両方対応するため
+                    edge_k_selfppr = edge_selfppr[edge_k]
+                except KeyError:
+                    edge_k = (edge_k[1], edge_k[0])
+                    edge_k_selfppr = edge_selfppr[edge_k]
+                
+                a_val = edge_selfppr[edge_k] * a_ratio  #増加幅の許容範囲
+                
+                for edge_k_1 in dist_k_1_edge_list:
+                    
+                    
+                    
+                    # # 無向グラフでの例外処理
+                    # try: # キーがエッジだが、(3, 0) がキーにある場合(0, 3) がないので両方対応するため
+                    #     edge_k_selfppr = edge_selfppr[edge_k]
+                    # except KeyError:
+                    #     edge_k = (edge_k[1], edge_k[0])
+                    #     edge_k_selfppr = edge_selfppr[edge_k]
+                        
+                    
+                        
+                    try:
+                        edge_k_1_selfppr = edge_selfppr[edge_k_1]
+                    except KeyError:
+                        edge_k_1 = (edge_k_1[1], edge_k_1[0])
+                        edge_k_1_selfppr = edge_selfppr[edge_k_1]
+                    
+                    if(edge_k_1_selfppr > (edge_k_selfppr + a_val)):
+                        
+                        print("------------------------")
+                        print(f"{edge_k} : {edge_k_selfppr + a_val}")
+                        print(f"{edge_k_1} : {edge_k_1_selfppr}")
+                        print("------------------------")
+                        
+                        
+                        
+                        #print(f"cut edge : {edge_k}")
+                        G_copy.remove_edges_from([edge_k])
+                        
+                        
+                        Gcc = sorted(nx.connected_components(G_copy), key=len, reverse=True)
+                        
+                        if(len(Gcc) >= 2):
+                            #print(H_k_edge_diff_dic)
+                            return list(Gcc)
+                        
+                        # 1 度エッジをカットしたら for 分を抜ける
+                        break
+                    
+        
+    
+                
+           
+            
+            # 距離k層 を更新
+            for node in key_dist_dic[k+1]:
+                k_dist_node_list.append(node)
+                
+            pre_dist_k_1_edge_list = []
+            
+            for node in dist_k_1_edge_list:
+                pre_dist_k_1_edge_list.append(node)
+                
+            print(f" k={k} : {pre_dist_k_1_edge_list}")
+                
+        
+        return 0
+        
+            
+        
         
         
 
