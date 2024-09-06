@@ -21,7 +21,7 @@ import pandas as pd
 # /usr/bin/python3 /Users/tyama/tyama_exp/apps10/test_bfs.py
 
 # -------------------------- データ読み込み -------------------------
-dataset_name = "wheel"
+dataset_name = "facebook"
 data_loader = DataLoader(dataset_name, is_directed=False)
 G = data_loader.get_graph()
 print(G) # グラフのノード数、エッジ数出力
@@ -71,7 +71,7 @@ edge_selfppr = eppr_obj.calc_flow_edge_selfppr(node_selfppr=node_selfppr, flow=f
 
 print("End Calc Edge_selfPPR")
 
-print(edge_selfppr)
+#print(edge_selfppr)
 
 #------------------------------------------------------------------
 
@@ -83,11 +83,13 @@ bfs_obj = BFS(G)
 #print(len(dist))
 #print("End calc")
 
-Gcc = bfs_obj.get_com_by_bfs(node_selfppr=node_selfppr, edge_selfppr=edge_selfppr, a_ratio=0.002)
-print(Gcc[-1])
+Gcc = bfs_obj.get_com_by_bfs_kai(node_selfppr=node_selfppr, edge_selfppr=edge_selfppr, a_ratio=0.2)
+print(Gcc)
 
-# print(list(G.neighbors(3987)))
-# print(list(G.neighbors(4012)))
+# print(list(G.neighbors(3987))) # [3980, 4012]
+# print(list(G.neighbors(4012))) # [3980, 3987]
+
+#print(list(G.neighbors(3984))) # [3980] 次数 1
 
 
 #print(list(G.neighbors(3980)))
@@ -100,7 +102,7 @@ print(Gcc[-1])
 
 
 # base_edge = (3980, 3987)
-# print(edge_selfppr[base_edge])
+# print(f"base_edge_selfppr {base_edge} : {edge_selfppr[base_edge]}")
 
 # cnt = 0
 

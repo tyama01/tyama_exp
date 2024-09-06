@@ -272,7 +272,7 @@ class BFS:
         # エッジ還流度が最も大きいエッジを取得
         # そのエッジの内ノード還流度か高い方のノードを始点ノードとしてBFS
         
-        max_edge = edge_sort_list[2] # エッジ還流度が最大のエッジ
+        max_edge = edge_sort_list[0] # エッジ還流度が最大のエッジ
         
         #print(f"max edge : {max_edge}")
         
@@ -434,9 +434,133 @@ class BFS:
                 
         
         return 0
-        
+    
+    # BFS で探索したノードと同様にエッジの距離層を決める
+    def get_com_by_bfs_kai(self, node_selfppr, edge_selfppr, a_ratio):
+        # エッジ還流度が大きい順にエッジをソート
+        edge_sort_list = []
+        for tmp in sorted(edge_selfppr.items(), key=lambda x:x[1], reverse=True):
+            edge_sort_list.append(tmp[0])
             
+        # エッジ還流度が最も大きいエッジを取得
+        # そのエッジの内ノード還流度か高い方のノードを始点ノードとしてBFS
         
+        max_edge = edge_sort_list[0] # エッジ還流度が最大のエッジ # facebook だと 5, 96 が良さげ
+        
+        print(f"max edge : {max_edge}")
+        
+        
+        
+        if(node_selfppr[max_edge[0]] > node_selfppr[max_edge[1]]): # ノード還流度が大きい方が始点
+            src_node = max_edge[0]
+        else:
+            src_node = max_edge[1]
+            
+        print(f"src_node : {src_node}")
+            
+        # BFS を実行 {ノードID : 距離k層}
+        dist_dic = self.calc_simple_bfs(src_node)
+        #print(dist_dic)
+        
+        # 最大距離
+        max_dist = max(dist_dic.values())
+        
+        
+        # {距離k層 : [ノードリスト]}
+        key_dist_dic = {dist : [node for node, k in dist_dic.items() if k == dist] for dist in range(max_dist + 1)}
+        #print(key_dist_dic)
+        
+        
+        
+        # {距離層 k : [エッジ]}
+        dist_k_edge_dic = {k : [] for k in range(0, max_dist+1)}
+        
+        # 距離0層までのエッジを先に入れとく
+        src_adj_node_list = list(self.G.neighbors(src_node))
+        
+        for adj_node in src_adj_node_list:
+            dist_k_edge_dic[0].append((src_node, adj_node))
+            
+        # 元グラフの情報を保持しておきたい
+        G_copy = self.G.copy()
+        
+        for k in range(max_dist):
+     
+            # 距離k+1層のエッジリスト
+            k_plus_one_dist_edge_list = []
+            for node in key_dist_dic[k+1]:
+                adj_node_list = list(G_copy.neighbors(node))
+                for adj_node in adj_node_list:
+                    k_plus_one_dist_edge_list.append((node, adj_node))
+                    
+            for k_1_edge in k_plus_one_dist_edge_list:
+                if((k_1_edge[0], k_1_edge[1]) not in dist_k_edge_dic[k]):
+                    if((k_1_edge[1], k_1_edge[0]) not in dist_k_edge_dic[k]):
+                        dist_k_edge_dic[k+1].append(k_1_edge)
+                        
+            # エッジ還流度が減少から増加に変わるタイミングのエッジを削除していく
+            for edge_k in dist_k_edge_dic[k]:
+                # 無向グラフでの例外処理
+                try: # キーがエッジだが、(3, 0) がキーにある場合(0, 3) がないので両方対応するため
+                    edge_k_selfppr = edge_selfppr[edge_k]
+                except KeyError:
+                    edge_k = (edge_k[1], edge_k[0])
+                    edge_k_selfppr = edge_selfppr[edge_k]
+                
+                a_val = edge_selfppr[edge_k] * a_ratio  #増加幅の許容範囲
+                
+                s = 2
+                
+                for edge_k_1 in dist_k_edge_dic[k+1]:
+                    try:
+                        edge_k_1_selfppr = edge_selfppr[edge_k_1]
+                    except KeyError:
+                        edge_k_1 = (edge_k_1[1], edge_k_1[0])
+                        edge_k_1_selfppr = edge_selfppr[edge_k_1]
+                    
+                    if(edge_k_1_selfppr > (edge_k_selfppr + a_val)):
+                        
+                        # print("------------------------")
+                        # print(f"{edge_k} : {edge_k_selfppr + a_val}")
+                        # print(f"{edge_k_1} : {edge_k_1_selfppr}")
+                        # print("------------------------")
+                        
+                        #print(f"deg  ID {edge_k[1]} :{G_copy.degree(edge_k[1])}")
+                        
+                        if(int(G_copy.degree(edge_k[0])) == 1):
+                            #print("Skip")
+                            continue
+                            
+                        
+                        if(int(G_copy.degree(edge_k[1])) == 1):
+                            #print("Skip")
+                            continue
+                            
+                      
+                        #print(f"cut edge : {edge_k}")
+                        G_copy.remove_edges_from([edge_k])
+                        
+                        
+                        Gcc = sorted(nx.connected_components(G_copy), key=len, reverse=True)
+                        
+                        # if(len(Gcc) >= 4):
+                        #     return list(Gcc)
+                      
+                        
+                        # max エッジ還流度のノードが含まれる部分グラフを取得できたら、終了
+                        if(len(Gcc) >= s):
+                            s+=1
+                            if(src_node not in list(Gcc[0])):
+                                for i in range(1, len(Gcc)):
+                                    if(src_node in list(Gcc[i])):
+                                        return list(Gcc[i])
+                        
+                        # 1 度エッジをカットしたら for 分を抜ける
+                        break
+                    
+        return 0
+                    
+                    
         
         
 
